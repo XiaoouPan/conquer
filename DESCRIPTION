@@ -1,0 +1,17 @@
+Package: conquer
+Type: Package
+Title: Convolution-type smoothed quantile regression
+Version: 1.0
+Date: 2020-02-26
+Author: Xiaoou Pan, Kean Ming Tan, Wen-Xin Zhou
+Maintainer: Xiaoou Pan <xip024@ucsd.edu>
+Description: Performs convolution-type smoothed quantile regression implemented via Barzilai-Borwein gradient descent.
+             It achieves evidently fast computational speed while maintaining estimation accuracy, comparing with classic quantile regression.
+             The package also includes statistical inference by multiplier bootstrap for quantile regression. 
+Depends: R (>= 3.6.0)
+License: GPL-3
+Encoding: UTF-8
+SystemRequirements: C++11
+Imports: Rcpp (>= 1.0.3), matrixStats, stats
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.0.2
