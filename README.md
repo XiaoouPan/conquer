@@ -4,7 +4,7 @@
 
 ## Description
 
-The `conquer` library performs convolution-type smoothed quantile regression implemented via Barzilai-Borwein gradient descent. It achieves conspicuously fast computational speed while maintaining estimation accuracy, comparing with classic quantile regression. The package can also conduct statistical inference by multiplier bootstrap for quantile regression. 
+The `conquer` library performs convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2019](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)) implemented via Barzilai-Borwein gradient descent ([Barzilai and Borwein, 1988](https://doi.org/10.1093/imanum/8.1.141)). It achieves conspicuously fast computational speed while maintaining estimation accuracy, comparing with classic quantile regression ([Koenker, 2019](https://CRAN.R-project.org/package=quantreg)). The package can also conduct statistical inference by multiplier bootstrap for quantile regression. 
 
 ## Installation
 
@@ -67,13 +67,13 @@ Xiaoou Pan <xip024@ucsd.edu>
 
 ## References
 
-Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *IMA J. Numer. Anal.*, **8** 141–148. [Paper](https://academic.oup.com/imajna/article-abstract/8/1/141/802460)
+Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *IMA J. Numer. Anal.*, **8** 141–148. [Paper](https://doi.org/10.1093/imanum/8.1.141)
 
 Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. *J. Bus. Econ. Statist.*, in press. [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
 
 Koenker, R. (2005). Quantile Regression. Cambridge Univ. Press, Cambridge. [Book](https://www.cambridge.org/core/books/quantile-regression/C18AE7BCF3EC43C16937390D44A328B1)
 
-Koenker, R. (2019). Package "quantreg". [CRAN](https://cran.r-project.org/web/packages/quantreg/index.html)
+Koenker, R. (2019). Package "quantreg", version 5.54. [CRAN](https://CRAN.R-project.org/package=quantreg)
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 33-50. [Paper](https://www.jstor.org/stable/1913643?seq=1#metadata_info_tab_contents)
 
