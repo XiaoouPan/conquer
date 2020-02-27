@@ -59,7 +59,7 @@ C++11
 
 ## Authors
 
-Xiaoou Pan, Kean Ming Tan and Wen-Xin Zhou
+Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu> and Wen-Xin Zhou <wez243@ucsd.edu>
 
 ## Maintainer
 
