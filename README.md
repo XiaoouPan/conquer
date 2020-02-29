@@ -12,7 +12,6 @@ The `conquer` library performs convolution-type smoothed quantile regression ([F
 
 ```r
 install.packages("devtools")
-library(devtools)
 devtools::install_github("XiaoouPan/conquer")
 library(conquer)
 ```
