@@ -245,9 +245,7 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
                        const double tol = 0.0000001, const int iteMax = 5000) {
   int n = X.n_rows;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
   double lossOld = sqLossGauss(res, tau, h);
@@ -288,9 +286,7 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
   int n = X.n_rows;
   int p = X.n_cols;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
@@ -332,9 +328,7 @@ arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
                       const double tol = 0.0000001, const int iteMax = 5000) {
   int n = X.n_rows;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
   double lossOld = sqLossUnif(res, n, tau, h);
@@ -375,9 +369,7 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
   int n = X.n_rows;
   int p = X.n_cols;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
@@ -419,9 +411,7 @@ arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
                       const double tol = 0.0000001, const int iteMax = 5000) {
   int n = X.n_rows;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
   double lossOld = sqLossPara(res, n, tau, h);
@@ -462,9 +452,7 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
   int n = X.n_rows;
   int p = X.n_cols;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
@@ -506,9 +494,7 @@ arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
                        const double tol = 0.0000001, const int iteMax = 5000) {
   int n = X.n_rows;
   double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z(n, p + 1);
-  Z.cols(1, p) = standardize(X, p);
-  Z.col(0) = arma::ones(n);
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
   double lossOld = sqLossTrian(res, n, tau, h);
