@@ -16,9 +16,9 @@ devtools::install_github("XiaoouPan/conquer")
 library(conquer)
 ```
 
-We will submit it to CRAN soon.
-
 ## Common error messages
+
+Since `conquer` is currently still a source package, some compiling issues may appear when users install it. We apologize for the inconvenience and will submit it to CRAN soon.
 
 First of all, to avoid most unexpected error messages, it is **strongly** recommended to update `R` to version >= 3.6.1.
 
