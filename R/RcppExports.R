@@ -9,60 +9,32 @@ mad <- function(x) {
     .Call('_conquer_mad', PACKAGE = 'conquer', x)
 }
 
-huberDer <- function(x, n, tau) {
-    .Call('_conquer_huberDer', PACKAGE = 'conquer', x, n, tau)
+updateHuber <- function(Z, res, der, grad, loss, n, tau, n1) {
+    invisible(.Call('_conquer_updateHuber', PACKAGE = 'conquer', Z, res, der, grad, loss, n, tau, n1))
 }
 
-huberLoss <- function(x, n, tau) {
-    .Call('_conquer_huberLoss', PACKAGE = 'conquer', x, n, tau)
+huberReg <- function(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol = 0.0000001, constTau = 1.345, iteMax = 5000L) {
+    .Call('_conquer_huberReg', PACKAGE = 'conquer', Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax)
 }
 
-huberReg <- function(Z, Y, n, p, tol = 0.0000001, constTau = 1.345, iteMax = 5000L) {
-    .Call('_conquer_huberReg', PACKAGE = 'conquer', Z, Y, n, p, tol, constTau, iteMax)
+standardize <- function(X, mx, sx, p) {
+    .Call('_conquer_standardize', PACKAGE = 'conquer', X, mx, sx, p)
 }
 
-sqDerGauss <- function(u, tau) {
-    .Call('_conquer_sqDerGauss', PACKAGE = 'conquer', u, tau)
+updateGauss <- function(Z, res, der, grad, loss, n, tau, h, n1, h1, h2) {
+    invisible(.Call('_conquer_updateGauss', PACKAGE = 'conquer', Z, res, der, grad, loss, n, tau, h, n1, h1, h2))
 }
 
-sqDerUnif <- function(u, n, tau) {
-    .Call('_conquer_sqDerUnif', PACKAGE = 'conquer', u, n, tau)
+updateUnif <- function(Z, res, der, grad, loss, n, tau, h, n1, h1) {
+    invisible(.Call('_conquer_updateUnif', PACKAGE = 'conquer', Z, res, der, grad, loss, n, tau, h, n1, h1))
 }
 
-sqDerPara <- function(u, n, tau) {
-    .Call('_conquer_sqDerPara', PACKAGE = 'conquer', u, n, tau)
+updatePara <- function(Z, res, der, grad, loss, n, tau, h, n1, h1, h3) {
+    invisible(.Call('_conquer_updatePara', PACKAGE = 'conquer', Z, res, der, grad, loss, n, tau, h, n1, h1, h3))
 }
 
-sqDerTrian <- function(u, n, tau) {
-    .Call('_conquer_sqDerTrian', PACKAGE = 'conquer', u, n, tau)
-}
-
-sqDerHoro <- function(u, tau) {
-    .Call('_conquer_sqDerHoro', PACKAGE = 'conquer', u, tau)
-}
-
-sqLossGauss <- function(u, tau, h) {
-    .Call('_conquer_sqLossGauss', PACKAGE = 'conquer', u, tau, h)
-}
-
-sqLossUnif <- function(u, n, tau, h) {
-    .Call('_conquer_sqLossUnif', PACKAGE = 'conquer', u, n, tau, h)
-}
-
-sqLossPara <- function(u, n, tau, h) {
-    .Call('_conquer_sqLossPara', PACKAGE = 'conquer', u, n, tau, h)
-}
-
-sqLossTrian <- function(u, n, tau, h) {
-    .Call('_conquer_sqLossTrian', PACKAGE = 'conquer', u, n, tau, h)
-}
-
-sqLossHoro <- function(u, tau, h) {
-    .Call('_conquer_sqLossHoro', PACKAGE = 'conquer', u, tau, h)
-}
-
-standardize <- function(X, p) {
-    .Call('_conquer_standardize', PACKAGE = 'conquer', X, p)
+updateTrian <- function(Z, res, der, grad, loss, n, tau, h, n1, h1, h2) {
+    invisible(.Call('_conquer_updateTrian', PACKAGE = 'conquer', Z, res, der, grad, loss, n, tau, h, n1, h1, h2))
 }
 
 smqrGauss <- function(X, Y, tau = 0.5, constTau = 1.345, tol = 0.0000001, iteMax = 5000L) {

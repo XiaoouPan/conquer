@@ -10,40 +10,37 @@ int sgn(const double x) {
 
 // [[Rcpp::export]]
 double mad(const arma::vec& x) {
-  return arma::median(arma::abs(x - arma::median(x))) / 0.6744898;
+  return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
 }
 
 // [[Rcpp::export]]
-arma::vec huberDer(const arma::vec& x, const int n, const double tau) {
-  arma::vec w(n);
+void updateHuber(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, 
+                 const double n1) {
+  loss = 0.0;
   for (int i = 0; i < n; i++) {
-    w(i) = std::abs(x(i)) <= tau ? -x(i) : -tau * sgn(x(i));
+    double cur = res(i);
+    if (std::abs(cur) <= tau) {
+      loss += 0.5 * cur * cur;
+      der(i) = -cur;
+    } else {
+      loss += (tau * std::abs(cur) - 0.5 * tau * tau);
+      der(i) = -tau * sgn(cur);
+    }
   }
-  return w;
+  loss *= n1;
+  grad = n1 * Z.t() * der;
 }
 
 // [[Rcpp::export]]
-double huberLoss(const arma::vec& x, const int n, const double tau) {
-  double loss = 0;
-  for (int i = 0; i < n; i++) {
-    double cur = x(i);
-    loss += std::abs(cur) <= tau ? (cur * cur / 2) : (tau * std::abs(cur) - tau * tau / 2);
-  }
-  return loss / n;
-}
-
-// [[Rcpp::export]]
-arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const int n, const int p, const double tol = 0.0000001, const double constTau = 1.345, 
+arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, double& lossOld, 
+                   double& lossNew, const int n, const int p, const double n1, const double tol = 0.0000001, const double constTau = 1.345, 
                    const int iteMax = 5000) {
   double tau = constTau * mad(Y);
-  arma::vec gradOld = Z.t() * huberDer(Y, n, tau) / n;
-  double lossOld = huberLoss(Y, n, tau);
-  arma::vec beta = -gradOld;
-  arma::vec betaDiff = -gradOld;
+  updateHuber(Z, Y, der, gradOld, lossOld, n, tau, n1);
+  arma::vec beta = -gradOld, betaDiff = -gradOld;
   arma::vec res = Y - Z * beta;
   tau = constTau * mad(res);
-  double lossNew = huberLoss(res, n, tau);
-  arma::vec gradNew = Z.t() * huberDer(res, n, tau) / n;
+  updateHuber(Z, res, der, gradNew, lossNew, n, tau, n1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -56,12 +53,11 @@ arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const int n, const in
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
+    beta += betaDiff;
+    res -= Z * betaDiff;
     tau = constTau * mad(res);
-    gradNew = Z.t() * huberDer(res, n, tau) / n;
-    lossNew = huberLoss(res, n, tau);
+    updateHuber(Z, res, der, gradNew, lossNew, n, tau, n1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
@@ -69,152 +65,110 @@ arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const int n, const in
 }
 
 // [[Rcpp::export]]
-arma::vec sqDerGauss(const arma::vec& u, const double tau) {
-  return arma::normcdf(u) - tau;
-}
-
-// [[Rcpp::export]]
-arma::vec sqDerUnif(const arma::vec& u, const int n, const double tau) {
-  arma::vec rst(n);
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur > 1) {
-      rst(i) = 1 - tau;
-    } else if (cur > -1) {
-      rst(i) = (1 + cur) / 2 - tau;
-    } else {
-      rst(i) = -tau;
-    }
-  }
-  return rst;
-}
-
-// [[Rcpp::export]]
-arma::vec sqDerPara(const arma::vec& u, const int n, const double tau) {
-  arma::vec rst(n);
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur > 1) {
-      rst(i) = 1 - tau;
-    } else if (cur > -1) {
-      rst(i) = (3 * cur - cur * cur * cur + 2) / 4 - tau;
-    } else {
-      rst(i) = -tau;
-    }
-  }
-  return rst;
-}
-
-// [[Rcpp::export]]
-arma::vec sqDerTrian(const arma::vec& u, const int n, const double tau) {
-  arma::vec rst(n);
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur > 1) {
-      rst(i) = 1 - tau;
-    } else if (cur > 0) {
-      rst(i) = (2 * cur - cur * cur + 1) / 2 - tau;
-    } else if (cur > -1) {
-      rst(i) = (1 + cur * cur + 2 * cur) / 2 - tau;
-    } else {
-      rst(i) = -tau;
-    }
-  }
-  return rst;
-}
-
-// [[Rcpp::export]]
-arma::vec sqDerHoro(const arma::vec& u, const double tau) {
-  return arma::normcdf(u) + u % arma::normpdf(u) - tau;
-}
-
-// [[Rcpp::export]]
-double sqLossGauss(const arma::vec& u, const double tau, const double h) {
-  arma::vec temp = h * 0.79788 * arma::exp(-arma::square(u) / (2 * h * h)) + u - 2 * u % arma::normcdf(-u / h);
-  return arma::mean(temp / 2 + (tau - 0.5) * u);
-}
-
-// [[Rcpp::export]]
-double sqLossUnif(const arma::vec& u, const int n, const double tau, const double h) {
-  double rst = 0;
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur <= -h) {
-      rst += (tau - 1) * cur;
-    } else if (cur < h) {
-      rst += cur * cur / (4 * h) + h / 4 + (tau - 0.5) * cur;
-    } else {
-      rst += tau * cur;
-    }
-  }
-  return rst / n;
-}
-
-// [[Rcpp::export]]
-double sqLossPara(const arma::vec& u, const int n, const double tau, const double h) {
-  double rst = 0;
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur <= -h) {
-      rst += (tau - 1) * cur;
-    } else if (cur < h) {
-      rst += 3 * h / 16 + 3 * cur * cur / (8 * h) - cur * cur * cur * cur / (16 * h * h * h) + (tau - 0.5) * cur;
-    } else {
-      rst += tau * cur;
-    }
-  }
-  return rst / n;
-}
-
-// [[Rcpp::export]]
-double sqLossTrian(const arma::vec& u, const int n, const double tau, const double h) {
-  double rst = 0;
-  for (int i = 0; i < n; i++) {
-    double cur = u(i);
-    if (cur <= -h) {
-      rst += (tau - 1) * cur;
-    } else if (cur < 0) {
-      rst += cur * cur * cur / (6 * h * h) + cur * cur / (2 * h) + h / 6 + (tau - 0.5) * cur;
-    } else if (cur < h) {
-      rst += -cur * cur * cur / (6 * h * h) + cur * cur / (2 * h) + h / 6 + (tau - 0.5) * cur;
-    } else {
-      rst += tau * cur;
-    }
-  }
-  return rst / n;
-}
-
-// [[Rcpp::export]]
-double sqLossHoro(const arma::vec& u, const double tau, const double h) {
-  return arma::mean(tau * u - u % arma::normcdf(-u / h));
-}
-
-// [[Rcpp::export]]
-arma::mat standardize(arma::mat X, const int p) {
+arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx, const int p) {
   for (int i = 0; i < p; i++) {
-    X.col(i) = (X.col(i) - arma::mean(X.col(i))) / arma::stddev(X.col(i));
+    X.col(i) = (X.col(i) - mx(i)) / sx(i);
   }
   return X;
 }
 
 // [[Rcpp::export]]
+void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, 
+                 const double h, const double n1, const double h1, const double h2) {
+  der = arma::normcdf(-res * h1) - tau;
+  loss = arma::mean(0.39894 * h * arma::exp(-0.5 * h2 * arma::square(res)) - res % der);
+  grad = n1 * Z.t() * der;
+}
+
+// [[Rcpp::export]]
+void updateUnif(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, 
+                const double h, const double n1, const double h1) {
+  loss = 0.0;
+  for (int i = 0; i < n; i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      loss += (tau - 1) * cur;
+    } else if (cur < h) {
+      der(i) = 0.5 - tau - 0.5 * h1 * cur;
+      loss += 0.25 * h1 * cur * cur + 0.25 * h + (tau - 0.5) * cur;
+    } else {
+      der(i) = -tau;
+      loss += tau * cur;
+    }
+  }
+  loss *= n1;
+  grad = n1 * Z.t() * der;
+}
+
+// [[Rcpp::export]]
+void updatePara(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, 
+                const double h, const double n1, const double h1, const double h3) {
+  loss = 0.0;
+  for (int i = 0; i < n; i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      loss += (tau - 1) * cur;
+    } else if (cur < h) {
+      der(i) = 0.5 - tau - 0.75 * h1 * cur + 0.25 * h3 * cur * cur * cur;
+      loss += 0.1875 * h + 0.375 * h1 * cur * cur - 0.0625 * h3 * cur * cur * cur * cur + (tau - 0.5) * cur;
+    } else {
+      der(i) = -tau;
+      loss += tau * cur;
+    }
+  }
+  loss *= n1;
+  grad = n1 * Z.t() * der;
+}
+
+// [[Rcpp::export]]
+void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, 
+                 const double h, const double n1, const double h1, const double h2) {
+  loss = 0.0;
+  for (int i = 0; i < n; i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      loss += (tau - 1) * cur;
+    } else if (cur < 0) {
+      der(i) = 0.5 - tau - h1 * cur - 0.5 * h2 * cur * cur;
+      loss += h2 * cur * cur * cur / 6 + 0.5 * h1 * cur * cur + h / 6 + (tau - 0.5) * cur;
+    } else if (cur < h) {
+      der(i) = 0.5 - tau - cur / h + 0.5 * cur * cur / (h * h);
+      loss += -h2 * cur * cur * cur / 6 + 0.5 * h1 * cur * cur + h / 6 + (tau - 0.5) * cur;
+    } else {
+      der(i) = -tau;
+      loss += tau * cur;
+    }
+  }
+  loss *= n1;
+  grad = n1 * Z.t() * der;
+}
+
+// [[Rcpp::export]]
 Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double constTau = 1.345, const double tol = 0.0000001, 
                      const int iteMax = 5000) {
-  int n = X.n_rows;
-  int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
-  arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossGauss(res, tau, h);
-  arma::vec gradOld = Z.t() * sqDerGauss(-res / h, tau) / n;
+  updateGauss(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h2);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossGauss(res, tau, h);
-  arma::vec gradNew = Z.t() * sqDerGauss(-res / h, tau) / n;
+  res -= Z * betaDiff;
+  updateGauss(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -227,34 +181,38 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerGauss(-res / h, tau) / n;
-    lossNew = sqLossGauss(res, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateGauss(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
 }
 
 // [[Rcpp::export]]
 arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, 
                        const double tol = 0.0000001, const int iteMax = 5000) {
-  int n = X.n_rows;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
+  const int n = X.n_rows;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossGauss(res, tau, h);
-  arma::vec gradOld = Z.t() * sqDerGauss(-res / h, tau) / n;
+  updateGauss(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h2);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossGauss(res, tau, h);
-  arma::vec gradNew = Z.t() * sqDerGauss(-res / h, tau) / n;
+  res -= Z * betaDiff;
+  updateGauss(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -267,37 +225,41 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerGauss(-res / h, tau) / n;
-    lossNew = sqLossGauss(res, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateGauss(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
 // [[Rcpp::export]]
 Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double constTau = 1.345, const double tol = 0.0000001, 
                     const int iteMax = 5000) {
-  int n = X.n_rows;
-  int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
-  arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossUnif(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerUnif(-res / h, n, tau) / n;
+  updateUnif(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossUnif(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerUnif(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updateUnif(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -310,34 +272,38 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerUnif(-res / h, n, tau) / n;
-    lossNew = sqLossUnif(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateUnif(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
 }
 
 // [[Rcpp::export]]
 arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, 
                       const double tol = 0.0000001, const int iteMax = 5000) {
-  int n = X.n_rows;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
+  const int n = X.n_rows;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossUnif(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerUnif(-res / h, n, tau) / n;
+  updateUnif(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossUnif(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerUnif(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updateUnif(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -350,37 +316,41 @@ arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerUnif(-res / h, n, tau) / n;
-    lossNew = sqLossUnif(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateUnif(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
   
 // [[Rcpp::export]]
 Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double constTau = 1.345, const double tol = 0.0000001, 
                     const int iteMax = 5000) {
-  int n = X.n_rows;
-  int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
-  arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossPara(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerPara(-res / h, n, tau) / n;
+  updatePara(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h3);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossPara(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerPara(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updatePara(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h3);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -393,34 +363,38 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerPara(-res / h, n, tau) / n;
-    lossNew = sqLossPara(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updatePara(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h3);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
 }
 
 // [[Rcpp::export]]
 arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, 
                       const double tol = 0.0000001, const int iteMax = 5000) {
-  int n = X.n_rows;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
+  const int n = X.n_rows;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossPara(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerPara(-res / h, n, tau) / n;
+  updatePara(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h3);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossPara(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerPara(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updatePara(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h3);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -433,37 +407,41 @@ arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerPara(-res / h, n, tau) / n;
-    lossNew = sqLossPara(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updatePara(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h3);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
 // [[Rcpp::export]]
 Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double constTau = 1.345, const double tol = 0.0000001, 
                      const int iteMax = 5000) {
-  int n = X.n_rows;
-  int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
-  arma::vec beta = huberReg(Z, Y, n, p, tol, constTau, iteMax);
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossTrian(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerTrian(-res / h, n, tau) / n;
+  updateTrian(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h2);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossTrian(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerTrian(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updateTrian(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -476,34 +454,38 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerTrian(-res / h, n, tau) / n;
-    lossNew = sqLossTrian(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateTrian(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
 }
 
 // [[Rcpp::export]]
 arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, 
                        const double tol = 0.0000001, const int iteMax = 5000) {
-  int n = X.n_rows;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, p));
+  const int n = X.n_rows;
+  const double h = std::pow((std::log(n) + p) / n, 0.4);
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx = arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double lossOld, lossNew;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  double lossOld = sqLossTrian(res, n, tau, h);
-  arma::vec gradOld = Z.t() * sqDerTrian(-res / h, n, tau) / n;
+  updateTrian(Z, res, der, gradOld, lossOld, n, tau, h, n1, h1, h2);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
-  res = Y - Z * beta;
-  double lossNew = sqLossTrian(res, n, tau, h);
-  arma::vec gradNew = Z.t() * sqDerTrian(-res / h, n, tau) / n;
+  res -= Z * betaDiff;
+  updateTrian(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (std::abs(lossNew - lossOld) > tol && arma::norm(betaDiff, "inf") > tol && ite <= iteMax) {
@@ -516,16 +498,15 @@ arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     }
     gradOld = gradNew;
     lossOld = lossNew;
-    beta -= alpha * gradNew;
     betaDiff = -alpha * gradNew;
-    res += alpha * Z * gradNew;
-    gradNew = Z.t() * sqDerTrian(-res / h, n, tau) / n;
-    lossNew = sqLossTrian(res, n, tau, h);
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    updateTrian(Z, res, der, gradNew, lossNew, n, tau, h, n1, h1, h2);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  beta.rows(1, p) /= arma::stddev(X, 0, 0).t();
-  beta(0) -= arma::as_scalar(arma::mean(X, 0) * beta.rows(1, p));
+  beta.rows(1, p) /= sx;
+  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
@@ -580,3 +561,4 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   }
   return rst;
 }
+

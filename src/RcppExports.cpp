@@ -28,190 +28,137 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// huberDer
-arma::vec huberDer(const arma::vec& x, const int n, const double tau);
-RcppExport SEXP _conquer_huberDer(SEXP xSEXP, SEXP nSEXP, SEXP tauSEXP) {
+// updateHuber
+void updateHuber(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, const double n1);
+RcppExport SEXP _conquer_updateHuber(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP lossSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP n1SEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double& >::type loss(lossSEXP);
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(huberDer(x, n, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// huberLoss
-double huberLoss(const arma::vec& x, const int n, const double tau);
-RcppExport SEXP _conquer_huberLoss(SEXP xSEXP, SEXP nSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(huberLoss(x, n, tau));
-    return rcpp_result_gen;
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
+    updateHuber(Z, res, der, grad, loss, n, tau, n1);
+    return R_NilValue;
 END_RCPP
 }
 // huberReg
-arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const int n, const int p, const double tol, const double constTau, const int iteMax);
-RcppExport SEXP _conquer_huberReg(SEXP ZSEXP, SEXP YSEXP, SEXP nSEXP, SEXP pSEXP, SEXP tolSEXP, SEXP constTauSEXP, SEXP iteMaxSEXP) {
+arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, double& lossOld, double& lossNew, const int n, const int p, const double n1, const double tol, const double constTau, const int iteMax);
+RcppExport SEXP _conquer_huberReg(SEXP ZSEXP, SEXP YSEXP, SEXP derSEXP, SEXP gradOldSEXP, SEXP gradNewSEXP, SEXP lossOldSEXP, SEXP lossNewSEXP, SEXP nSEXP, SEXP pSEXP, SEXP n1SEXP, SEXP tolSEXP, SEXP constTauSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type gradOld(gradOldSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type gradNew(gradNewSEXP);
+    Rcpp::traits::input_parameter< double& >::type lossOld(lossOldSEXP);
+    Rcpp::traits::input_parameter< double& >::type lossNew(lossNewSEXP);
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(huberReg(Z, Y, n, p, tol, constTau, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqDerGauss
-arma::vec sqDerGauss(const arma::vec& u, const double tau);
-RcppExport SEXP _conquer_sqDerGauss(SEXP uSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqDerGauss(u, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqDerUnif
-arma::vec sqDerUnif(const arma::vec& u, const int n, const double tau);
-RcppExport SEXP _conquer_sqDerUnif(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqDerUnif(u, n, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqDerPara
-arma::vec sqDerPara(const arma::vec& u, const int n, const double tau);
-RcppExport SEXP _conquer_sqDerPara(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqDerPara(u, n, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqDerTrian
-arma::vec sqDerTrian(const arma::vec& u, const int n, const double tau);
-RcppExport SEXP _conquer_sqDerTrian(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqDerTrian(u, n, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqDerHoro
-arma::vec sqDerHoro(const arma::vec& u, const double tau);
-RcppExport SEXP _conquer_sqDerHoro(SEXP uSEXP, SEXP tauSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqDerHoro(u, tau));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqLossGauss
-double sqLossGauss(const arma::vec& u, const double tau, const double h);
-RcppExport SEXP _conquer_sqLossGauss(SEXP uSEXP, SEXP tauSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqLossGauss(u, tau, h));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqLossUnif
-double sqLossUnif(const arma::vec& u, const int n, const double tau, const double h);
-RcppExport SEXP _conquer_sqLossUnif(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqLossUnif(u, n, tau, h));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqLossPara
-double sqLossPara(const arma::vec& u, const int n, const double tau, const double h);
-RcppExport SEXP _conquer_sqLossPara(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqLossPara(u, n, tau, h));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqLossTrian
-double sqLossTrian(const arma::vec& u, const int n, const double tau, const double h);
-RcppExport SEXP _conquer_sqLossTrian(SEXP uSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqLossTrian(u, n, tau, h));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sqLossHoro
-double sqLossHoro(const arma::vec& u, const double tau, const double h);
-RcppExport SEXP _conquer_sqLossHoro(SEXP uSEXP, SEXP tauSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(sqLossHoro(u, tau, h));
+    rcpp_result_gen = Rcpp::wrap(huberReg(Z, Y, der, gradOld, gradNew, lossOld, lossNew, n, p, n1, tol, constTau, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // standardize
-arma::mat standardize(arma::mat X, const int p);
-RcppExport SEXP _conquer_standardize(SEXP XSEXP, SEXP pSEXP) {
+arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx, const int p);
+RcppExport SEXP _conquer_standardize(SEXP XSEXP, SEXP mxSEXP, SEXP sxSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::rowvec& >::type mx(mxSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sx(sxSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
-    rcpp_result_gen = Rcpp::wrap(standardize(X, p));
+    rcpp_result_gen = Rcpp::wrap(standardize(X, mx, sx, p));
     return rcpp_result_gen;
+END_RCPP
+}
+// updateGauss
+void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, const double h, const double n1, const double h1, const double h2);
+RcppExport SEXP _conquer_updateGauss(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP lossSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP n1SEXP, SEXP h1SEXP, SEXP h2SEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double& >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h2(h2SEXP);
+    updateGauss(Z, res, der, grad, loss, n, tau, h, n1, h1, h2);
+    return R_NilValue;
+END_RCPP
+}
+// updateUnif
+void updateUnif(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, const double h, const double n1, const double h1);
+RcppExport SEXP _conquer_updateUnif(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP lossSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP n1SEXP, SEXP h1SEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double& >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h1(h1SEXP);
+    updateUnif(Z, res, der, grad, loss, n, tau, h, n1, h1);
+    return R_NilValue;
+END_RCPP
+}
+// updatePara
+void updatePara(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, const double h, const double n1, const double h1, const double h3);
+RcppExport SEXP _conquer_updatePara(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP lossSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP n1SEXP, SEXP h1SEXP, SEXP h3SEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double& >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h3(h3SEXP);
+    updatePara(Z, res, der, grad, loss, n, tau, h, n1, h1, h3);
+    return R_NilValue;
+END_RCPP
+}
+// updateTrian
+void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, double& loss, const int n, const double tau, const double h, const double n1, const double h1, const double h2);
+RcppExport SEXP _conquer_updateTrian(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP lossSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP n1SEXP, SEXP h1SEXP, SEXP h2SEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double& >::type loss(lossSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< const double >::type h2(h2SEXP);
+    updateTrian(Z, res, der, grad, loss, n, tau, h, n1, h1, h2);
+    return R_NilValue;
 END_RCPP
 }
 // smqrGauss
@@ -426,20 +373,13 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_conquer_sgn", (DL_FUNC) &_conquer_sgn, 1},
     {"_conquer_mad", (DL_FUNC) &_conquer_mad, 1},
-    {"_conquer_huberDer", (DL_FUNC) &_conquer_huberDer, 3},
-    {"_conquer_huberLoss", (DL_FUNC) &_conquer_huberLoss, 3},
-    {"_conquer_huberReg", (DL_FUNC) &_conquer_huberReg, 7},
-    {"_conquer_sqDerGauss", (DL_FUNC) &_conquer_sqDerGauss, 2},
-    {"_conquer_sqDerUnif", (DL_FUNC) &_conquer_sqDerUnif, 3},
-    {"_conquer_sqDerPara", (DL_FUNC) &_conquer_sqDerPara, 3},
-    {"_conquer_sqDerTrian", (DL_FUNC) &_conquer_sqDerTrian, 3},
-    {"_conquer_sqDerHoro", (DL_FUNC) &_conquer_sqDerHoro, 2},
-    {"_conquer_sqLossGauss", (DL_FUNC) &_conquer_sqLossGauss, 3},
-    {"_conquer_sqLossUnif", (DL_FUNC) &_conquer_sqLossUnif, 4},
-    {"_conquer_sqLossPara", (DL_FUNC) &_conquer_sqLossPara, 4},
-    {"_conquer_sqLossTrian", (DL_FUNC) &_conquer_sqLossTrian, 4},
-    {"_conquer_sqLossHoro", (DL_FUNC) &_conquer_sqLossHoro, 3},
-    {"_conquer_standardize", (DL_FUNC) &_conquer_standardize, 2},
+    {"_conquer_updateHuber", (DL_FUNC) &_conquer_updateHuber, 8},
+    {"_conquer_huberReg", (DL_FUNC) &_conquer_huberReg, 13},
+    {"_conquer_standardize", (DL_FUNC) &_conquer_standardize, 4},
+    {"_conquer_updateGauss", (DL_FUNC) &_conquer_updateGauss, 11},
+    {"_conquer_updateUnif", (DL_FUNC) &_conquer_updateUnif, 10},
+    {"_conquer_updatePara", (DL_FUNC) &_conquer_updatePara, 11},
+    {"_conquer_updateTrian", (DL_FUNC) &_conquer_updateTrian, 11},
     {"_conquer_smqrGauss", (DL_FUNC) &_conquer_smqrGauss, 6},
     {"_conquer_smqrGaussIni", (DL_FUNC) &_conquer_smqrGaussIni, 7},
     {"_conquer_smqrUnif", (DL_FUNC) &_conquer_smqrUnif, 6},
