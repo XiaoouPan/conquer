@@ -190,7 +190,8 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = Y - Z * beta, 
+                            Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -281,7 +282,8 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = Y - Z * beta, 
+                            Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -372,7 +374,8 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = Y - Z * beta, 
+                            Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -463,7 +466,8 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = Y - Z * beta, 
+                            Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
