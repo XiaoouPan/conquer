@@ -9,7 +9,9 @@ conquer(
   Y,
   tau = 0.5,
   kernel = c("Gaussian", "uniform", "parabolic", "triangular"),
-  tol = 1e-07,
+  h = 0,
+  standardize = TRUE,
+  tol = 1e-05,
   iteMax = 5000,
   ci = FALSE,
   alpha = 0.05,
@@ -17,13 +19,17 @@ conquer(
 )
 }
 \arguments{
-\item{X}{The design matrix with dimension \eqn{n} by \eqn{p}.}
+\item{X}{The design matrix with dimension \eqn{n} by \eqn{p}, where \eqn{p < n}.}
 
 \item{Y}{The response vector with length \eqn{n}.}
 
 \item{tau}{(\strong{optional}) The desired quantile level of the regression problem. The value must be in \eqn{(0, 1)}.}
 
 \item{kernel}{(\strong{optional}) A character string specifying the kernel function. Choices include "Gaussian" (default), "uniform", "parabolic" or "triangular".}
+
+\item{h}{(\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{((log(n) + p) / n)^0.4} without specific input or if the input value \eqn{< 0.05}.}
+
+\item{standardize}{(\strong{optional}) A logical flag. If \code{standardize = TRUE}, then the design matrix will be standardized so that each column has \eqn{0} mean and unit standard deviation.}
 
 \item{tol}{(\strong{optional}) Tolerance level of gradient descent.}
 
@@ -39,9 +45,13 @@ conquer(
 An object containing the following items will be returned:
 \itemize{
 \item \code{coeff} The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.
-\item \code{ite} The total number of iteration of gradient descent.
+\item \code{ite} The total number of iteration of the gradient descent algorithm.
+\item \code{residual} The residuals of the fitted quantile regression.
+\item \code{bandwidth} The bandwidth value.
 \item \code{tau} The desired quantile level of the regression problem.
 \item \code{kernel} The choice of kernel function.
+\item \code{n} The sample size.
+\item \code{p} The dimension.
 \item \code{perCI} The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
 \item \code{pivCI} The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
 \item \code{normCI} The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
