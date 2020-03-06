@@ -18,7 +18,7 @@ library(conquer)
 
 ## Common error messages
 
-Since `conquer` is currently still a source package, some compiling issues may appear when users install it. We apologize for the inconvenience and will submit it to CRAN soon.
+Since `conquer` is currently a source package, some compiling issues may appear when users install it. We will submit it to CRAN soon.
 
 First of all, to avoid most unexpected error messages, it is **strongly** recommended to update `R` to version >= 3.6.1.
 
@@ -30,7 +30,7 @@ Besides, since the library `conquer` is coded in `Rcpp` and `RcppArmadillo`, whe
 
 `conquer` should be working well after these steps. Some common error messages along with their solutions are collected below, and we'll keep updating them based on users' feedback:
 
-* Error: "...could not find build tools necessary to build FarmTest": Please see step 1 above.
+* Error: "...could not find build tools necessary to build conquer": Please see step 1 above.
 
 * Error: "library not found for -lgfortran/..": Please see step 2 above.
     
