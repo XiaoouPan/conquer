@@ -2,6 +2,7 @@
 
 export(conquer)
 importFrom(Rcpp,evalCpp)
+importFrom(matrixStats,colSds)
 importFrom(matrixStats,rowQuantiles)
 importFrom(matrixStats,rowSds)
 importFrom(stats,qnorm)
