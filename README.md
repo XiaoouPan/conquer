@@ -76,7 +76,8 @@ It takes 0.1955 seconds to run the standard quantile regression but only 0.0255 
 
 For a more comprehensive comparison, we repeat the above experiment with sample size *n* gradually increasing from 1,000 to 100,000, and dimension *p* is the integer part of *<span>&#8730;</span>n*. Figures below display the average estimation error along with elapsed time based on 20 Monte Carlo simulations.
 
-![Estimation](/est.png)
+![Estimation](/readme_est)
+![Time](/readme_time)
 
 ## Getting help
 
