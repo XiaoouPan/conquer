@@ -74,7 +74,9 @@ est.conquer = norm(fit.conquer$coeff - beta, "2")
 
 It takes 0.1955 seconds to run the standard quantile regression but only 0.0255 seconds to run conquer. In the meanwhile, the estimation error is 0.1799 for quantile regression and 0.1685 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory.
 
-For a more comprehensive comparison, we repeat the above experiment with sample size *n* gradually increasing from 1,000 to 100,000, and dimension *p* is the integer part of *<span>&#8730;</span> n*. Figures below display the average estimation error along with elapsed time based on 20 Monte Carlo simulations.
+For a more comprehensive comparison, we repeat the above experiment with sample size *n* gradually increasing from 1,000 to 100,000, and dimension *p* is the integer part of *<span>&#8730;</span>n*. Figures below display the average estimation error along with elapsed time based on 20 Monte Carlo simulations.
+
+![Estimation](/est.png)
 
 ## Getting help
 
