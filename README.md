@@ -40,7 +40,7 @@ The main functions of this library:
 
 ## Examples
 
-Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 70*, we generate data from a linear model *y<sub>i</sub> = &beta<sub>0</sub>; + <x<sub>i</sub>, &beta;> + &epsilon<sub>i</sub>;*, for *i = 1, 2, ... n*. Here we set *&beta<sub>0</sub>; = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *epsilon<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
+Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 70*, we generate data from a linear model *y<sub>i</sub> = &beta;<sub>0</sub> + <x<sub>i</sub>, &beta;> + &epsilon;<sub>i</sub>*, for *i = 1, 2, ... n*. Here we set *&beta;<sub>0</sub> = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *&epsilon;<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
 
 ```r
 library(MASS)
@@ -55,23 +55,24 @@ err = rt(n, 2)
 Y = cbind(1, X) %*% beta + err
 ```
 
-Then run both quantile regression using package `quantreg`, with a Frisch-Newton approach after preprocessing ([Portnoy and Koenker, 1997](https://projecteuclid.org/euclid.ss/1030037960)), and conquer (with Gaussian kernel) on the generated data.
+Then run both quantile regression using package `quantreg`, with a Frisch-Newton approach after preprocessing ([Portnoy and Koenker, 1997](https://projecteuclid.org/euclid.ss/1030037960)), and conquer (with Gaussian kernel) on the generated data. The quantile level *&tau;* is fixed to be *0.5*. 
 
 ```r
+tau = 0.5
 start = Sys.time()
 fit.qr = rq(Y ~ X, tau = tau, method = "pfn")
 end = Sys.time()
 time.qr = as.numeric(difftime(end, start, units = "secs"))
 est.qr = norm(as.numeric(fit.qr$coefficients) - beta, "2")
-    
+
 start = Sys.time()
-fit.conquer = smqrGauss(X, Y, tau)
+fit.conquer = conquer(X, Y, tau = tau)
 end = Sys.time()
 time.conquer = as.numeric(difftime(end, start, units = "secs"))
 est.conquer = norm(fit.conquer$coeff - beta, "2")
 ```
 
-
+It takes 0.1955 seconds to run the standard quantile regression but only 0.0255 seconds to run conquer. In the meanwhile, the estimation error is 0.1799 for quantile regression and 0.1685 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory.
 
 ## Getting help
 
