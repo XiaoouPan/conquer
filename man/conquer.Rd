@@ -27,13 +27,13 @@ conquer(
 
 \item{kernel}{(\strong{optional}) A character string specifying the kernel function. Choices include "Gaussian" (default), "uniform", "parabolic" or "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{((log(n) + p) / n)^0.4} without specific input or if the input value \eqn{< 0.05}.}
+\item{h}{(\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{max{((log(n) + p) / n)^0.4, 0.05}} without specific input or if the input value \eqn{< 0.05}.}
 
 \item{standardize}{(\strong{optional}) A logical flag. If \code{standardize = TRUE}, then the design matrix will be standardized so that each column has \eqn{0} mean and unit standard deviation.}
 
-\item{tol}{(\strong{optional}) Tolerance level of gradient descent.}
+\item{tol}{(\strong{optional}) Tolerance level of gradient descent. The gradient descent algorithm stops when the maximal entry of gradient \eqn{<} \code{tol}.}
 
-\item{iteMax}{(\strong{optional}) Maximum of iteration for gradient descent.}
+\item{iteMax}{(\strong{optional}) Maximal iteration number for gradient descent.}
 
 \item{ci}{(\strong{optional}) A logical flag. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
 

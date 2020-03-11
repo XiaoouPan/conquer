@@ -19,10 +19,10 @@ getNormCI = function(est, sd, z) {
 #' @param Y The response vector with length \eqn{n}.
 #' @param tau (\strong{optional}) The desired quantile level of the regression problem. The value must be in \eqn{(0, 1)}.
 #' @param kernel (\strong{optional}) A character string specifying the kernel function. Choices include "Gaussian" (default), "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{((log(n) + p) / n)^0.4} without specific input or if the input value \eqn{< 0.05}.
+#' @param h (\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{max{((log(n) + p) / n)^0.4, 0.05}} without specific input or if the input value \eqn{< 0.05}.
 #' @param standardize (\strong{optional}) A logical flag. If \code{standardize = TRUE}, then the design matrix will be standardized so that each column has \eqn{0} mean and unit standard deviation.
-#' @param tol (\strong{optional}) Tolerance level of gradient descent. 
-#' @param iteMax (\strong{optional}) Maximum of iteration for gradient descent. 
+#' @param tol (\strong{optional}) Tolerance level of gradient descent. The gradient descent algorithm stops when the maximal entry of gradient \eqn{<} \code{tol}.
+#' @param iteMax (\strong{optional}) Maximal iteration number for gradient descent. 
 #' @param ci (\strong{optional}) A logical flag. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
 #' @param alpha (\strong{optional}) The nominal noncoverage probability for the confidence intervals. The value must be in \eqn{(0, 1)}.
 #' @param B (\strong{optional}) The size of bootstrap sample.
