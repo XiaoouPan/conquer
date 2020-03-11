@@ -1,9 +1,8 @@
 #' @docType package
 #' @name conquer-package
 #' @title conquer: Convolution-type smoothed quantile regression
-#' @description Performs convolution-type smoothed quantile regression implemented with Barzilai-Borwein gradient descent.
-#' It achieves evidently fast computational speed while maintaining estimation accuracy, comparing with classic quantile regression.
-#' The package also includes statistical inference via multiplier bootstrap for quantile regression. 
+#' @description Fast and accurate conquer (convolution-type smoothed quantile regression) implemented with Barzilai-Borwein gradient descent with a Huber warm start.
+#' Statistical inference for conquer via multiplier bootstrap is also included. 
 #' @author Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, Wen-Xin Zhou <wez243@ucsd.edu>
 #' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 #' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
