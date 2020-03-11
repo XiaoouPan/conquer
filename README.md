@@ -38,6 +38,41 @@ The main functions of this library:
 
 * `conquer`: Convolution-type smoothed quantile regression
 
+## Examples
+
+Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 70*, we generate data from a linear model *y<sub>i</sub> = &beta<sub>0</sub>; + <x<sub>i</sub>, &beta;> + &epsilon<sub>i</sub>;*, for *i = 1, 2, ... n*. Here we set *&beta<sub>0</sub>; = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *epsilon<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
+
+```r
+library(MASS)
+library(quantreg)
+library(conquer)
+n = 5000
+p = 70
+beta = rep(1, p + 1)
+set.seed(2020)
+X = mvrnorm(n, rep(0, p), diag(p))
+err = rt(n, 2)
+Y = cbind(1, X) %*% beta + err
+```
+
+Then run both quantile regression using package `quantreg`, with a Frisch-Newton approach after preprocessing ([Portnoy and Koenker, 1997](https://projecteuclid.org/euclid.ss/1030037960)), and conquer (with Gaussian kernel) on the generated data.
+
+```r
+start = Sys.time()
+fit.qr = rq(Y ~ X, tau = tau, method = "pfn")
+end = Sys.time()
+time.qr = as.numeric(difftime(end, start, units = "secs"))
+est.qr = norm(as.numeric(fit.qr$coefficients) - beta, "2")
+    
+start = Sys.time()
+fit.conquer = smqrGauss(X, Y, tau)
+end = Sys.time()
+time.conquer = as.numeric(difftime(end, start, units = "secs"))
+est.conquer = norm(fit.conquer$coeff - beta, "2")
+```
+
+
+
 ## Getting help
 
 Help on the functions can be accessed by typing `?`, followed by function name at the `R` command prompt. 
@@ -72,3 +107,4 @@ Koenker, R. (2019). Package "quantreg", version 5.54. [CRAN](https://CRAN.R-proj
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 33-50. [Paper](https://www.jstor.org/stable/1913643?seq=1#metadata_info_tab_contents)
 
+Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise: Computability of squared-error versus absolute-error estimators. *Statist. Sci.* **12** 279–300. [Paper](https://projecteuclid.org/euclid.ss/1030037960)
