@@ -20,5 +20,9 @@ Koenker, R. Package "quantreg".
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 }
 \author{
-Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, Wen-Xin Zhou <wez243@ucsd.edu>
+Xiaoou Pan <xip024@ucsd.edu>
+
+Kean Ming Tan <keanming@umich.edu>
+
+Wen-Xin Zhou <wez243@ucsd.edu>
 }

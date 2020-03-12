@@ -27,22 +27,25 @@ getNormCI = function(est, sd, z) {
 #' @param alpha (\strong{optional}) The nominal noncoverage probability for the confidence intervals. The value must be in \eqn{(0, 1)}.
 #' @param B (\strong{optional}) The size of bootstrap sample.
 #' @return An object containing the following items will be returned:
-#' \itemize{
-#' \item \code{coeff} The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.
-#' \item \code{ite} The total number of iteration of the gradient descent algorithm.
-#' \item \code{residual} The residuals of the fitted quantile regression.
-#' \item \code{bandwidth} The bandwidth value.
-#' \item \code{tau} The desired quantile level of the regression problem.
-#' \item \code{kernel} The choice of kernel function.
-#' \item \code{n} The sample size.
-#' \item \code{p} The dimension.
-#' \item \code{perCI} The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
-#' \item \code{pivCI} The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
-#' \item \code{normCI} The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
+#' \describe{
+#' \item{\code{coeff}}{The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.}
+#' \item{\code{ite}}{The total number of iteration of the gradient descent algorithm.}
+#' \item{\code{residual}}{The residuals of the fitted quantile regression.}
+#' \item{\code{bandwidth}}{The bandwidth value.}
+#' \item{\code{tau}}{The desired quantile level of the regression problem.}
+#' \item{\code{kernel}}{The choice of kernel function.}
+#' \item{\code{n}}{The sample size.}
+#' \item{\code{p}}{The dimension.}
+#' \item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+#' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+#' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
 #' }
 #' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 #' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+#' @author Xiaoou Pan <xip024@ucsd.edu>
+#' @author Kean Ming Tan <keanming@umich.edu>
+#' @author Wen-Xin Zhou <wez243@ucsd.edu>
 #' @examples 
 #' n = 500; p = 10
 #' beta = rep(1, p)
@@ -108,8 +111,8 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
         rst = smqrTrianNsd(X, Y, tau, h, tol = tol, iteMax = iteMax)
       }
     }
-    return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = rst$residual, bandwidth = rst$bandwidth, tau = tau, kernel = kernel,
-                 n = nrow(X), p = ncol(X)))
+    return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, 
+                 kernel = kernel, n = nrow(X), p = ncol(X)))
   } else {
     rst = coeff = multiBeta = NULL
     if (kernel == "Gaussian") {
@@ -132,7 +135,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
     ciList = getPivCI(coeff, multiBeta, alpha)
     z = qnorm(1 - alpha / 2)
     normCI = as.matrix(getNormCI(coeff, rowSds(multiBeta), z))
-    return (list(coeff = as.numeric(coeff), ite = rst$ite, residual = rst$residual, bandwidth = rst$bandwidth, tau = tau, kernel = kernel, 
+    return (list(coeff = coeff, ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, kernel = kernel, 
                  n = nrow(X), p = ncol(X), perCI = as.matrix(ciList$perCI), pivCI = as.matrix(ciList$pivCI), normCI = normCI))
   }
 }

@@ -43,18 +43,18 @@ conquer(
 }
 \value{
 An object containing the following items will be returned:
-\itemize{
-\item \code{coeff} The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.
-\item \code{ite} The total number of iteration of the gradient descent algorithm.
-\item \code{residual} The residuals of the fitted quantile regression.
-\item \code{bandwidth} The bandwidth value.
-\item \code{tau} The desired quantile level of the regression problem.
-\item \code{kernel} The choice of kernel function.
-\item \code{n} The sample size.
-\item \code{p} The dimension.
-\item \code{perCI} The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
-\item \code{pivCI} The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
-\item \code{normCI} The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}
+\describe{
+\item{\code{coeff}}{The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.}
+\item{\code{ite}}{The total number of iteration of the gradient descent algorithm.}
+\item{\code{residual}}{The residuals of the fitted quantile regression.}
+\item{\code{bandwidth}}{The bandwidth value.}
+\item{\code{tau}}{The desired quantile level of the regression problem.}
+\item{\code{kernel}}{The choice of kernel function.}
+\item{\code{n}}{The sample size.}
+\item{\code{p}}{The dimension.}
+\item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+\item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+\item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
 }
 }
 \description{
@@ -86,4 +86,11 @@ Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IM
 Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+}
+\author{
+Xiaoou Pan <xip024@ucsd.edu>
+
+Kean Ming Tan <keanming@umich.edu>
+
+Wen-Xin Zhou <wez243@ucsd.edu>
 }
