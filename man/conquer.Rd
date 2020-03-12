@@ -4,61 +4,49 @@
 \alias{conquer}
 \title{Convolution-type smoothed quantile regression}
 \usage{
-conquer(
-  X,
-  Y,
-  tau = 0.5,
-  kernel = c("Gaussian", "uniform", "parabolic", "triangular"),
-  h = 0,
-  standardize = TRUE,
-  tol = 1e-05,
-  iteMax = 5000,
-  ci = FALSE,
-  alpha = 0.05,
-  B = 1000
-)
+conquer(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), h = 0, standardize = TRUE, tol = 1e-04, iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000)
 }
 \arguments{
-\item{X}{The design matrix with dimension \eqn{n} by \eqn{p}, where \eqn{p < n}.}
+\item{X}{A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.}
 
-\item{Y}{The response vector with length \eqn{n}.}
+\item{Y}{An \eqn{n}-dimensional response vector.}
 
-\item{tau}{(\strong{optional}) The desired quantile level of the regression problem. The value must be in \eqn{(0, 1)}.}
+\item{tau}{(\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.}
 
-\item{kernel}{(\strong{optional}) A character string specifying the kernel function. Choices include "Gaussian" (default), "uniform", "parabolic" or "triangular".}
+\item{kernel}{(\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Other choices are "Gaussian", "uniform", "parabolic" or "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth of kernel smoothing. The value will be \eqn{max{((log(n) + p) / n)^0.4, 0.05}} without specific input or if the input value \eqn{< 0.05}.}
+\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^0.4, 0.05}}. The default will be used if the input value is less than 0.05.}
 
-\item{standardize}{(\strong{optional}) A logical flag. If \code{standardize = TRUE}, then the design matrix will be standardized so that each column has \eqn{0} mean and unit standard deviation.}
+\item{standardize}{(\strong{optional}) A logical flag. Default is TRUE. If \code{standardize = TRUE}, then the design matrix will be standardized such that each column has mean zero and standard deviation one.}
 
-\item{tol}{(\strong{optional}) Tolerance level of gradient descent. The gradient descent algorithm stops when the maximal entry of gradient \eqn{<} \code{tol}.}
+\item{tol}{(\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-05.}
 
-\item{iteMax}{(\strong{optional}) Maximal iteration number for gradient descent.}
+\item{iteMax}{(\strong{optional}) Maximum number of iterations. Default is 5000.}
 
-\item{ci}{(\strong{optional}) A logical flag. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
+\item{ci}{(\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
 
-\item{alpha}{(\strong{optional}) The nominal noncoverage probability for the confidence intervals. The value must be in \eqn{(0, 1)}.}
+\item{alpha}{(\strong{optional}) The nominal level for (1-\eqn{alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.}
 
-\item{B}{(\strong{optional}) The size of bootstrap sample.}
+\item{B}{(\strong{optional}) The size of bootstrap samples. Default is 1000.}
 }
 \value{
 An object containing the following items will be returned:
 \describe{
-\item{\code{coeff}}{The estimated coefficients including the intercept. A \eqn{(p + 1)}-vector.}
-\item{\code{ite}}{The total number of iteration of the gradient descent algorithm.}
-\item{\code{residual}}{The residuals of the fitted quantile regression.}
-\item{\code{bandwidth}}{The bandwidth value.}
-\item{\code{tau}}{The desired quantile level of the regression problem.}
+\item{\code{coeff}}{A \eqn{(p + 1)}-vector of estimated quantile regression coefficients, including the intercept.}
+\item{\code{ite}}{The number of iterations of the gradient descent algorithm for convergence.}
+\item{\code{residual}}{The residuals of the quantile regression fit.}
+\item{\code{bandwidth}}{The value of smoothing bandwidth.}
+\item{\code{tau}}{The desired quantile level.}
 \item{\code{kernel}}{The choice of kernel function.}
 \item{\code{n}}{The sample size.}
-\item{\code{p}}{The dimension.}
-\item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+\item{\code{p}}{The dimension of the covariates.}
+\item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
 \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
 \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
 }
 }
 \description{
-Smoothed quantile regression with fast computation and accurate estimation.
+Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{alpha}) confidence intervals with multiplier bootstrap.
 }
 \examples{
 n = 500; p = 10
@@ -88,9 +76,5 @@ Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 }
 \author{
-Xiaoou Pan <xip024@ucsd.edu>
-
-Kean Ming Tan <keanming@umich.edu>
-
-Wen-Xin Zhou <wez243@ucsd.edu>
+Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, Wen-Xin Zhou <wez243@ucsd.edu>
 }

@@ -5,8 +5,7 @@
 \alias{conquer-package}
 \title{conquer: Convolution-type smoothed quantile regression}
 \description{
-Fast and accurate conquer (convolution-type smoothed quantile regression) implemented with Barzilai-Borwein gradient descent with a Huber warm start.
-Statistical inference for conquer via multiplier bootstrap is also included.
+Fast and accurate convolution-type smoothed quantile regression. Implemented using Barzilai-Borwein gradient descent with a Huber regression warm start. Construct confidence intervals for regression coefficients using multiplier bootstrap.
 }
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
@@ -20,9 +19,5 @@ Koenker, R. Package "quantreg".
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 }
 \author{
-Xiaoou Pan <xip024@ucsd.edu>
-
-Kean Ming Tan <keanming@umich.edu>
-
-Wen-Xin Zhou <wez243@ucsd.edu>
+Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, Wen-Xin Zhou <wez243@ucsd.edu>
 }
