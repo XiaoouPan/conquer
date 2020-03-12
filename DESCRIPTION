@@ -2,12 +2,11 @@ Package: conquer
 Type: Package
 Title: Convolution-type smoothed quantile regression
 Version: 1.0.0
-Date: 2020-03-06
+Date: 2020-03-012
 Authors@R: c(person("Xiaoou", "Pan", email = "xip024@ucsd.edu", role = c("aut", "cre")), 
              person("Kean Ming", "Tan", email = "keanming@umich.edu", role = "aut"),
              person("Wen-Xin", "Zhou", email = "wez243@ucsd.edu", role = "aut"))
-Description: Fast and accurate convolution-type smoothed quantile regression (conquer) implemented via Barzilai-Borwein gradient descent with a Huber warm start.
-             Statistical inference via multiplier bootstrap for conquer is also included.
+Description: Fast and accurate convolution-type smoothed quantile regression. Implemented using Barzilai-Borwein gradient descent with a Huber regression warm start. Construct confidence intervals for regression coefficients using multiplier bootstrap.
 Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8

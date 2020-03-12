@@ -4,7 +4,9 @@
 \alias{conquer}
 \title{Convolution-type smoothed quantile regression}
 \usage{
-conquer(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), h = 0, standardize = TRUE, tol = 1e-04, iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000)
+conquer(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), 
+h = 0, standardize = TRUE, tol = 1e-04, iteMax = 5000, 
+ci = FALSE, alpha = 0.05, B = 1000)
 }
 \arguments{
 \item{X}{A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.}
