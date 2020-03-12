@@ -5,9 +5,8 @@ Version: 1.0
 Date: 2020-03-06
 Author: Xiaoou Pan, Kean Ming Tan, Wen-Xin Zhou
 Maintainer: Xiaoou Pan <xip024@ucsd.edu>
-Description: Performs convolution-type smoothed quantile regression (conquer) implemented via Barzilai-Borwein gradient descent with Huber warm initialization.
-             It achieves evidently fast computational speed while maintaining estimation accuracy, comparing with classical quantile regression.
-             The package also includes statistical inference via multiplier bootstrap for conquer.
+Description: Fast and accurate convolution-type smoothed quantile regression (conquer) implemented via Barzilai-Borwein gradient descent with a Huber warm start.
+             Statistical inference via multiplier bootstrap for conquer is also included.
 Depends: R (>= 3.6.0)
 License: GPL-3
 Encoding: UTF-8
