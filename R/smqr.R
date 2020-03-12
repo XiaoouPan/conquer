@@ -15,9 +15,6 @@ getNormCI = function(est, sd, z) {
 
 #' @title Convolution-type smoothed quantile regression
 #' @description Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{alpha}) confidence intervals with multiplier bootstrap.
-#' @usage conquer(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), 
-#' h = 0, standardize = TRUE, tol = 1e-04, iteMax = 5000, 
-#' ci = FALSE, alpha = 0.05, B = 1000)
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
