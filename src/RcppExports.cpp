@@ -80,20 +80,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // updateGauss
-void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, const double n1, const double h1);
-RcppExport SEXP _conquer_updateGauss(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP nSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP n1SEXP, SEXP h1SEXP) {
+void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1);
+RcppExport SEXP _conquer_updateGauss(SEXP ZSEXP, SEXP resSEXP, SEXP derSEXP, SEXP gradSEXP, SEXP tauSEXP, SEXP n1SEXP, SEXP h1SEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type der(derSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type grad(gradSEXP);
-    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type n1(n1SEXP);
     Rcpp::traits::input_parameter< const double >::type h1(h1SEXP);
-    updateGauss(Z, res, der, grad, n, tau, h, n1, h1);
+    updateGauss(Z, res, der, grad, tau, n1, h1);
     return R_NilValue;
 END_RCPP
 }
@@ -444,7 +442,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_updateHuber", (DL_FUNC) &_conquer_updateHuber, 7},
     {"_conquer_huberReg", (DL_FUNC) &_conquer_huberReg, 11},
     {"_conquer_standardize", (DL_FUNC) &_conquer_standardize, 4},
-    {"_conquer_updateGauss", (DL_FUNC) &_conquer_updateGauss, 9},
+    {"_conquer_updateGauss", (DL_FUNC) &_conquer_updateGauss, 7},
     {"_conquer_updateUnif", (DL_FUNC) &_conquer_updateUnif, 9},
     {"_conquer_updatePara", (DL_FUNC) &_conquer_updatePara, 10},
     {"_conquer_updateTrian", (DL_FUNC) &_conquer_updateTrian, 10},

@@ -66,8 +66,7 @@ arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx, 
 }
 
 // [[Rcpp::export]]
-void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
-                 const double n1, const double h1) {
+void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
   der = arma::normcdf(-res * h1) - tau;
   grad = n1 * Z.t() * der;
 }
@@ -141,11 +140,11 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  updateGauss(Z, res, der, gradOld, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradOld, tau, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
   res -= Z * betaDiff;
-  updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradNew, tau, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -160,14 +159,13 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+    updateGauss(Z, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -187,11 +185,11 @@ Rcpp::List smqrGaussNsd(const arma::mat& X, const arma::vec& Y, const double tau
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
-  updateGauss(Z, res, der, gradOld, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradOld, tau, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
   res -= Z * betaDiff;
-  updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradNew, tau, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -206,12 +204,11 @@ Rcpp::List smqrGaussNsd(const arma::mat& X, const arma::vec& Y, const double tau
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+    updateGauss(Z, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -230,11 +227,11 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  updateGauss(Z, res, der, gradOld, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradOld, tau, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
   res -= Z * betaDiff;
-  updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+  updateGauss(Z, res, der, gradNew, tau, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -249,7 +246,7 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    updateGauss(Z, res, der, gradNew, n, tau, h, n1, h1);
+    updateGauss(Z, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
@@ -302,8 +299,7 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -346,8 +342,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& X, const arma::vec& Y, const double tau 
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -438,8 +433,7 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -482,8 +476,7 @@ Rcpp::List smqrParaNsd(const arma::mat& X, const arma::vec& Y, const double tau 
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -574,8 +567,7 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
   }
   beta.rows(1, p) /= sx;
   beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -618,8 +610,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& X, const arma::vec& Y, const double tau
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, 
-                            Rcpp::Named("bandwidth") = h);
+  return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
 // [[Rcpp::export]]
@@ -717,4 +708,3 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   }
   return rst;
 }
-

@@ -21,8 +21,8 @@ standardize <- function(X, mx, sx, p) {
     .Call('_conquer_standardize', PACKAGE = 'conquer', X, mx, sx, p)
 }
 
-updateGauss <- function(Z, res, der, grad, n, tau, h, n1, h1) {
-    invisible(.Call('_conquer_updateGauss', PACKAGE = 'conquer', Z, res, der, grad, n, tau, h, n1, h1))
+updateGauss <- function(Z, res, der, grad, tau, n1, h1) {
+    invisible(.Call('_conquer_updateGauss', PACKAGE = 'conquer', Z, res, der, grad, tau, n1, h1))
 }
 
 updateUnif <- function(Z, res, der, grad, n, tau, h, n1, h1) {
