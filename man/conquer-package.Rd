@@ -14,11 +14,15 @@ Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. 
 
 He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression: Fast computation and bootstrap inference. Preprint.
 
+Horowitz, J. L. (1998). Bootstrap methods for median regression models. Econometrica 66 1327–1351.
+
 Koenker, R. (2005). Quantile Regression. Cambridge University Press, Cambridge.
 
 Koenker, R. Package "quantreg".
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+
+Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA, to appear.
 }
 \author{
 Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
