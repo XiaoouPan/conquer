@@ -12,6 +12,8 @@ Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IM
 
 Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
 
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression: Fast computation and bootstrap inference. Preprint.
+
 Koenker, R. (2005). Quantile Regression. Cambridge University Press, Cambridge.
 
 Koenker, R. Package "quantreg".
@@ -19,5 +21,5 @@ Koenker, R. Package "quantreg".
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 }
 \author{
-Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, Wen-Xin Zhou <wez243@ucsd.edu>
+Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 }
