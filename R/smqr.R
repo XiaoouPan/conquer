@@ -13,7 +13,7 @@ getNormCI = function(est, sd, z) {
   return (cbind(lower, upper))
 }
 
-#' @title Convolution-type smoothed quantile regression
+#' @title Convolution-Type Smoothed Quantile Regression
 #' @description Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{alpha}) confidence intervals with multiplier bootstrap.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.

@@ -3,7 +3,7 @@
 \docType{package}
 \name{conquer-package}
 \alias{conquer-package}
-\title{conquer: Convolution-type smoothed quantile regression}
+\title{Conquer: Convolution-Type Smoothed Quantile Regression}
 \description{
 Fast and accurate convolution-type smoothed quantile regression. Implemented using Barzilai-Borwein gradient descent with a Huber regression warm start. Construct confidence intervals for regression coefficients using multiplier bootstrap.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/smqr.R
 \name{conquer}
 \alias{conquer}
-\title{Convolution-type smoothed quantile regression}
+\title{Convolution-Type Smoothed Quantile Regression}
 \usage{
 conquer(
   X,
