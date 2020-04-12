@@ -89,25 +89,25 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
       if (standardize) {
         rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
       } else {
-        rst = smqrGaussNsd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        rst = smqrGaussNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
       }
     } else if (kernel == "uniform") {
       if (standardize) {
         rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
       } else {
-        rst = smqrUnifNsd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        rst = smqrUnifNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
       }
     } else if (kernel == "parabolic") {
       if (standardize) {
         rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
       } else {
-        rst = smqrParaNsd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        rst = smqrParaNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
       }
     } else {
       if (standardize) {
         rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
       } else {
-        rst = smqrTrianNsd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        rst = smqrTrianNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
       }
     }
     return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, 

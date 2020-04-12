@@ -169,19 +169,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // smqrGaussNsd
-Rcpp::List smqrGaussNsd(const arma::mat& X, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
-RcppExport SEXP _conquer_smqrGaussNsd(SEXP XSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_smqrGaussNsd(SEXP ZSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(smqrGaussNsd(X, Y, tau, h, constTau, tol, iteMax));
+    rcpp_result_gen = Rcpp::wrap(smqrGaussNsd(Z, Y, tau, h, constTau, tol, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -221,19 +221,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // smqrUnifNsd
-Rcpp::List smqrUnifNsd(const arma::mat& X, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
-RcppExport SEXP _conquer_smqrUnifNsd(SEXP XSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_smqrUnifNsd(SEXP ZSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(smqrUnifNsd(X, Y, tau, h, constTau, tol, iteMax));
+    rcpp_result_gen = Rcpp::wrap(smqrUnifNsd(Z, Y, tau, h, constTau, tol, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -273,19 +273,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // smqrParaNsd
-Rcpp::List smqrParaNsd(const arma::mat& X, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
-RcppExport SEXP _conquer_smqrParaNsd(SEXP XSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_smqrParaNsd(SEXP ZSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(smqrParaNsd(X, Y, tau, h, constTau, tol, iteMax));
+    rcpp_result_gen = Rcpp::wrap(smqrParaNsd(Z, Y, tau, h, constTau, tol, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -325,19 +325,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // smqrTrianNsd
-Rcpp::List smqrTrianNsd(const arma::mat& X, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
-RcppExport SEXP _conquer_smqrTrianNsd(SEXP XSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_smqrTrianNsd(SEXP ZSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(smqrTrianNsd(X, Y, tau, h, constTau, tol, iteMax));
+    rcpp_result_gen = Rcpp::wrap(smqrTrianNsd(Z, Y, tau, h, constTau, tol, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -435,6 +435,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sqLossHoro
+double sqLossHoro(const arma::vec& u, const double tau, const double h);
+RcppExport SEXP _conquer_sqLossHoro(SEXP uSEXP, SEXP tauSEXP, SEXP hSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    rcpp_result_gen = Rcpp::wrap(sqLossHoro(u, tau, h));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sqDerHoro
+arma::vec sqDerHoro(const arma::vec& u, const double tau);
+RcppExport SEXP _conquer_sqDerHoro(SEXP uSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(sqDerHoro(u, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// smqrHoro
+Rcpp::List smqrHoro(const arma::mat& Z, const arma::vec& Y, const double tau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_smqrHoro(SEXP ZSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(smqrHoro(Z, Y, tau, tol, iteMax));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_conquer_sgn", (DL_FUNC) &_conquer_sgn, 1},
@@ -462,6 +502,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_smqrUnifInf", (DL_FUNC) &_conquer_smqrUnifInf, 9},
     {"_conquer_smqrParaInf", (DL_FUNC) &_conquer_smqrParaInf, 9},
     {"_conquer_smqrTrianInf", (DL_FUNC) &_conquer_smqrTrianInf, 9},
+    {"_conquer_sqLossHoro", (DL_FUNC) &_conquer_sqLossHoro, 3},
+    {"_conquer_sqDerHoro", (DL_FUNC) &_conquer_sqDerHoro, 2},
+    {"_conquer_smqrHoro", (DL_FUNC) &_conquer_smqrHoro, 5},
     {NULL, NULL, 0}
 };
 
