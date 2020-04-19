@@ -8,29 +8,11 @@ The `conquer` library performs fast and accurate convolution-type smoothed quant
 
 ## Installation
 
-`conquer` can be installed into `R` environment from the GitHub repository:
+`conquer` is available on [CRAN](https://CRAN.R-project.org/package=conquer), and it can be installed into `R` environment:
 
 ```r
-install.packages("devtools")
-devtools::install_github("XiaoouPan/conquer")
-library(conquer)
+install.packages("conquer")
 ```
-
-## Common error messages
-
-Since `conquer` is currently a source package, some compiling issues may appear when users install it. We will submit it to CRAN soon.
-
-First of all, to avoid most error messages, it is **strongly** recommended to update `R` to version >= 3.6.1.
-
-Besides, since the library `conquer` is coded in `Rcpp` and `RcppArmadillo`, when you first install it, the instructions in [this page](https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/) may be very useful. Three components to the `R 3.6.x` toolchain need to be installed following the aforementioned instructions.
-
-1. Rtools for Windows OS or XCode Command Line Tools for Mac OS. 
-
-2. The `clang7` binary from the [Mac OS tools page](https://cran.r-project.org/bin/macosx/tools/).
-
-3. The `gfortran6.1` binary from the [Mac OS tools page](https://cran.r-project.org/bin/macosx/tools/).
-
-`conquer` should be working well after these steps. 
 
 ## Main function
 
@@ -102,7 +84,7 @@ Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *I
 
 Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. *J. Bus. Econ. Statist.*, in press. [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression: Fast computation and bootstrap inference. Preprint.
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression for large-scale inference. Preprint.
 
 Horowitz, J. L. (1998). Bootstrap methods for median regression models. *Econometrica* **66** 1327–1351. [Paper](https://www.jstor.org/stable/2999619)
 
