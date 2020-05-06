@@ -82,7 +82,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
   if (min(colSds(X)) == 0) {
     stop("Error: at least one column of X is constant.")
   }
-  if (checkSing && rankMatrix(X)[1] < p) {
+  if (checkSing && rankMatrix(X)[1] < ncol(X)) {
     stop("Error: the design matrix X is singular.")
   }
   kernel = match.arg(kernel)
