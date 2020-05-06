@@ -20,7 +20,7 @@ getNormCI = function(est, sd, z) {
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Other choices are "Gaussian", "uniform", "parabolic" or "triangular".
 #' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(((log(n) + p) / n)^{0.4}, 0.05)}. The default will be used if the input value is less than 0.05.
-#' @param standardize (\strong{optional}) A logical flag. Default is TRUE. If \code{standardize = TRUE}, then the design matrix will be standardized such that each column has mean zero and standard deviation one.
+#' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
 #' @param ci (\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
@@ -65,7 +65,7 @@ getNormCI = function(est, sd, z) {
 #' ci.piv = fit$pivCI
 #' ci.norm = fit$normCI
 #' @export 
-conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), h = 0.0, standardize = TRUE, tol = 0.0001, 
+conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
                    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
@@ -82,33 +82,20 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
   if (min(colSds(X)) == 0) {
     stop("Error: at least one column of X is constant.")
   }
+  if (checkSing && rankMatrix(X)[1] < p) {
+    stop("Error: the design matrix X is singular.")
+  }
   kernel = match.arg(kernel)
   if (!ci) {
     rst = NULL
     if (kernel == "Gaussian") {
-      if (standardize) {
-        rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      } else {
-        rst = smqrGaussNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
-      }
+      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
     } else if (kernel == "uniform") {
-      if (standardize) {
-        rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      } else {
-        rst = smqrUnifNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
-      }
+      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
     } else if (kernel == "parabolic") {
-      if (standardize) {
-        rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      } else {
-        rst = smqrParaNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
-      }
+      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
     } else {
-      if (standardize) {
-        rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      } else {
-        rst = smqrTrianNsd(cbind(1, X), Y, tau, h, tol = tol, iteMax = iteMax)
-      }
+      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
     }
     return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, 
                  kernel = kernel, n = nrow(X), p = ncol(X)))

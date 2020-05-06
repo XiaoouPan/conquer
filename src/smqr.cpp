@@ -122,7 +122,7 @@ void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -134,6 +134,8 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
@@ -164,7 +166,7 @@ Rcpp::List smqrGauss(const arma::mat& X, const arma::vec& Y, const double tau = 
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
@@ -211,7 +213,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 }
 
 // [[Rcpp::export]]
-arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -222,6 +224,8 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
@@ -250,12 +254,12 @@ arma::vec smqrGaussIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -267,6 +271,8 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
@@ -297,7 +303,7 @@ Rcpp::List smqrUnif(const arma::mat& X, const arma::vec& Y, const double tau = 0
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
@@ -344,7 +350,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 }
 
 // [[Rcpp::export]]
-arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -355,6 +361,8 @@ arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
@@ -383,12 +391,12 @@ arma::vec smqrUnifIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
   
 // [[Rcpp::export]]
-Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -400,6 +408,8 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
@@ -430,7 +440,7 @@ Rcpp::List smqrPara(const arma::mat& X, const arma::vec& Y, const double tau = 0
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
@@ -477,7 +487,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 }
 
 // [[Rcpp::export]]
-arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -488,6 +498,8 @@ arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
@@ -516,12 +528,12 @@ arma::vec smqrParaIni(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -533,6 +545,8 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
@@ -563,7 +577,7 @@ Rcpp::List smqrTrian(const arma::mat& X, const arma::vec& Y, const double tau = 
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
 
@@ -610,7 +624,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 }
 
 // [[Rcpp::export]]
-arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -621,6 +635,8 @@ arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   arma::rowvec mx = arma::mean(X, 0);
   arma::vec sx = arma::stddev(X, 0, 0).t();
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx, p));
+  double my = arma::mean(Y);
+  Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
@@ -649,7 +665,7 @@ arma::vec smqrTrianIni(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     ite++;
   }
   beta.rows(1, p) /= sx;
-  beta(0) -= arma::as_scalar(mx * beta.rows(1, p));
+  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return beta;
 }
 
