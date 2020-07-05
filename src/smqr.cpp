@@ -769,6 +769,17 @@ Rcpp::List smqrHoro(const arma::mat& Z, const arma::vec& Y, const double tau = 0
 }
 
 // [[Rcpp::export]]
+arma::mat hoHessGauss(const arma::mat& X, const arma::vec& resH) {
+  arma::vec diagHes = 0.5 * (3 - resH * resH) * arma::normpdf(resH);
+  return X.t() * arma::diagmat(diagHes) * X;
+}
+
+// [[Rcpp::export]]
+arma::vec hoGradGauss(const arma::mat& X, const arma::vec& resH, const double tau) {
+  return X.t() * (0.5 * resH * arma::normpdf(resH) + arma::normcdf(resH) + tau - 1);
+}
+
+// [[Rcpp::export]]
 Rcpp::List osSmqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
@@ -812,9 +823,10 @@ Rcpp::List osSmqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, 
     gradDiff = gradNew - gradOld;
     ite++;
   }
+  arma::mat hoHess = hoHessGauss(Z, res * h1);
+  arma::vec hoGrad = hoGradGauss(Z, res * h1, tau);
+  beta += arma::solve(hoHess, hoGrad * h);
   beta.rows(1, p) /= sx;
   beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
-
-
