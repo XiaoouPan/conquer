@@ -770,7 +770,7 @@ Rcpp::List smqrHoro(const arma::mat& Z, const arma::vec& Y, const double tau = 0
 
 // [[Rcpp::export]]
 arma::mat hoHessGauss(const arma::mat& X, const arma::vec& resH) {
-  arma::vec diagHes = 0.5 * (3 - resH * resH) % arma::normpdf(resH);
+  arma::vec diagHes = 0.5 * (3 - resH % resH) % arma::normpdf(resH);
   return X.t() * arma::diagmat(diagHes) * X;
 }
 
