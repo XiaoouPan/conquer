@@ -823,10 +823,14 @@ Rcpp::List osSmqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, 
     gradDiff = gradNew - gradOld;
     ite++;
   }
-  arma::mat hoHess = hoHessGauss(Z, res * h1);
-  arma::vec hoGrad = hoGradGauss(Z, res * h1, tau);
-  beta += arma::solve(hoHess, hoGrad * h);
   beta.rows(1, p) /= sx;
   beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
+  Y += my;
+  Z = arma::join_rows(arma::ones(n), X);
+  res = Y - Z * beta;
+  h = std::max(std::pow((std::log(n) + p) / n, 2.0 / 9), 0.05);
+  arma::mat hoHess = hoHessGauss(Z, res / h);
+  arma::vec hoGrad = hoGradGauss(Z, res / h, tau);
+  beta += arma::solve(hoHess, hoGrad * h);
   return Rcpp::List::create(Rcpp::Named("coeff") = beta, Rcpp::Named("ite") = ite, Rcpp::Named("residual") = res, Rcpp::Named("bandwidth") = h);
 }
