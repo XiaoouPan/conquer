@@ -19,6 +19,7 @@ install.packages("conquer")
 A collection of error / warning messages we received from issues or e-mails and their solutions:
 
 * error: ‘quantile’ is not a member of ‘arma’.
+
 Solution: 
 
 
