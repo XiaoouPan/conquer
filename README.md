@@ -18,9 +18,9 @@ install.packages("conquer")
 
 A collection of error / warning messages we received from issues or e-mails and their solutions:
 
-* error: 'quantile' is not a member of 'arma’.
+* Error: smqr.cpp: 'quantile' is not a member of 'arma’. **Solution**: 'quantile' function is added into RcppArmadillo version 0.9.850.1.0 (2020-02-09), so installing / updating the library `conquer` will fix this issue.
 
-Solution: 
+* Error: unable to load shared object.. Symbol not found: _EXTPTR_PTR. **Solution**: This `_EXTPTR_PTR` issue is common in some specific versions of `R` when we load Rcpp-based libraries. Upgrading R to 4.0.2 will solve it.
 
 
 ## Examples
