@@ -113,3 +113,15 @@ smqrHoro <- function(Z, Y, tau = 0.5, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrHoro', PACKAGE = 'conquer', Z, Y, tau, tol, iteMax)
 }
 
+hoHessGauss <- function(X, resH) {
+    .Call('_conquer_hoHessGauss', PACKAGE = 'conquer', X, resH)
+}
+
+hoGradGauss <- function(X, resH, tau) {
+    .Call('_conquer_hoGradGauss', PACKAGE = 'conquer', X, resH, tau)
+}
+
+osSmqrGauss <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_osSmqrGauss', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
+}
+

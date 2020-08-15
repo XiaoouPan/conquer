@@ -475,6 +475,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hoHessGauss
+arma::mat hoHessGauss(const arma::mat& X, const arma::vec& resH);
+RcppExport SEXP _conquer_hoHessGauss(SEXP XSEXP, SEXP resHSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type resH(resHSEXP);
+    rcpp_result_gen = Rcpp::wrap(hoHessGauss(X, resH));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hoGradGauss
+arma::vec hoGradGauss(const arma::mat& X, const arma::vec& resH, const double tau);
+RcppExport SEXP _conquer_hoGradGauss(SEXP XSEXP, SEXP resHSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type resH(resHSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(hoGradGauss(X, resH, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// osSmqrGauss
+Rcpp::List osSmqrGauss(const arma::mat& X, arma::vec Y, const double tau, double h, const double constTau, const double tol, const int iteMax);
+RcppExport SEXP _conquer_osSmqrGauss(SEXP XSEXP, SEXP YSEXP, SEXP tauSEXP, SEXP hSEXP, SEXP constTauSEXP, SEXP tolSEXP, SEXP iteMaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type constTau(constTauSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(osSmqrGauss(X, Y, tau, h, constTau, tol, iteMax));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_conquer_sgn", (DL_FUNC) &_conquer_sgn, 1},
@@ -505,6 +547,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_sqLossHoro", (DL_FUNC) &_conquer_sqLossHoro, 3},
     {"_conquer_sqDerHoro", (DL_FUNC) &_conquer_sqDerHoro, 2},
     {"_conquer_smqrHoro", (DL_FUNC) &_conquer_smqrHoro, 5},
+    {"_conquer_hoHessGauss", (DL_FUNC) &_conquer_hoHessGauss, 2},
+    {"_conquer_hoGradGauss", (DL_FUNC) &_conquer_hoGradGauss, 3},
+    {"_conquer_osSmqrGauss", (DL_FUNC) &_conquer_osSmqrGauss, 7},
     {NULL, NULL, 0}
 };
 
