@@ -101,27 +101,3 @@ smqrTrianInf <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001
     .Call('_conquer_smqrTrianInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
 }
 
-sqLossHoro <- function(u, tau, h) {
-    .Call('_conquer_sqLossHoro', PACKAGE = 'conquer', u, tau, h)
-}
-
-sqDerHoro <- function(u, tau) {
-    .Call('_conquer_sqDerHoro', PACKAGE = 'conquer', u, tau)
-}
-
-smqrHoro <- function(Z, Y, tau = 0.5, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_smqrHoro', PACKAGE = 'conquer', Z, Y, tau, tol, iteMax)
-}
-
-hoHessGauss <- function(X, resH) {
-    .Call('_conquer_hoHessGauss', PACKAGE = 'conquer', X, resH)
-}
-
-hoGradGauss <- function(X, resH, tau) {
-    .Call('_conquer_hoGradGauss', PACKAGE = 'conquer', X, resH, tau)
-}
-
-osSmqrGauss <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_osSmqrGauss', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
-}
-
