@@ -743,10 +743,8 @@ arma::mat smqrGaussInfNew(const arma::mat& X, const arma::vec& Y, const arma::ve
   arma::mat rst(p + 1, B);
   double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   for (int b = 0; b < B; b++) {
-    arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
-    arma::mat mbX = X.rows(idx);
-    arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrGaussIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    arma::vec weight = 2 * arma::randu(n);
+    rst.col(b) = smqrGaussIniNew(X, Y, weight, betaHat, p, tau, h, tol, iteMax);
   }
   return rst;
 }
