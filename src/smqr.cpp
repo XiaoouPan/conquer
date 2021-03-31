@@ -72,6 +72,14 @@ void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 }
 
 // [[Rcpp::export]]
+void updateGaussNew(const arma::mat& Z, const arma::vec& weight, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, 
+                    const double n1, const double h1) {
+  der = weight % (arma::normcdf(-res * h1) - tau);
+  grad = n1 * Z.t() * der;
+}
+
+
+// [[Rcpp::export]]
 void updateUnif(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
                 const double n1, const double h1) {
   for (int i = 0; i < n; i++) {
@@ -259,8 +267,8 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 }
 
 // [[Rcpp::export]]
-arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
-                          const double tol = 0.0001, const int iteMax = 5000) {
+arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& weight, const arma::vec& betaHat, const int p, const double tau = 0.5, 
+                          double h = 0.0, const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -276,11 +284,11 @@ arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& beta
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  updateGauss(Z, res, der, gradOld, tau, n1, h1);
+  updateGaussNew(Z, weight, res, der, gradOld, tau, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
   res -= Z * betaDiff;
-  updateGauss(Z, res, der, gradNew, tau, n1, h1);
+  updateGaussNew(Z, weight, res, der, gradNew, tau, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -295,7 +303,7 @@ arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& beta
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    updateGauss(Z, res, der, gradNew, tau, n1, h1);
+    updateGaussNew(Z, weight, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
