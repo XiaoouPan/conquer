@@ -723,6 +723,64 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
   return beta;
 }
 
+// Codes for Horowitz's method
+// [[Rcpp::export]]
+arma::vec sqDerHoro(const arma::vec& u, const double tau) {
+  return arma::normcdf(u) + u % arma::normpdf(u) - tau;
+}
+
+// [[Rcpp::export]]
+double sqLossHoro(const arma::vec& u, const double tau, const double h) {
+  return arma::mean(tau * u - u % arma::normcdf(-u / h));
+}
+
+// [[Rcpp::export]]
+arma::mat stand(arma::mat X, const int p) {
+  for (int i = 0; i < p; i++) {
+    X.col(i) = (X.col(i) - arma::mean(X.col(i))) / arma::stddev(X.col(i));
+  }
+  return X;
+}
+
+// [[Rcpp::export]]
+Rcpp::List smqrHoro(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double tol = 0.0001, const int iteMax = 5000) {
+  int n = X.n_rows;
+  int p = X.n_cols;
+  double h = std::pow((std::log(n) + p) / n, 2.0 / 5);
+  arma::mat Z(n, p + 1);
+  Z.cols(1, p) = stand(X, p);
+  Z.col(0) = arma::ones(n);
+  double alpha = 1.0;
+  arma::vec betaOld = arma::mvnrnd(arma::zeros(p + 1), arma::eye(p + 1, p + 1) / (p + 1), 1);
+  arma::vec resOld = Y - Z * betaOld;
+  double lossOld = sqLossHoro(resOld, tau, h);
+  arma::vec grad = Z.t() * sqDerHoro(-resOld / h, tau) / n;
+  arma::vec betaNew = betaOld - alpha * grad;
+  arma::vec resNew = Y - Z * betaNew;
+  double lossNew = sqLossHoro(resNew, tau, h);
+  int ite = 1;
+  while (std::abs(lossNew - lossOld) > tol && arma::norm(betaNew - betaOld, 2) > tol && ite <= iteMax) {
+    resOld = resNew;
+    grad = Z.t() * sqDerHoro(-resOld / h, tau) / n;
+    betaOld = betaNew;
+    lossOld = lossNew;
+    betaNew = betaOld - alpha * grad;
+    resNew = resOld + alpha * Z * grad;
+    lossNew = sqLossHoro(resNew, tau, h);
+    if (lossNew > lossOld - alpha * arma::as_scalar(grad.t() * grad) / 2) {
+      alpha *= 0.8;
+      betaNew = betaOld - alpha * grad;
+      resNew = resOld + alpha * Z * grad;
+      lossNew = sqLossHoro(resNew, tau, h);
+    }
+    ite++;
+  }
+  betaNew.rows(1, p) /= arma::stddev(X, 0, 0).t();
+  betaNew(0) -= arma::as_scalar(arma::mean(X, 0) * betaNew.rows(1, p));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaNew, Rcpp::Named("ite") = ite);
+}
+
+// Codes for bootstrap inference
 // [[Rcpp::export]]
 arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
