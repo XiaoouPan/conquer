@@ -746,20 +746,20 @@ arma::mat stand(arma::mat X, const int p) {
 Rcpp::List smqrHoro(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double tol = 0.0001, const int iteMax = 5000) {
   int n = X.n_rows;
   int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 2.0 / 5);
+  double h = std::pow((std::log(n) + p) / n, 0.4);
   arma::mat Z(n, p + 1);
   Z.cols(1, p) = stand(X, p);
   Z.col(0) = arma::ones(n);
   double alpha = 1.0;
-  arma::vec betaOld = arma::mvnrnd(arma::zeros(p + 1), arma::eye(p + 1, p + 1) / (p + 1), 1);
-  arma::vec resOld = Y - Z * betaOld;
+  arma::vec betaOld = arma::zeros(p + 1);
+  arma::vec resOld = Y;
   double lossOld = sqLossHoro(resOld, tau, h);
   arma::vec grad = Z.t() * sqDerHoro(-resOld / h, tau) / n;
   arma::vec betaNew = betaOld - alpha * grad;
   arma::vec resNew = Y - Z * betaNew;
   double lossNew = sqLossHoro(resNew, tau, h);
   int ite = 1;
-  while (std::abs(lossNew - lossOld) > tol && arma::norm(betaNew - betaOld, 2) > tol && ite <= iteMax) {
+  while (arma::norm(grad, "inf") > tol && ite <= iteMax) {
     resOld = resNew;
     grad = Z.t() * sqDerHoro(-resOld / h, tau) / n;
     betaOld = betaNew;
