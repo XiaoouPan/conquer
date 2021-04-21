@@ -743,10 +743,12 @@ arma::mat stand(arma::mat X, const int p) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrHoro(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, const double tol = 0.0001, const int iteMax = 5000) {
+Rcpp::List smqrHoro(const arma::mat& X, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double tol = 0.0001, const int iteMax = 5000) {
   int n = X.n_rows;
   int p = X.n_cols;
-  double h = std::pow((std::log(n) + p) / n, 0.4);
+  if (h <= 0.05) {
+    h = std::pow((std::log(n) + p) / n, 0.4);
+  }
   arma::mat Z(n, p + 1);
   Z.cols(1, p) = stand(X, p);
   Z.col(0) = arma::ones(n);
