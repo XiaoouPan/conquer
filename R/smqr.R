@@ -104,19 +104,19 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
     if (kernel == "Gaussian") {
       rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
-      multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), tau, B, tol, iteMax)
+      multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
     } else if (kernel == "uniform") {
       rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
-      multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), tau, B, tol, iteMax)
+      multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
     } else if (kernel == "parabolic") {
       rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
-      multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), tau, B, tol, iteMax)
+      multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
     } else {
       rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
-      multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), tau, B, tol, iteMax)
+      multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
     }
     ciList = getPivCI(coeff, multiBeta, alpha)
     z = qnorm(1 - alpha / 2)

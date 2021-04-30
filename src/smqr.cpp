@@ -784,10 +784,12 @@ Rcpp::List smqrHoro(const arma::mat& X, const arma::vec& Y, const double tau = 0
 
 // Codes for bootstrap inference
 // [[Rcpp::export]]
-arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
+arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
   for (int b = 0; b < B; b++) {
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
@@ -810,10 +812,12 @@ arma::mat smqrGaussInfNew(const arma::mat& X, const arma::vec& Y, const arma::ve
 }
 
 // [[Rcpp::export]]
-arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
+arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
   for (int b = 0; b < B; b++) {
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
@@ -824,10 +828,12 @@ arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 }
 
 // [[Rcpp::export]]
-arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
+arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
   for (int b = 0; b < B; b++) {
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
@@ -838,10 +844,12 @@ arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 }
 
 // [[Rcpp::export]]
-arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
+arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
   for (int b = 0; b < B; b++) {
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
