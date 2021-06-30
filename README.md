@@ -16,7 +16,7 @@ install.packages("conquer")
 
 ## Common errors or warnings
 
-A collection of error / warning messages we received from issues or e-mails and their solutions:
+A collection of error / warning messages and their solutions:
 
 * Error: smqr.cpp: 'quantile' is not a member of 'arma’. **Solution**: 'quantile' function was added into `RcppArmadillo` version 0.9.850.1.0 (2020-02-09), so reinstalling / updating the library `RcppArmadillo` will fix this issue.
 
