@@ -29,12 +29,12 @@ void updateHuber(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 // [[Rcpp::export]]
 arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, const int n, const int p, 
                    const double n1, const double tol = 0.0001, const double constTau = 1.345, const int iteMax = 5000) {
-  double tau = constTau * mad(Y);
-  updateHuber(Z, Y, der, gradOld, n, tau, n1);
+  double rob = constTau * mad(Y);
+  updateHuber(Z, Y, der, gradOld, n, rob, n1);
   arma::vec beta = -gradOld, betaDiff = -gradOld;
   arma::vec res = Y - Z * beta;
-  tau = constTau * mad(res);
-  updateHuber(Z, res, der, gradNew, n, tau, n1);
+  rob = constTau * mad(res);
+  updateHuber(Z, res, der, gradNew, n, rob, n1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -49,8 +49,8 @@ arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma:
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    tau = constTau * mad(res);
-    updateHuber(Z, res, der, gradNew, n, tau, n1);
+    rob = constTau * mad(res);
+    updateHuber(Z, res, der, gradNew, n, rob, n1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
