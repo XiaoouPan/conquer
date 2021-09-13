@@ -4,7 +4,7 @@
 
 ## Description
 
-The `conquer` library performs fast and accurate convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2019](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177), [He et al., 2020](https://www.math.ucsd.edu/~xip024/Papers/sqr_main.pdf)) implemented via Barzilai-Borwein gradient descent ([Barzilai and Borwein, 1988](https://doi.org/10.1093/imanum/8.1.141)) with a Huber regression warm start. The package can also construct confidence intervals for regression coefficients using multiplier bootstrap.
+The `conquer` library performs fast and accurate convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2019](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177), [He et al., 2021](https://doi.org/10.1016/j.jeconom.2021.07.010)) implemented via Barzilai-Borwein gradient descent ([Barzilai and Borwein, 1988](https://doi.org/10.1093/imanum/8.1.141)) with a Huber regression warm start. The package can also construct confidence intervals for regression coefficients using multiplier bootstrap.
 
 ## Installation
 
