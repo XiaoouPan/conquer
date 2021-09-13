@@ -83,11 +83,11 @@ Xiaoou Pan <xip024@ucsd.edu>
 
 ## References
 
-Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *IMA J. Numer. Anal.* **8** 141–148. [Paper](https://doi.org/10.1093/imanum/8.1.141)
+Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *IMA J. Numer. Anal.* **8** 141-148. [Paper](https://doi.org/10.1093/imanum/8.1.141)
 
-Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. *J. Bus. Econ. Statist.*, in press. [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
+Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. *J. Bus. Econ. Statist.* **39** 338-357, [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://www.math.ucsd.edu/~xip024/Papers/sqr_main.pdf)
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://doi.org/10.1016/j.jeconom.2021.07.010)
 
 Horowitz, J. L. (1998). Bootstrap methods for median regression models. *Econometrica* **66** 1327–1351. [Paper](https://www.jstor.org/stable/2999619)
 
