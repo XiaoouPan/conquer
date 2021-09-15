@@ -83,6 +83,11 @@ void updateGaussWeight(const arma::mat& Z, const arma::vec& weight, const arma::
   grad = n1 * Z.t() * der;
 }
 
+// [[Rcpp::export]]
+void updateLogistic(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
+  der = arma::normcdf(-res * h1) - tau;
+  grad = n1 * Z.t() * der;
+}
 
 // [[Rcpp::export]]
 void updateUnif(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
