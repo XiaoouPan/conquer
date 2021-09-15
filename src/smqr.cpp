@@ -323,7 +323,7 @@ arma::vec smqrGaussIniWeight(const arma::mat& X, arma::vec Y, const arma::vec& w
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrLogisitc(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -895,6 +895,22 @@ arma::mat smqrGaussInfWeight(const arma::mat& X, const arma::vec& Y, const arma:
   for (int b = 0; b < B; b++) {
     arma::vec weight = 2 * arma::randu(n);
     rst.col(b) = smqrGaussIniWeight(X, Y, weight, betaHat, p, tau, h, tol, iteMax);
+  }
+  return rst;
+}
+
+// [[Rcpp::export]]
+arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+                          const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+  arma::mat rst(p + 1, B);
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  for (int b = 0; b < B; b++) {
+    arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
+    arma::mat mbX = X.rows(idx);
+    arma::mat mbY = Y.rows(idx);
+    rst.col(b) = smqrLogisticIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
   }
   return rst;
 }
