@@ -69,7 +69,7 @@ For example, `?conquer` will present a detailed documentation with inputs, outpu
 
 GPL-3.0
 
-##  System requirements 
+## System requirements 
 
 C++11
 
