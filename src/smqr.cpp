@@ -77,8 +77,8 @@ void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 }
 
 // [[Rcpp::export]]
-void updateGaussNew(const arma::mat& Z, const arma::vec& weight, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, 
-                    const double n1, const double h1) {
+void updateGaussWeight(const arma::mat& Z, const arma::vec& weight, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, 
+                       const double n1, const double h1) {
   der = weight % (arma::normcdf(-res * h1) - tau);
   grad = n1 * Z.t() * der;
 }
@@ -272,8 +272,8 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 }
 
 // [[Rcpp::export]]
-arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& weight, const arma::vec& betaHat, const int p, const double tau = 0.5, 
-                          double h = 0.0, const double tol = 0.0001, const int iteMax = 5000) {
+arma::vec smqrGaussIniWeight(const arma::mat& X, arma::vec Y, const arma::vec& weight, const arma::vec& betaHat, const int p, const double tau = 0.5, 
+                             double h = 0.0, const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -289,11 +289,11 @@ arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& weig
   arma::vec gradOld(p + 1), gradNew(p + 1);
   arma::vec beta = betaHat;
   arma::vec res = Y - Z * beta;
-  updateGaussNew(Z, weight, res, der, gradOld, tau, n1, h1);
+  updateGaussWeight(Z, weight, res, der, gradOld, tau, n1, h1);
   beta -= gradOld;
   arma::vec betaDiff = -gradOld;
   res -= Z * betaDiff;
-  updateGaussNew(Z, weight, res, der, gradNew, tau, n1, h1);
+  updateGaussWeight(Z, weight, res, der, gradNew, tau, n1, h1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -308,7 +308,7 @@ arma::vec smqrGaussIniNew(const arma::mat& X, arma::vec Y, const arma::vec& weig
     betaDiff = -alpha * gradNew;
     beta += betaDiff;
     res -= Z * betaDiff;
-    updateGaussNew(Z, weight, res, der, gradNew, tau, n1, h1);
+    updateGaussWeight(Z, weight, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
@@ -746,13 +746,13 @@ arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
 }
 
 // [[Rcpp::export]]
-arma::mat smqrGaussInfNew(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
-                          const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+arma::mat smqrGaussInfWeight(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, const double tau = 0.5, 
+                             const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   double h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   for (int b = 0; b < B; b++) {
     arma::vec weight = 2 * arma::randu(n);
-    rst.col(b) = smqrGaussIniNew(X, Y, weight, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrGaussIniWeight(X, Y, weight, betaHat, p, tau, h, tol, iteMax);
   }
   return rst;
 }
