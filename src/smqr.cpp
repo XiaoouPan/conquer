@@ -15,27 +15,31 @@ double mad(const arma::vec& x) {
 
 // Asymmetric huber regression adjusted to quantile tau for initialization 
 // [[Rcpp::export]]
-void updateHuber(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double n1) {
+void updateHuber(const arma::mat& Z, const arma::vec& res, const double tau, arma::vec& der, arma::vec& grad, const int n, const double rob, const double n1) {
   for (int i = 0; i < n; i++) {
     double cur = res(i);
-    if (std::abs(cur) <= tau) {
-      der(i) = -cur;
+    if (cur > rob) {
+      der(i) = -tau * rob;
+    } else if (cur > 0) {
+      der(i) = -tau * cur;
+    } else if (cur > -rob) {
+      der(i) = (tau - 1) * cur;
     } else {
-      der(i) = -tau * sgn(cur);
+      der(i) = (1 - tau) * rob;
     }
   }
   grad = n1 * Z.t() * der;
 }
 
 // [[Rcpp::export]]
-arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, const int n, const int p, 
+arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const double tau, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, const int n, const int p, 
                    const double n1, const double tol = 0.0001, const double constTau = 1.345, const int iteMax = 5000) {
   double rob = constTau * mad(Y);
-  updateHuber(Z, Y, der, gradOld, n, rob, n1);
+  updateHuber(Z, Y, tau, der, gradOld, n, rob, n1);
   arma::vec beta = -gradOld, betaDiff = -gradOld;
   arma::vec res = Y - Z * beta;
   rob = constTau * mad(res);
-  updateHuber(Z, res, der, gradNew, n, rob, n1);
+  updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
   arma::vec gradDiff = gradNew - gradOld;
   int ite = 1;
   while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
@@ -51,7 +55,7 @@ arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma:
     beta += betaDiff;
     res -= Z * betaDiff;
     rob = constTau * mad(res);
-    updateHuber(Z, res, der, gradNew, n, rob, n1);
+    updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
