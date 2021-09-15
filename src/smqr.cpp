@@ -13,6 +13,7 @@ double mad(const arma::vec& x) {
   return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
 }
 
+// Asymmetric huber regression adjusted to quantile tau for initialization 
 // [[Rcpp::export]]
 void updateHuber(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double n1) {
   for (int i = 0; i < n; i++) {
