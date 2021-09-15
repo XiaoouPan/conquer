@@ -151,7 +151,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -195,7 +195,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
   const double h1 = 1.0 / h;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -334,7 +334,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -378,7 +378,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
   const double h1 = 1.0 / h;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -471,7 +471,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -515,7 +515,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
   const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -608,7 +608,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -652,7 +652,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
