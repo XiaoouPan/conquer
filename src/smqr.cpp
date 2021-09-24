@@ -872,7 +872,7 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
   return beta;
 }
 
-// Codes for bootstrap inference
+// Conquer with bootstrap inference
 // [[Rcpp::export]]
 arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
