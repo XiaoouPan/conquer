@@ -140,6 +140,7 @@ void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
   grad = n1 * Z.t() * der;
 }
 
+// Low-dimensional conquer: estimation
 // [[Rcpp::export]]
 Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
                      const double tol = 0.0001, const int iteMax = 5000) {
