@@ -966,6 +966,47 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
 }
 
 // High-dimensional conquer via an iterative local MM algorithm
+// [[Rcpp::export]]
+arma::vec softThresh(const arma::vec& x, const arma::vec& lambda, const int p) {
+  return arma::sign(x) % arma::max(arma::abs(x) - lambda, arma::zeros(p + 1));
+}
+
+// [[Rcpp::export]]
+arma::vec cmptLambdaLasso(const double lambda, const arma::vec& sx1, const int p) {
+  arma::vec rst = arma::zeros(p + 1);
+  rst.rows(1, p) = lambda * sx1;
+  return rst;
+}
+
+// [[Rcpp::export]]
+arma::vec cmptLambdaSCAD(const arma::vec& beta, const double lambda, const arma::vec& sx1, const int p) {
+  arma::vec rst(p + 1);
+  rst(0) = 0;
+  for (int i = 1; i <= p; i++) {
+    double abBeta = std::abs(beta(i));
+    double lambdaSx = lambda * sx1(i - 1);
+    if (abBeta <= lambdaSx) {
+      rst(i) = lambdaSx;
+    } else if (abBeta <= 3.7 * lambdaSx) {
+      rst(i) = 0.37037 * (3.7 * lambdaSx - abBeta);
+    } else {
+      rst(i) = 0;
+    }
+  }
+  return rst;
+}
+
+// [[Rcpp::export]]
+arma::vec cmptLambdaMCP(const arma::vec& beta, const double lambda, const arma::vec& sx1, const int p) {
+  arma::vec rst(p + 1);
+  rst(0) = 0;
+  for (int i = 1; i <= p; i++) {
+    double abBeta = std::abs(beta(i));
+    double lambdaSx = lambda * sx1(i - 1);
+    rst(i) = (abBeta <= 3 * lambdaSx) ? (lambdaSx - 0.33333 * abBeta) : 0;
+  }
+  return rst;
+}
 
 
 
