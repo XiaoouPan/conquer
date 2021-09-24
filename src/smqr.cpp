@@ -70,7 +70,7 @@ arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1,
   return X;
 }
 
-
+// Different kernels for low-dimensional conquer 
 // [[Rcpp::export]]
 void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
   der = arma::normcdf(-res * h1) - tau;
