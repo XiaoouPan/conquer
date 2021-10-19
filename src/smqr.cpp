@@ -965,16 +965,16 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   return rst;
 }
 
-// The following code is high-dimensional conquer via an iterative local MM algorithm
+// The following code is high-dimensional conquer via an iterative local majorize-minimize algorithm
 // [[Rcpp::export]]
 arma::vec softThresh(const arma::vec& x, const arma::vec& lambda, const int p) {
   return arma::sign(x) % arma::max(arma::abs(x) - lambda, arma::zeros(p + 1));
 }
 
 // [[Rcpp::export]]
-arma::vec cmptLambdaLasso(const double lambda, const arma::vec& sx1, const int p) {
-  arma::vec rst = arma::zeros(p + 1);
-  rst.rows(1, p) = lambda * sx1;
+arma::vec cmptLambdaLasso(const double lambda, const int p) {
+  arma::vec rst = lambda * arma::ones(p + 1);
+  rst(0) = 0;
   return rst;
 }
 
@@ -1003,3 +1003,29 @@ arma::vec cmptLambdaMCP(const arma::vec& beta, const double lambda, const int p,
   }
   return rst;
 }
+
+// Expectile regression with tau (asymmetric l_2 loss) as an initial value for high-dim regression
+// [[Rcpp::export]]
+double lossL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double n1, const double tau) {
+  arma::vec res = Y - Z * beta;
+  double rst = 0.0;
+  for (int i = 0; i < Y.size(); i++) {
+    rst += (res(i) > 0) ? (tau * res(i) * res(i)) : ((1 - tau) * res(i) * res(i));
+  }
+  return 0.5 * n1 * rst;
+}
+
+// [[Rcpp::export]]
+double updateL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double n1, const double tau) {
+  arma::vec res = Y - Z * beta;
+  double rst = 0.0;
+  grad = arma::zeros(grad.size());
+  for (int i = 0; i < Y.size(); i++) {
+    double temp = res(i) > 0 ? tau : (1 - tau);
+    grad -= temp * res(i) * Z.row(i).t();
+    rst += temp * res(i) * res(i);
+  }
+  grad *= n1;
+  return 0.5 * n1 * rst;
+}
+
