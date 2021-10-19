@@ -11,5 +11,5 @@
 #' @references Koenker, R. (2005). Quantile Regression. Cambridge University Press, Cambridge.
 #' @references Koenker, R. Package "quantreg".
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
-#' @references Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA, to appear.
+#' @references Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA 10 813-861.
 NULL
