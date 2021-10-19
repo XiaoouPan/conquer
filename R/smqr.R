@@ -65,7 +65,7 @@ getNormCI = function(est, sd, z) {
 #' ci.piv = fit$pivCI
 #' ci.norm = fit$normCI
 #' @export 
-conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
+conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
                    iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
@@ -90,6 +90,8 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
     rst = NULL
     if (kernel == "Gaussian") {
       rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
+    } else if (kernel == "logistic") {
+      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
     } else if (kernel == "uniform") {
       rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
     } else if (kernel == "parabolic") {
@@ -105,6 +107,10 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "uniform", "parabolic
       rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
       multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    } else if (kernel == "logistic") {
+      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
     } else if (kernel == "uniform") {
       rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
       coeff = as.numeric(rst$coeff)
