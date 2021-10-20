@@ -1038,6 +1038,13 @@ double lossGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta
 }
 
 // [[Rcpp::export]]
+double lossLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double h, const double h1) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = 0.5 * res + h * arma::log(1 + arma::exp(-h1 * res));
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
 double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, arma::vec& gradReal, const double tau, 
                      const double n1, const double h, const double h1, const double h2) {
   arma::vec res = Y - Z * beta;
@@ -1048,64 +1055,6 @@ double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& be
   arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + 0.5 * res - res % arma::normcdf(-h1 * res);
   return arma::mean(temp);
 }
-
-// to be modified
-// [[Rcpp::export]]
-void updateLogisticHd(const arma::mat& Z, const arma::vec& Y, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
-  der = 1.0 / (1 + arma::exp(res * h1)) - tau;
-  grad = n1 * Z.t() * der;
-}
-
-// [[Rcpp::export]]
-void updateUnifHd(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
-                const double n1, const double h1) {
-  for (int i = 0; i < n; i++) {
-    double cur = res(i);
-    if (cur <= -h) {
-      der(i) = 1 - tau;
-    } else if (cur < h) {
-      der(i) = 0.5 - tau - 0.5 * h1 * cur;
-    } else {
-      der(i) = -tau;
-    }
-  }
-  grad = n1 * Z.t() * der;
-}
-
-// [[Rcpp::export]]
-void updateParaHd(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
-                const double n1, const double h1, const double h3) {
-  for (int i = 0; i < n; i++) {
-    double cur = res(i);
-    if (cur <= -h) {
-      der(i) = 1 - tau;
-    } else if (cur < h) {
-      der(i) = 0.5 - tau - 0.75 * h1 * cur + 0.25 * h3 * cur * cur * cur;
-    } else {
-      der(i) = -tau;
-    }
-  }
-  grad = n1 * Z.t() * der;
-}
-
-// [[Rcpp::export]]
-void updateTrianHd(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const int n, const double tau, const double h, 
-                 const double n1, const double h1, const double h2) {
-  for (int i = 0; i < n; i++) {
-    double cur = res(i);
-    if (cur <= -h) {
-      der(i) = 1 - tau;
-    } else if (cur < 0) {
-      der(i) = 0.5 - tau - h1 * cur - 0.5 * h2 * cur * cur;
-    } else if (cur < h) {
-      der(i) = 0.5 - tau - h1 * cur + 0.5 * h2 * cur * cur;
-    } else {
-      der(i) = -tau;
-    }
-  }
-  grad = n1 * Z.t() * der;
-}
-
 
 // LAMM core code, update beta, return phi
 // [[Rcpp::export]]
