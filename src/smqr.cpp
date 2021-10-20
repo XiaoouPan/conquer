@@ -1043,7 +1043,7 @@ double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& be
   arma::vec res = Y - Z * beta;
   arma::vec der = arma::normcdf(-h1 * res) - tau;
   gradReal = n1 * Z.t() * der;
-  der = arma::normcdf(-h1 * res) - 0.5;
+  der += tau - 0.5;
   grad = n1 * Z.t() * der;
   arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + 0.5 * res - res % arma::normcdf(-h1 * res);
   return arma::mean(temp);
