@@ -1004,7 +1004,7 @@ arma::vec cmptLambdaMCP(const arma::vec& beta, const double lambda, const int p,
   return rst;
 }
 
-// Expectile regression with tau (asymmetric l_2 loss) as an initial value for high-dim regression
+// Expectile regression (asymmetric l_2 loss) as an initial value for high-dim regression
 // [[Rcpp::export]]
 double lossL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double n1, const double tau) {
   arma::vec res = Y - Z * beta;
@@ -1029,3 +1029,66 @@ double updateL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, a
   return 0.5 * n1 * rst;
 }
 
+// Smoothed quantile loss with different kernels
+// [[Rcpp::export]]
+double lossGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double h, const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + 0.5 * res - res % arma::normcdf(-h1 * res);
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, arma::vec& gradReal, const double tau, 
+                     const double n1, const double h, const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec der = arma::normcdf(-h1 * res) - tau;
+  gradReal = n1 * Z.t() * der;
+  der = arma::normcdf(-h1 * res) - 0.5;
+  grad = n1 * Z.t() * der;
+  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + 0.5 * res - res % arma::normcdf(-h1 * res);
+  return arma::mean(temp);
+}
+
+// LAMM core code, update beta, return phi
+// [[Rcpp::export]]
+double lammL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, const double gamma, 
+              const int p, const double n1) {
+  double phiNew = phi;
+  arma::vec betaNew(p + 1);
+  arma::vec grad(p + 1);
+  double loss = updateL2(Z, Y, beta, grad, n1, tau);
+  while (true) {
+    arma::vec first = beta - grad / phiNew;
+    arma::vec second = Lambda / phiNew;
+    betaNew = softThresh(first, second, p);
+    double fVal = lossL2(Z, Y, betaNew, n1, tau);
+    arma::vec diff = betaNew - beta;
+    double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
+    if (fVal <= psiVal) {
+      break;
+    }
+    phiNew *= gamma;
+  }
+  beta = betaNew;
+  return phiNew;
+}
+
+// [[Rcpp::export]]
+arma::vec lasso(const arma::mat& Z, const arma::vec& Y, const double lambda, const double tau, const int p, const double n1, const double phi0 = 0.1, 
+                const double gamma = 1.2, const double epsilon = 0.01, const int iteMax = 500) {
+  arma::vec beta = arma::zeros(p + 1);
+  arma::vec betaNew = arma::zeros(p + 1);
+  arma::vec Lambda = cmptLambdaLasso(lambda, p);
+  double phi = phi0;
+  int ite = 0;
+  while (ite <= iteMax) {
+    ite++;
+    phi = lammL2(Z, Y, Lambda, betaNew, tau, phi, gamma, p, n1);
+    phi = std::max(phi0, phi / gamma);
+    if (arma::norm(betaNew - beta, "inf") <= epsilon) {
+      break;
+    }
+    beta = betaNew;
+  }
+  return betaNew;
+}
