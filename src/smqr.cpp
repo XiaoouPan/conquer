@@ -872,6 +872,437 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
   return beta;
 }
 
+// Global conquer process with a quantile grid
+// [[Rcpp::export]]
+Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+                         const double tol = 0.0001, const int iteMax = 5000) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const int m = tauSeq.size();
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::mat betaProc(p + 1, m);
+  int start = m >> 1;
+  double tau = tauSeq(start);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec quant = {tau};
+  beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
+  for (int i = start; i >= 0; i--) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateGauss(Z, res, der, gradOld, tau, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateGauss(Z, res, der, gradNew, tau, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateGauss(Z, res, der, gradNew, tau, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  beta = betaProc.col(start);
+  for (int i = start + 1; i < m; i++) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateGauss(Z, res, der, gradOld, tau, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateGauss(Z, res, der, gradNew, tau, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateGauss(Z, res, der, gradNew, tau, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  betaProc.rows(1, p).each_col() %= sx1;
+  betaProc.row(0) += my - mx * betaProc.rows(1, p);
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaProc, Rcpp::Named("bandwidth") = h);
+}
+
+// [[Rcpp::export]]
+Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+                            const double tol = 0.0001, const int iteMax = 5000) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const int m = tauSeq.size();
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::mat betaProc(p + 1, m);
+  int start = m >> 1;
+  double tau = tauSeq(start);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec quant = {tau};
+  beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
+  for (int i = start; i >= 0; i--) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateLogistic(Z, res, der, gradOld, tau, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateLogistic(Z, res, der, gradNew, tau, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateLogistic(Z, res, der, gradNew, tau, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  beta = betaProc.col(start);
+  for (int i = start + 1; i < m; i++) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateLogistic(Z, res, der, gradOld, tau, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateLogistic(Z, res, der, gradNew, tau, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateLogistic(Z, res, der, gradNew, tau, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  betaProc.rows(1, p).each_col() %= sx1;
+  betaProc.row(0) += my - mx * betaProc.rows(1, p);
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaProc, Rcpp::Named("bandwidth") = h);
+}
+
+// [[Rcpp::export]]
+Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+                        const double tol = 0.0001, const int iteMax = 5000) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const int m = tauSeq.size();
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::mat betaProc(p + 1, m);
+  int start = m >> 1;
+  double tau = tauSeq(start);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec quant = {tau};
+  beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
+  for (int i = start; i >= 0; i--) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  beta = betaProc.col(start);
+  for (int i = start + 1; i < m; i++) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateUnif(Z, res, der, gradOld, n, tau, h, n1, h1);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  betaProc.rows(1, p).each_col() %= sx1;
+  betaProc.row(0) += my - mx * betaProc.rows(1, p);
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaProc, Rcpp::Named("bandwidth") = h);
+}
+
+// [[Rcpp::export]]
+Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+                        const double tol = 0.0001, const int iteMax = 5000) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const int m = tauSeq.size();
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::mat betaProc(p + 1, m);
+  int start = m >> 1;
+  double tau = tauSeq(start);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec quant = {tau};
+  beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
+  for (int i = start; i >= 0; i--) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  beta = betaProc.col(start);
+  for (int i = start + 1; i < m; i++) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updatePara(Z, res, der, gradOld, n, tau, h, n1, h1, h3);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  betaProc.rows(1, p).each_col() %= sx1;
+  betaProc.row(0) += my - mx * betaProc.rows(1, p);
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaProc, Rcpp::Named("bandwidth") = h);
+}
+
+// [[Rcpp::export]]
+Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+                         const double tol = 0.0001, const int iteMax = 5000) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  const int m = tauSeq.size();
+  if (h <= 0.05) {
+    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
+  }
+  const double n1 = 1.0 / n;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec der(n);
+  arma::vec gradOld(p + 1), gradNew(p + 1);
+  arma::mat betaProc(p + 1, m);
+  int start = m >> 1;
+  double tau = tauSeq(start);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec quant = {tau};
+  beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
+  for (int i = start; i >= 0; i--) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  beta = betaProc.col(start);
+  for (int i = start + 1; i < m; i++) {
+    tau = tauSeq(i);
+    arma::vec res = Y - Z * beta;
+    updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+    beta -= gradOld;
+    arma::vec betaDiff = -gradOld;
+    res -= Z * betaDiff;
+    updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+    arma::vec gradDiff = gradNew - gradOld;
+    int ite = 1;
+    while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+      double alpha = 1.0;
+      double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+      if (cross > 0) {
+        double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+        double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+        alpha = std::min(std::min(a1, a2), 100.0);
+      }
+      gradOld = gradNew;
+      betaDiff = -alpha * gradNew;
+      beta += betaDiff;
+      res -= Z * betaDiff;
+      updateTrian(Z, res, der, gradOld, n, tau, h, n1, h1, h2);
+      gradDiff = gradNew - gradOld;
+      ite++;
+    }
+    betaProc.col(i) = beta;
+  }
+  betaProc.rows(1, p).each_col() %= sx1;
+  betaProc.row(0) += my - mx * betaProc.rows(1, p);
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaProc, Rcpp::Named("bandwidth") = h);
+}
+
 // Conquer with bootstrap inference
 // [[Rcpp::export]]
 arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
