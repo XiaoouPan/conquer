@@ -1054,7 +1054,7 @@ double lossLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& b
   return arma::mean(temp);
 }
 
-// LAMM core code, update beta, return phi
+// LAMM core code for different loss functions, update beta, return phi
 // [[Rcpp::export]]
 double lammL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, const double gamma, 
               const int p, const double n1) {
