@@ -1263,11 +1263,11 @@ arma::vec cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = smqrLassoGauss(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossGauss(testZ, testY, betaHat, tau, h, h1, h2));
+      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = sqrLasso(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat = smqrLassoGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
   return betaHat;
