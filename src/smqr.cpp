@@ -2314,7 +2314,7 @@ arma::vec smqrMcpTrian(const arma::mat& Z, const arma::vec& Y, const double lamb
   return betaNew;
 }
 
-// vanilla cross-validation, no warm-start, no tuning free
+// cross-validation, no warm-start, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
 // [[Rcpp::export]]
 double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau) {
   arma::vec res = Y - Z * beta;
