@@ -2326,8 +2326,8 @@ double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, con
 }
 
 // [[Rcpp::export]]
-arma::vec cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+Rcpp::List cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                            const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -2352,13 +2352,13 @@ arma::vec cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& lam
   betaHat = smqrLassoGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return betaHat;
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
 }
 
 // [[Rcpp::export]]
-arma::vec cvSmqrScadGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                          const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
-                          const int iteTight = 3, const double para = 3.7) {
+Rcpp::List cvSmqrScadGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
+                           const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -2383,13 +2383,13 @@ arma::vec cvSmqrScadGauss(const arma::mat& X, arma::vec Y, const arma::vec& lamb
   betaHat = smqrScadGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return betaHat;
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
 }
 
 // [[Rcpp::export]]
-arma::vec cvSmqrMcpGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                         const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
-                         const int iteTight = 3, const double para = 3) {
+Rcpp::List cvSmqrMcpGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                          const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
+                          const int iteTight = 3, const double para = 3) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -2414,8 +2414,6 @@ arma::vec cvSmqrMcpGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambd
   betaHat = smqrMcpGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return betaHat;
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
 }
-
-
 
