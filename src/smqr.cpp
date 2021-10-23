@@ -1759,6 +1759,7 @@ double lammSmqrTrian(const arma::mat& Z, const arma::vec& Y, const arma::vec& La
   return phiNew;
 }
 
+// High-dim conquer with a standardized design matrix and a given lambda
 // [[Rcpp::export]]
 arma::vec smqrLassoGauss(const arma::mat& Z, const arma::vec& Y, const double lambda, const arma::vec& sx1, const double tau, const int p, const double n1, 
                          const double h, const double h1, const double h2, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
