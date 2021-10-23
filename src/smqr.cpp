@@ -1668,6 +1668,98 @@ double lammSmqrGauss(const arma::mat& Z, const arma::vec& Y, const arma::vec& La
 }
 
 // [[Rcpp::export]]
+double lammSmqrLogistic(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+                        const double gamma, const int p, const double h, const double n1, const double h1) {
+  double phiNew = phi;
+  arma::vec betaNew(p + 1);
+  arma::vec grad(p + 1);
+  double loss = updateLogisticHd(Z, Y, beta, grad, tau, n1, h, h1);
+  while (true) {
+    arma::vec first = beta - grad / phiNew;
+    arma::vec second = Lambda / phiNew;
+    betaNew = softThresh(first, second, p);
+    double fVal = lossLogisticHd(Z, Y, betaNew, tau, h, h1);
+    arma::vec diff = betaNew - beta;
+    double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
+    if (fVal <= psiVal) {
+      break;
+    }
+    phiNew *= gamma;
+  }
+  beta = betaNew;
+  return phiNew;
+}
+
+// [[Rcpp::export]]
+double lammSmqrUnif(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+                    const double gamma, const int p, const double h, const double n1, const double h1) {
+  double phiNew = phi;
+  arma::vec betaNew(p + 1);
+  arma::vec grad(p + 1);
+  double loss = updateUnifHd(Z, Y, beta, grad, tau, n1, h, h1);
+  while (true) {
+    arma::vec first = beta - grad / phiNew;
+    arma::vec second = Lambda / phiNew;
+    betaNew = softThresh(first, second, p);
+    double fVal = lossUnifHd(Z, Y, betaNew, tau, h, h1);
+    arma::vec diff = betaNew - beta;
+    double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
+    if (fVal <= psiVal) {
+      break;
+    }
+    phiNew *= gamma;
+  }
+  beta = betaNew;
+  return phiNew;
+}
+
+// [[Rcpp::export]]
+double lammSmqrPara(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+                    const double gamma, const int p, const double h, const double n1, const double h1, const double h3) {
+  double phiNew = phi;
+  arma::vec betaNew(p + 1);
+  arma::vec grad(p + 1);
+  double loss = updateParaHd(Z, Y, beta, grad, tau, n1, h, h1, h3);
+  while (true) {
+    arma::vec first = beta - grad / phiNew;
+    arma::vec second = Lambda / phiNew;
+    betaNew = softThresh(first, second, p);
+    double fVal = lossParaHd(Z, Y, betaNew, tau, h, h1, h3);
+    arma::vec diff = betaNew - beta;
+    double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
+    if (fVal <= psiVal) {
+      break;
+    }
+    phiNew *= gamma;
+  }
+  beta = betaNew;
+  return phiNew;
+}
+
+// [[Rcpp::export]]
+double lammSmqrTrian(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+                     const double gamma, const int p, const double h, const double n1, const double h1, const double h2) {
+  double phiNew = phi;
+  arma::vec betaNew(p + 1);
+  arma::vec grad(p + 1);
+  double loss = updateTrianHd(Z, Y, beta, grad, tau, n1, h, h1, h2);
+  while (true) {
+    arma::vec first = beta - grad / phiNew;
+    arma::vec second = Lambda / phiNew;
+    betaNew = softThresh(first, second, p);
+    double fVal = lossTrianHd(Z, Y, betaNew, tau, h, h1, h2);
+    arma::vec diff = betaNew - beta;
+    double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
+    if (fVal <= psiVal) {
+      break;
+    }
+    phiNew *= gamma;
+  }
+  beta = betaNew;
+  return phiNew;
+}
+
+// [[Rcpp::export]]
 arma::vec smqrLassoGauss(const arma::mat& Z, const arma::vec& Y, const double lambda, const arma::vec& sx1, const double tau, const int p, const double n1, 
                          const double h, const double h1, const double h2, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
                          const int iteMax = 500) {
