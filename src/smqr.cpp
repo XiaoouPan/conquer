@@ -1498,7 +1498,11 @@ double updateLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec&
 // [[Rcpp::export]]
 double lossUnifHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1) {
   arma::vec res = Y - Z * beta;
-  arma::vec temp = tau * res + h * arma::log(1 + arma::exp(-h1 * res));
+  arma::vec temp = (tau - 0.5) * res;
+  for (int i = 0; i < res.size(); i++) {
+    double cur = std::abs(res(i));
+    temp(i) += cur <= h ? (0.25 * h1 * cur * cur + 0.25 * h) : 0.5 * cur;
+  }
   return arma::mean(temp);
 }
 
@@ -1506,12 +1510,95 @@ double lossUnifHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta,
 double updateUnifHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
                         const double h1) {
   arma::vec res = Y - Z * beta;
-  arma::vec der = 1.0 / (1 + arma::exp(res * h1)) - tau;
+  arma::vec temp = (tau - 0.5) * res;
+  arma::vec der(res.size());
+  for (int i = 0; i < res.size(); i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      temp(i) -= 0.5 * cur;
+    } else if (cur < h) {
+      der(i) = 0.5 - tau - 0.5 * h1 * cur;
+      temp(i) += 0.25 * h1 * cur * cur + 0.25 * h;
+    } else {
+      der(i) = -tau;
+      temp(i) += 0.5 * cur;
+    }
+  }
   grad = n1 * Z.t() * der;
-  arma::vec temp = tau * res + h * arma::log(1 + arma::exp(-h1 * res));
   return arma::mean(temp);
 }
 
+// [[Rcpp::export]]
+double lossParaHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1, const double h3) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = (tau - 0.5) * res;
+  for (int i = 0; i < res.size(); i++) {
+    double cur = std::abs(res(i));
+    temp(i) += cur <= h ? (0.375 * h1 * cur * cur - 0.0625 * h3 * cur * cur * cur * cur + 0.1875 * h) : 0.5 * cur;
+  }
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double updateParaHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
+                    const double h1, const double h3) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = (tau - 0.5) * res;
+  arma::vec der(res.size());
+  for (int i = 0; i < res.size(); i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      temp(i) -= 0.5 * cur;
+    } else if (cur < h) {
+      der(i) =  0.5 - tau - 0.75 * h1 * cur + 0.25 * h3 * cur * cur * cur;
+      temp(i) += 0.375 * h1 * cur * cur - 0.0625 * h3 * cur * cur * cur * cur + 0.1875 * h;
+    } else {
+      der(i) = -tau;
+      temp(i) += 0.5 * cur;
+    }
+  }
+  grad = n1 * Z.t() * der;
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double lossTrianHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = (tau - 0.5) * res;
+  for (int i = 0; i < res.size(); i++) {
+    double cur = std::abs(res(i));
+    temp(i) += cur <= h ? (0.5 * h1 * cur * cur - 0.1666667 * h2 * cur * cur * cur + 0.1666667 * h) : 0.5 * cur;
+  }
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double updateTrianHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
+                     const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = (tau - 0.5) * res;
+  arma::vec der(res.size());
+  for (int i = 0; i < res.size(); i++) {
+    double cur = res(i);
+    if (cur <= -h) {
+      der(i) = 1 - tau;
+      temp(i) -= 0.5 * cur;
+    } else if (cur < 0) {
+      der(i) = 0.5 - tau - h1 * cur - 0.5 * h2 * cur * cur;
+      temp(i) += 0.5 * h1 * cur * cur + 0.1666667 * h2 * cur * cur * cur + 0.1666667 * h;
+    } else if (cur < h) {
+      der(i) = 0.5 - tau - h1 * cur + 0.5 * h2 * cur * cur;
+      temp(i) += 0.5 * h1 * cur * cur - 0.1666667 * h2 * cur * cur * cur + 0.1666667 * h;
+    } else {
+      der(i) = -tau;
+      temp(i) += 0.5 * cur;
+    }
+  }
+  grad = n1 * Z.t() * der;
+  return arma::mean(temp);
+}
 
 // LAMM core code for different loss functions, update beta, return phi
 // [[Rcpp::export]]
