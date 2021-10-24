@@ -2160,6 +2160,9 @@ arma::vec smqrMcpTrian(const arma::mat& Z, const arma::vec& Y, const double lamb
   return betaNew;
 }
 
+// high-dim conquer with a specified lambda
+
+
 // cross-validation, no warm-start, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
 // [[Rcpp::export]]
 double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau) {

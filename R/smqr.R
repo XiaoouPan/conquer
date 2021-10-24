@@ -244,8 +244,7 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' fit.unif = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
 #' beta.hat.unif = fit.unif$coeff
 #' @export 
-conquer.lasso = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
-                         iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000) {
+conquer.lasso = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, tol = 0.0001, iteMax = 5000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
