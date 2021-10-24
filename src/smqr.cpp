@@ -19,13 +19,13 @@ void updateHuber(const arma::mat& Z, const arma::vec& res, const double tau, arm
   for (int i = 0; i < n; i++) {
     double cur = res(i);
     if (cur > rob) {
-      der(i) = -tau * rob;
+      der(i) = -2 * tau * rob;
     } else if (cur > 0) {
-      der(i) = -tau * cur;
+      der(i) = -2 * tau * cur;
     } else if (cur > -rob) {
-      der(i) = (tau - 1) * cur;
+      der(i) = 2 * (tau - 1) * cur;
     } else {
-      der(i) = (1 - tau) * rob;
+      der(i) = 2 * (1 - tau) * rob;
     }
   }
   grad = n1 * Z.t() * der;
