@@ -2161,7 +2161,120 @@ arma::vec smqrMcpTrian(const arma::mat& Z, const arma::vec& Y, const double lamb
 }
 
 // high-dim conquer with a specified lambda
+// [[Rcpp::export]]
+arma::vec conquerHdGauss(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                         const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat(p + 1);
+  if (type == 1) {
+    betaHat = smqrLassoGauss(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  } else if (type == 2) {
+    betaHat = smqrScadGauss(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  } else {
+    betaHat = smqrMcpGauss(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  }
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
 
+// [[Rcpp::export]]
+arma::vec conquerHdLogistic(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                            const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat(p + 1);
+  if (type == 1) {
+    betaHat = smqrLassoLogistic(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
+  } else if (type == 2) {
+    betaHat = smqrScadLogistic(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  } else {
+    betaHat = smqrMcpLogistic(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  }
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerHdUnif(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                        const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat(p + 1);
+  if (type == 1) {
+    betaHat = smqrLassoUnif(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
+  } else if (type == 2) {
+    betaHat = smqrScadUnif(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  } else {
+    betaHat = smqrMcpUnif(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  }
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerHdPara(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                        const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat(p + 1);
+  if (type == 1) {
+    betaHat = smqrLassoPara(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax);
+  } else if (type == 2) {
+    betaHat = smqrScadPara(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+  } else {
+    betaHat = smqrMcpPara(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+  }
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerHdTrian(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                         const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat(p + 1);
+  if (type == 1) {
+    betaHat = smqrLassoTrian(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  } else if (type == 2) {
+    betaHat = smqrScadTrian(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  } else {
+    betaHat = smqrMcpTrian(Z, Y, lambda, sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  }
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
 
 // cross-validation, no warm-start, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
 // [[Rcpp::export]]
