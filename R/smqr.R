@@ -134,10 +134,10 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 }
 
 #' @title Convolution-Type Smoothed Quantile Regression Process
-#' @description Fit a smoothed quantile regression process for a quantile grid. The algorithm is essentially the same as \code{\link{conquer}}.
+#' @description Fit a smoothed quantile regression process over a quantile range. The algorithm is essentially the same as \code{\link{conquer}}.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param tauSeq (\strong{optional}) The desired quantile grid. Default is {0.1, 0.15, 0.2, ..., 0.85, 0.9}. Values must be between 0 and 1.
+#' @param tauSeq (\strong{optional}) The desired quantile grid. Default is {0.1, 0.15, 0.2, ..., 0.85, 0.9}. All values must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
 #' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(((log(n) + p) / n)^{0.4}, 0.05)}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
