@@ -14,12 +14,12 @@ getNormCI = function(est, sd, z) {
 }
 
 #' @title Convolution-Type Smoothed Quantile Regression
-#' @description Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{alpha}) confidence intervals with multiplier bootstrap.
+#' @description Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{\alpha}) confidence intervals with multiplier bootstrap.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(((log(n) + p) / n)^{0.4}, 0.05)}. The default will be used if the input value is less than 0.05.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
@@ -236,6 +236,19 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.cv.regularized}} for regularized quantile regression with cross-validation.
+#' @examples 
+#' n = 100; p = 500; s = 10
+#' beta = c(rep(1.5, s), rep(0, p - s))
+#' X = matrix(rnorm(n * p), n, p)
+#' Y = 1 + X %*% beta + rt(n, 2)
+#' 
+#' ## Regularized conquer with lasso penalty at tau = 0.8
+#' fit.lasso = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' beta.lasso = fit.lasso$coeff
+#' 
+#' #' ## Regularized conquer with scad penalty at tau = 0.8
+#' fit.scad = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' beta.scad = fit.scad$coeff
 #' @export 
 conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                                penalty = c("lasso", "scad", "mcp"), para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
@@ -321,6 +334,19 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.regularized}} for regularized quantile regression with a prescribed \eqn{lambda}.
+#' @examples 
+#' n = 100; p = 500; s = 10
+#' beta = c(rep(1.5, s), rep(0, p - s))
+#' X = matrix(rnorm(n * p), n, p)
+#' Y = 1 + X %*% beta + rt(n, 2)
+#' 
+#' ## Cross-validated regularized conquer with lasso penalty at tau = 0.8
+#' fit.lasso = conquer.cv.regularized(X, Y, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' beta.lasso = fit.lasso$coeff
+#' 
+#' #' ## Cross-validated regularized conquer with scad penalty at tau = 0.8
+#' fit.scad = conquer.cv.regularized(X, Y,tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' beta.scad = fit.scad$coeff
 #' @export 
 conquer.cv.regularized = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                                   penalty = c("lasso", "scad", "mcp"), kfolds = 5, numLambda = 50, para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, 

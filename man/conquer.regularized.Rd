@@ -63,6 +63,20 @@ An object containing the following items will be returned:
 \description{
 Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{\lambda} using a local majorize-minimize algorithm.
 }
+\examples{
+n = 100; p = 500; s = 10
+beta = c(rep(1.5, s), rep(0, p - s))
+X = matrix(rnorm(n * p), n, p)
+Y = 1 + X \%*\% beta + rt(n, 2)
+
+## Regularized conquer with lasso penalty at tau = 0.8
+fit.lasso = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+beta.lasso = fit.lasso$coeff
+
+#' ## Regularized conquer with scad penalty at tau = 0.8
+fit.scad = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+beta.scad = fit.scad$coeff
+}
 \references{
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 
