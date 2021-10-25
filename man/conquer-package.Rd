@@ -5,14 +5,18 @@
 \alias{conquer-package}
 \title{Conquer: Convolution-Type Smoothed Quantile Regression}
 \description{
-Fast and accurate convolution-type smoothed quantile regression. Implemented using Barzilai-Borwein gradient descent with a Huber regression warm start. Construct confidence intervals for regression coefficients using multiplier bootstrap.
+Fast and accurate convolution-type smoothed quantile regression for low/high-dimensional estimation and inference.
 }
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 
-Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
+Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2020). Smoothed quantile regression for large-scale inference. Preprint.
+Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
+
+Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist. 39 338-357.
+
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
 
 Horowitz, J. L. (1998). Bootstrap methods for median regression models. Econometrica 66 1327–1351.
 
@@ -22,7 +26,7 @@ Koenker, R. Package "quantreg".
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 
-Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA, to appear.
+Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA 10 813-861.
 }
 \author{
 Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
