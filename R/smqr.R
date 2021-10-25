@@ -237,17 +237,17 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.cv.regularized}} for regularized quantile regression with cross-validation.
 #' @examples 
-#' n = 100; p = 500; s = 10
+#' n = 200; p = 500; s = 10
 #' beta = c(rep(1.5, s), rep(0, p - s))
 #' X = matrix(rnorm(n * p), n, p)
-#' Y = 1 + X %*% beta + rt(n, 2)
+#' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Regularized conquer with lasso penalty at tau = 0.8
-#' fit.lasso = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' fit.lasso = conquer.regularized(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
 #' beta.lasso = fit.lasso$coeff
 #' 
 #' #' ## Regularized conquer with scad penalty at tau = 0.8
-#' fit.scad = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' fit.scad = conquer.regularized(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
 #' beta.scad = fit.scad$coeff
 #' @export 
 conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
@@ -335,10 +335,10 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.regularized}} for regularized quantile regression with a prescribed \eqn{lambda}.
 #' @examples 
-#' n = 100; p = 500; s = 10
+#' n = 200; p = 500; s = 10
 #' beta = c(rep(1.5, s), rep(0, p - s))
 #' X = matrix(rnorm(n * p), n, p)
-#' Y = 1 + X %*% beta + rt(n, 2)
+#' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Cross-validated regularized conquer with lasso penalty at tau = 0.8
 #' fit.lasso = conquer.cv.regularized(X, Y, tau = 0.8, kernel = "Gaussian", penalty = "lasso")

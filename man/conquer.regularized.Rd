@@ -64,17 +64,17 @@ An object containing the following items will be returned:
 Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{\lambda} using a local majorize-minimize algorithm.
 }
 \examples{
-n = 100; p = 500; s = 10
+n = 200; p = 500; s = 10
 beta = c(rep(1.5, s), rep(0, p - s))
 X = matrix(rnorm(n * p), n, p)
-Y = 1 + X \%*\% beta + rt(n, 2)
+Y = X \%*\% beta + rt(n, 2)
 
 ## Regularized conquer with lasso penalty at tau = 0.8
-fit.lasso = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+fit.lasso = conquer.regularized(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
 beta.lasso = fit.lasso$coeff
 
 #' ## Regularized conquer with scad penalty at tau = 0.8
-fit.scad = conquer.regularized(X, Y, lambda = 0.15, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+fit.scad = conquer.regularized(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
 beta.scad = fit.scad$coeff
 }
 \references{

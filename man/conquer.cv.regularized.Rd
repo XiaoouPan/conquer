@@ -70,10 +70,10 @@ An object containing the following items will be returned:
 Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{\lambda} is calibrated via cross-validation.
 }
 \examples{
-n = 100; p = 500; s = 10
+n = 200; p = 500; s = 10
 beta = c(rep(1.5, s), rep(0, p - s))
 X = matrix(rnorm(n * p), n, p)
-Y = 1 + X \%*\% beta + rt(n, 2)
+Y = X \%*\% beta + rt(n, 2)
 
 ## Cross-validated regularized conquer with lasso penalty at tau = 0.8
 fit.lasso = conquer.cv.regularized(X, Y, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
