@@ -9,20 +9,28 @@ mad <- function(x) {
     .Call('_conquer_mad', PACKAGE = 'conquer', x)
 }
 
-updateHuber <- function(Z, res, der, grad, n, tau, n1) {
-    invisible(.Call('_conquer_updateHuber', PACKAGE = 'conquer', Z, res, der, grad, n, tau, n1))
+updateHuber <- function(Z, res, tau, der, grad, n, rob, n1) {
+    invisible(.Call('_conquer_updateHuber', PACKAGE = 'conquer', Z, res, tau, der, grad, n, rob, n1))
 }
 
-huberReg <- function(Z, Y, der, gradOld, gradNew, n, p, n1, tol = 0.0001, constTau = 1.345, iteMax = 5000L) {
-    .Call('_conquer_huberReg', PACKAGE = 'conquer', Z, Y, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax)
+huberReg <- function(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol = 0.0001, constTau = 1.345, iteMax = 5000L) {
+    .Call('_conquer_huberReg', PACKAGE = 'conquer', Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax)
 }
 
-standardize <- function(X, mx, sx, p) {
-    .Call('_conquer_standardize', PACKAGE = 'conquer', X, mx, sx, p)
+standardize <- function(X, mx, sx1, p) {
+    .Call('_conquer_standardize', PACKAGE = 'conquer', X, mx, sx1, p)
 }
 
 updateGauss <- function(Z, res, der, grad, tau, n1, h1) {
     invisible(.Call('_conquer_updateGauss', PACKAGE = 'conquer', Z, res, der, grad, tau, n1, h1))
+}
+
+updateGaussWeight <- function(Z, weight, res, der, grad, tau, n1, h1) {
+    invisible(.Call('_conquer_updateGaussWeight', PACKAGE = 'conquer', Z, weight, res, der, grad, tau, n1, h1))
+}
+
+updateLogistic <- function(Z, res, der, grad, tau, n1, h1) {
+    invisible(.Call('_conquer_updateLogistic', PACKAGE = 'conquer', Z, res, der, grad, tau, n1, h1))
 }
 
 updateUnif <- function(Z, res, der, grad, n, tau, h, n1, h1) {
@@ -47,6 +55,22 @@ smqrGaussNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.000
 
 smqrGaussIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
+}
+
+smqrGaussIniWeight <- function(X, Y, weight, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrGaussIniWeight', PACKAGE = 'conquer', X, Y, weight, betaHat, p, tau, h, tol, iteMax)
+}
+
+smqrLogistic <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrLogistic', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
+}
+
+smqrLogisticNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrLogisticNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
+}
+
+smqrLogisticIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrLogisticIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
 smqrUnif <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
@@ -85,19 +109,283 @@ smqrTrianIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, ite
     .Call('_conquer_smqrTrianIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrGaussInf <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_smqrGaussInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
+smqrGaussProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrGaussProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrUnifInf <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_smqrUnifInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
+smqrLogisticProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrLogisticProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrParaInf <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_smqrParaInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
+smqrUnifProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrUnifProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrTrianInf <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
-    .Call('_conquer_smqrTrianInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
+smqrParaProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrParaProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
+}
+
+smqrTrianProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrTrianProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
+}
+
+smqrGaussInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrGaussInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
+}
+
+smqrGaussInfWeight <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrGaussInfWeight', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
+}
+
+smqrLogisticInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrLogisticInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
+}
+
+smqrUnifInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrUnifInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
+}
+
+smqrParaInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrParaInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
+}
+
+smqrTrianInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+    .Call('_conquer_smqrTrianInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
+}
+
+softThresh <- function(x, lambda, p) {
+    .Call('_conquer_softThresh', PACKAGE = 'conquer', x, lambda, p)
+}
+
+cmptLambdaLasso <- function(lambda, p) {
+    .Call('_conquer_cmptLambdaLasso', PACKAGE = 'conquer', lambda, p)
+}
+
+cmptLambdaSCAD <- function(beta, lambda, p, para = 3.7) {
+    .Call('_conquer_cmptLambdaSCAD', PACKAGE = 'conquer', beta, lambda, p, para)
+}
+
+cmptLambdaMCP <- function(beta, lambda, p, para = 3.0) {
+    .Call('_conquer_cmptLambdaMCP', PACKAGE = 'conquer', beta, lambda, p, para)
+}
+
+lossL2 <- function(Z, Y, beta, n1, tau) {
+    .Call('_conquer_lossL2', PACKAGE = 'conquer', Z, Y, beta, n1, tau)
+}
+
+updateL2 <- function(Z, Y, beta, grad, n1, tau) {
+    .Call('_conquer_updateL2', PACKAGE = 'conquer', Z, Y, beta, grad, n1, tau)
+}
+
+lossGaussHd <- function(Z, Y, beta, tau, h, h1, h2) {
+    .Call('_conquer_lossGaussHd', PACKAGE = 'conquer', Z, Y, beta, tau, h, h1, h2)
+}
+
+updateGaussHd <- function(Z, Y, beta, grad, tau, n1, h, h1, h2) {
+    .Call('_conquer_updateGaussHd', PACKAGE = 'conquer', Z, Y, beta, grad, tau, n1, h, h1, h2)
+}
+
+lossLogisticHd <- function(Z, Y, beta, tau, h, h1) {
+    .Call('_conquer_lossLogisticHd', PACKAGE = 'conquer', Z, Y, beta, tau, h, h1)
+}
+
+updateLogisticHd <- function(Z, Y, beta, grad, tau, n1, h, h1) {
+    .Call('_conquer_updateLogisticHd', PACKAGE = 'conquer', Z, Y, beta, grad, tau, n1, h, h1)
+}
+
+lossUnifHd <- function(Z, Y, beta, tau, h, h1) {
+    .Call('_conquer_lossUnifHd', PACKAGE = 'conquer', Z, Y, beta, tau, h, h1)
+}
+
+updateUnifHd <- function(Z, Y, beta, grad, tau, n1, h, h1) {
+    .Call('_conquer_updateUnifHd', PACKAGE = 'conquer', Z, Y, beta, grad, tau, n1, h, h1)
+}
+
+lossParaHd <- function(Z, Y, beta, tau, h, h1, h3) {
+    .Call('_conquer_lossParaHd', PACKAGE = 'conquer', Z, Y, beta, tau, h, h1, h3)
+}
+
+updateParaHd <- function(Z, Y, beta, grad, tau, n1, h, h1, h3) {
+    .Call('_conquer_updateParaHd', PACKAGE = 'conquer', Z, Y, beta, grad, tau, n1, h, h1, h3)
+}
+
+lossTrianHd <- function(Z, Y, beta, tau, h, h1, h2) {
+    .Call('_conquer_lossTrianHd', PACKAGE = 'conquer', Z, Y, beta, tau, h, h1, h2)
+}
+
+updateTrianHd <- function(Z, Y, beta, grad, tau, n1, h, h1, h2) {
+    .Call('_conquer_updateTrianHd', PACKAGE = 'conquer', Z, Y, beta, grad, tau, n1, h, h1, h2)
+}
+
+lammL2 <- function(Z, Y, Lambda, beta, tau, phi, gamma, p, n1) {
+    .Call('_conquer_lammL2', PACKAGE = 'conquer', Z, Y, Lambda, beta, tau, phi, gamma, p, n1)
+}
+
+lasso <- function(Z, Y, lambda, tau, p, n1, phi0 = 0.1, gamma = 1.2, epsilon = 0.01, iteMax = 500L) {
+    .Call('_conquer_lasso', PACKAGE = 'conquer', Z, Y, lambda, tau, p, n1, phi0, gamma, epsilon, iteMax)
+}
+
+lammSmqrGauss <- function(Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h2) {
+    .Call('_conquer_lammSmqrGauss', PACKAGE = 'conquer', Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h2)
+}
+
+lammSmqrLogistic <- function(Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1) {
+    .Call('_conquer_lammSmqrLogistic', PACKAGE = 'conquer', Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1)
+}
+
+lammSmqrUnif <- function(Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1) {
+    .Call('_conquer_lammSmqrUnif', PACKAGE = 'conquer', Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1)
+}
+
+lammSmqrPara <- function(Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h3) {
+    .Call('_conquer_lammSmqrPara', PACKAGE = 'conquer', Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h3)
+}
+
+lammSmqrTrian <- function(Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h2) {
+    .Call('_conquer_lammSmqrTrian', PACKAGE = 'conquer', Z, Y, Lambda, beta, phi, tau, gamma, p, h, n1, h1, h2)
+}
+
+smqrLassoGauss <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_smqrLassoGauss', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax)
+}
+
+smqrLassoLogistic <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_smqrLassoLogistic', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax)
+}
+
+smqrLassoUnif <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_smqrLassoUnif', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax)
+}
+
+smqrLassoPara <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_smqrLassoPara', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0, gamma, epsilon, iteMax)
+}
+
+smqrLassoTrian <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_smqrLassoTrian', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax)
+}
+
+smqrScadGauss <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_smqrScadGauss', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrScadLogistic <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_smqrScadLogistic', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrScadUnif <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_smqrScadUnif', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrScadPara <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_smqrScadPara', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrScadTrian <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_smqrScadTrian', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrMcpGauss <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_smqrMcpGauss', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrMcpLogistic <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_smqrMcpLogistic', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrMcpUnif <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_smqrMcpUnif', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrMcpPara <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_smqrMcpPara', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+smqrMcpTrian <- function(Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_smqrMcpTrian', PACKAGE = 'conquer', Z, Y, lambda, sx1, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+conquerHdGauss <- function(X, Y, lambda, tau, h, type = 1L, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_conquerHdGauss', PACKAGE = 'conquer', X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+conquerHdLogistic <- function(X, Y, lambda, tau, h, type = 1L, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_conquerHdLogistic', PACKAGE = 'conquer', X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+conquerHdUnif <- function(X, Y, lambda, tau, h, type = 1L, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_conquerHdUnif', PACKAGE = 'conquer', X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+conquerHdPara <- function(X, Y, lambda, tau, h, type = 1L, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_conquerHdPara', PACKAGE = 'conquer', X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+conquerHdTrian <- function(X, Y, lambda, tau, h, type = 1L, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_conquerHdTrian', PACKAGE = 'conquer', X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+lossQr <- function(Z, Y, beta, tau) {
+    .Call('_conquer_lossQr', PACKAGE = 'conquer', Z, Y, beta, tau)
+}
+
+cvSmqrLassoGauss <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvSmqrLassoGauss', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+}
+
+cvSmqrScadGauss <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_cvSmqrScadGauss', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrMcpGauss <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_cvSmqrMcpGauss', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrLassoLogistic <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvSmqrLassoLogistic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+}
+
+cvSmqrScadLogistic <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_cvSmqrScadLogistic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrMcpLogistic <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_cvSmqrMcpLogistic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrLassoUnif <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvSmqrLassoUnif', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+}
+
+cvSmqrScadUnif <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_cvSmqrScadUnif', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrMcpUnif <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_cvSmqrMcpUnif', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrLassoPara <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvSmqrLassoPara', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+}
+
+cvSmqrScadPara <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_cvSmqrScadPara', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrMcpPara <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_cvSmqrMcpPara', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrLassoTrian <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvSmqrLassoTrian', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+}
+
+cvSmqrScadTrian <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
+    .Call('_conquer_cvSmqrScadTrian', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+}
+
+cvSmqrMcpTrian <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
+    .Call('_conquer_cvSmqrMcpTrian', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
