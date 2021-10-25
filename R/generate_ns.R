@@ -1,7 +1,7 @@
 #' @useDynLib conquer
 #' @importFrom Rcpp evalCpp
-#' @importFrom matrixStats rowSds rowQuantiles colSds
-#' @importFrom stats qnorm
+#' @importFrom matrixStats rowSds rowQuantiles rowMaxs colSds
+#' @importFrom stats qnorm quantile
 #' @importFrom Matrix rankMatrix
 #' @importFrom caret createFolds
 NULL
