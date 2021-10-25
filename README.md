@@ -53,16 +53,16 @@ There are 4 functions in this library:
 
 ## Examples
 
-Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 70*, we generate data from a linear model *y<sub>i</sub> = &beta;<sub>0</sub> + <x<sub>i</sub>, &beta;> + &epsilon;<sub>i</sub>*, for *i = 1, 2, ... n*. Here we set *&beta;<sub>0</sub> = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *&epsilon;<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
+Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 200*, we generate data from a linear model *y<sub>i</sub> = &beta;<sub>0</sub> + <x<sub>i</sub>, &beta;> + &epsilon;<sub>i</sub>*, for *i = 1, 2, ... n*. Here we set *&beta;<sub>0</sub> = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *&epsilon;<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
 
 ```r
 library(MASS)
 library(quantreg)
 library(conquer)
 n = 5000
-p = 70
+p = 200
 beta = rep(1, p + 1)
-set.seed(2020)
+set.seed(2021)
 X = mvrnorm(n, rep(0, p), diag(p))
 err = rt(n, 2)
 Y = cbind(1, X) %*% beta + err
@@ -85,7 +85,7 @@ time.conquer = as.numeric(difftime(end, start, units = "secs"))
 est.conquer = norm(fit.conquer$coeff - beta, "2")
 ```
 
-It takes 0.1955 seconds to run the standard quantile regression but only 0.0255 seconds to run conquer. In the meanwhile, the estimation error is 0.1799 for quantile regression and 0.1685 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory.
+It takes 7.4 seconds to run the standard quantile regression but only 0.2 seconds to run conquer. In the meanwhile, the estimation error is 0.5186 for quantile regression and 0.4864 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory. We refer to [He et al., 2021](https://doi.org/10.1016/j.jeconom.2021.07.010) for a more extensive numerical study.
 
 ## Getting help
 
