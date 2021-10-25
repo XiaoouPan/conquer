@@ -209,10 +209,10 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{lambda} using a local majorize-minimize algorithm.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param lambda A prescribed value for the regularization parameter. Default is 0.2.
+#' @param lambda (\strong{optional}) A prescribed value for the regularization parameter. Default is 0.2.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{0.5 * (log(p) / n)^(1/4)}.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
 #' @param para (\strong{optional}) A parameter for concave penalties scad and mcp. Do not need to specify if the penalty is lasso. The default values are 3.7 for scand and 3 for mcp.
 #' @param epsilon (\strong{optional}) A tolerance level for the optimization stopping rule. The algorithm terminates when the maximal entry of the change of coefficients is less than \code{epsilon}. Default is 0.001.
@@ -231,6 +231,7 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' \item{\code{n}}{The sample size.}
 #' \item{\code{p}}{The dimension of the covariates.}
 #' }
+#' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
@@ -284,6 +285,121 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
     rst = conquerHdTrian(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   }
   return (list(coeff = as.numeric(rst), bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
+}
+
+#' @title Cross-Validated Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties
+#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{lambda} is calibrated via cross-validation.
+#' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
+#' @param Y An \eqn{n}-dimensional response vector.
+#' @param lambdaSeq (\strong{optional}) A sequence of regularization parameter candidates. if not specified, the sequence will be generated based on a simulated pivotal quantity proposed in Belloni and Chernozhukov (2011).
+#' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
+#' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.
+#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
+#' @param kfolds (\strong{optional}) The number of folds for cross-validation. Default is 5.
+#' @param numLambda (\strong{optional}) The number of \eqn{lambda}'s for cross-validation if \code{lambdaSeq} is not speficied. Default is 50.
+#' @param para (\strong{optional}) A parameter for concave penalties scad and mcp. Do not need to specify if the penalty is lasso. The default values are 3.7 for scand and 3 for mcp.
+#' @param epsilon (\strong{optional}) A tolerance level for the optimization stopping rule. The algorithm terminates when the maximal entry of the change of coefficients is less than \code{epsilon}. Default is 0.001.
+#' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
+#' @param phi0 (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the initial value to search the largest eigen value of the covariance matrix. Default is 0.01.
+#' @param gamma (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the inflating parameter to search the largest eigen value of the covariance matrix. Default is 1.2.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations. Do not need to specify if the penalty is lasso. Default is 3.
+#' @return An object containing the following items will be returned:
+#' \describe{
+#' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+#' \item{\code{lambda}}{The optimal value of regularization parameter selected by cross-validation.}
+#' \item{\code{bandwidth}}{The value of smoothing bandwidth.}
+#' \item{\code{tau}}{The desired quantile level for the regularized regression.}
+#' \item{\code{kernel}}{The choice of kernel function.}
+#' \item{\code{penalty}}{The choice of penalty type.}
+#' \item{\code{n}}{The sample size.}
+#' \item{\code{p}}{The dimension of the covariates.}
+#' }
+#' @references Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
+#' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
+#' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
+#' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
+#' @seealso See \code{\link{conquer.regularized}} for regularized quantile regression with a prescribed \eqn{lambda}.
+#' @export 
+conquer.cv.regularized = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
+                                  penalty = c("lasso", "scad", "mcp"), kfolds = 5, numLambda = 50, para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, 
+                                  gamma = 1.2, iteTight = 3) {
+  if (nrow(X) != length(Y)) {
+    stop("Error: the length of Y must be the same as the number of rows of X.")
+  }
+  if(tau <= 0 || tau >= 1) {
+    stop("Error: the quantile level tau must be in (0, 1).")
+  }
+  if (!is.null(lambdaSeq) && min(lambdaSeq) <= 0) {
+    stop("Error: all lambda's must be positive.")
+  }
+  if (min(colSds(X)) == 0) {
+    stop("Error: at least one column of X is constant.")
+  }
+  kernel = match.arg(kernel)
+  penalty = match.arg(penalty)
+  n = nrow(X)
+  p = ncol(X)
+  if (h <= 0.05) {
+    h = max(0.5 * (log(p) / n)^(0.25), 0.05);
+  }
+  if (is.null(lambdaSeq)) {
+    nsim = 200
+    U = matrix(runif(nsim * n), nsim, n)
+    pivot = tau - (U <= tau)
+    lambda0 = quantile(rowMaxs(abs(pivot %*% scale(X))), 0.9) / n
+    lambdaSeq = seq(0.5, 1.5, length.out = numLambda) * lambda0
+  } 
+  if (penalty == "scad" && is.null(para)) {
+    para = 3.7
+  } else if (penalty == "mcp" && is.null(para)) {
+    para = 3.0
+  }
+  folds = createFolds(Y, kfolds, FALSE)
+  rst = NULL
+  if (kernel == "Gaussian") {
+    if (penalty == "lasso") {
+      rst = cvSmqrLassoGauss(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+    } else if (penalty == "scad") {
+      rst = cvSmqrScadGauss(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    } else {
+      rst = cvSmqrMcpGauss(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    }
+  } else if (kernel == "logistic") {
+    if (penalty == "lasso") {
+      rst = cvSmqrLassoLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+    } else if (penalty == "scad") {
+      rst = cvSmqrScadLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    } else {
+      rst = cvSmqrMcpLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    }
+  } else if (kernel == "uniform") {
+    if (penalty == "lasso") {
+      rst = cvSmqrLassoUnif(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+    } else if (penalty == "scad") {
+      rst = cvSmqrScadUnif(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    } else {
+      rst = cvSmqrMcpUnif(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    }
+  } else if (kernel == "parabolic") {
+    if (penalty == "lasso") {
+      rst = cvSmqrLassoPara(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+    } else if (penalty == "scad") {
+      rst = cvSmqrScadPara(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    } else {
+      rst = cvSmqrMcpPara(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    }
+  } else {
+    if (penalty == "lasso") {
+      rst = cvSmqrLassoTrian(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+    } else if (penalty == "scad") {
+      rst = cvSmqrScadTrian(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    } else {
+      rst = cvSmqrMcpTrian(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+    }
+  }
+  return (list(coeff = as.numeric(rst$coeff), lambda = rst$lambda, bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, n = n, p = p))
 }
 
 
