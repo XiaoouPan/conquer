@@ -53,14 +53,14 @@ There are 4 functions in this library:
 
 ## Examples
 
-Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 200*, we generate data from a linear model *y<sub>i</sub> = &beta;<sub>0</sub> + <x<sub>i</sub>, &beta;> + &epsilon;<sub>i</sub>*, for *i = 1, 2, ... n*. Here we set *&beta;<sub>0</sub> = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *&epsilon;<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
+Let us illustrate conquer by a simple example. For sample size *n = 5000* and dimension *p = 500*, we generate data from a linear model *y<sub>i</sub> = &beta;<sub>0</sub> + <x<sub>i</sub>, &beta;> + &epsilon;<sub>i</sub>*, for *i = 1, 2, ... n*. Here we set *&beta;<sub>0</sub> = 1*, *&beta;* is a *p*-dimensional vector with every entry being *1*, *x<sub>i</sub>* follows *p*-dimensional standard multivariate normal distribution (available in the library `MASS`), and *&epsilon;<sub>i</sub>* is from *t<sub>2</sub>* distribution. 
 
 ```r
 library(MASS)
 library(quantreg)
 library(conquer)
 n = 5000
-p = 200
+p = 500
 beta = rep(1, p + 1)
 set.seed(2021)
 X = mvrnorm(n, rep(0, p), diag(p))
