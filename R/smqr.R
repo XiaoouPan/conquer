@@ -50,7 +50,7 @@ getNormCI = function(est, sd, z) {
 #' n = 500; p = 10
 #' beta = rep(1, p)
 #' X = matrix(rnorm(n * p), n, p)
-#' Y = 1 + X %*% beta + rt(n, 2)
+#' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Smoothed quantile regression with Gaussian kernel
 #' fit.Gauss = conquer(X, Y, tau = 0.5, kernel = "Gaussian")
@@ -162,7 +162,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' n = 500; p = 10
 #' beta = rep(1, p)
 #' X = matrix(rnorm(n * p), n, p)
-#' Y = 1 + X %*% beta + rt(n, 2)
+#' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Smoothed quantile regression process with Gaussian kernel
 #' fit.Gauss = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")

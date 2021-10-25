@@ -50,7 +50,7 @@ Fit a smoothed quantile regression process over a quantile range. The algorithm 
 n = 500; p = 10
 beta = rep(1, p)
 X = matrix(rnorm(n * p), n, p)
-Y = 1 + X \%*\% beta + rt(n, 2)
+Y = X \%*\% beta + rt(n, 2)
 
 ## Smoothed quantile regression process with Gaussian kernel
 fit.Gauss = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")

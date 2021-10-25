@@ -64,7 +64,7 @@ Fit a smoothed quantile regression via convolution-type smoothing method. The so
 n = 500; p = 10
 beta = rep(1, p)
 X = matrix(rnorm(n * p), n, p)
-Y = 1 + X \%*\% beta + rt(n, 2)
+Y = X \%*\% beta + rt(n, 2)
 
 ## Smoothed quantile regression with Gaussian kernel
 fit.Gauss = conquer(X, Y, tau = 0.5, kernel = "Gaussian")
