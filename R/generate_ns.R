@@ -3,4 +3,5 @@
 #' @importFrom matrixStats rowSds rowQuantiles colSds
 #' @importFrom stats qnorm
 #' @importFrom Matrix rankMatrix
+#' @importFrom caret createFolds
 NULL
