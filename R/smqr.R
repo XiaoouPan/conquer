@@ -172,8 +172,8 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' fit.unif = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
 #' beta.hat.unif = fit.unif$coeff
 #' @export 
-conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
-                           iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000) {
+conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
+                           checkSing = FALSE, tol = 0.0001, iteMax = 5000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
@@ -205,46 +205,38 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
   return (list(coeff = rst$coeff, bandwidth = rst$bandwidth, tauSeq = tauSeq, kernel = kernel, n = nrow(X), p = ncol(X)))
 }
 
-#' @title Convolution-Type Smoothed Quantile Regression with Lasso Penalty
-#' @description Fit a smoothed quantile regression with Lasso penalty using a local majorize-minimize algorithm. The regularization parameter \eqn{lambda} is tunned via cross-validation.
+#' @title Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties
+#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{lambda} using a local majorize-minimize algorithm.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
+#' @param lambda A prescribed value for the regularization parameter. Default is 0.2.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
-#' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is 0.15.
-#' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
-#' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
+#' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{0.5 * (log(p) / n)^(1/4)}.
+#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
+#' @param para (\strong{optional}) A parameter for concave penalties scad and mcp. Do not need to specify if the penalty is lasso. The default values are 3.7 for scand and 3 for mcp.
+#' @param epsilon (\strong{optional}) A tolerance level for the optimization stopping rule. The algorithm terminates when the maximal entry of the change of coefficients is less than \code{epsilon}. Default is 0.001.
+#' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
+#' @param phi0 (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the initial value to search the largest eigen value of the covariance matrix. Default is 0.01.
+#' @param gamma (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the inflating parameter to search the largest eigen value of the covariance matrix. Default is 1.2.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations. Do not need to specify if the penalty is lasso. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
-#' \item{\code{coeff}}{A \eqn{(p + 1)} by \eqn{m} matrix of estimated quantile regression process coefficients, including the intercept. m is the length of \code{tauSeq}.}
+#' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
 #' \item{\code{bandwidth}}{The value of smoothing bandwidth.}
-#' \item{\code{tauSeq}}{The desired quantile levels for the process.}
+#' \item{\code{tau}}{The desired quantile level for the regularized regression.}
 #' \item{\code{kernel}}{The choice of kernel function.}
+#' \item{\code{penalty}}{The choice of penalty type.}
+#' \item{\code{lambda}}{The value of regularization parameter.}
 #' \item{\code{n}}{The sample size.}
 #' \item{\code{p}}{The dimension of the covariates.}
 #' }
-#' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
-#' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
-#' @references He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
-#' @seealso See \code{\link{conquer}} for single-index smoothed quantile regression.
-#' @examples 
-#' n = 500; p = 10
-#' beta = rep(1, p)
-#' X = matrix(rnorm(n * p), n, p)
-#' Y = 1 + X %*% beta + rt(n, 2)
-#' 
-#' ## Smoothed quantile regression process with Gaussian kernel
-#' fit.Gauss = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")
-#' beta.hat.Gauss = fit.Gauss$coeff
-#' 
-#' ## Smoothe quantile regression with uniform kernel
-#' fit.unif = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
-#' beta.hat.unif = fit.unif$coeff
+#' @seealso See \code{\link{conquer.cv.regularized}} for regularized quantile regression with cross-validation.
 #' @export 
-conquer.lasso = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, tol = 0.0001, iteMax = 5000) {
+conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, tol = 0.0001, iteMax = 5000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
