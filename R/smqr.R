@@ -236,36 +236,54 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.cv.regularized}} for regularized quantile regression with cross-validation.
 #' @export 
-conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, tol = 0.0001, iteMax = 5000) {
+conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
+                               penalty = c("lasso", "scad", "mcp"), para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
-  if (ncol(X) >= nrow(X)) {
-    stop("Error: the number of columns of X cannot exceed the number of rows of X.")
+  if(tau <= 0 || tau >= 1) {
+    stop("Error: the quantile level tau must be in (0, 1).")
   }
-  if(min(tauSeq) <= 0 || max(tauSeq) >= 1) {
-    stop("Error: every quantile level must be in (0, 1).")
+  if (lambda <= 0) {
+    stop("Error: lambda must be positive.")
   }
   if (min(colSds(X)) == 0) {
     stop("Error: at least one column of X is constant.")
   }
-  if (checkSing && rankMatrix(X)[1] < ncol(X)) {
-    stop("Error: the design matrix X is singular.")
-  }
   kernel = match.arg(kernel)
+  penalty = match.arg(penalty)
+  n = nrow(X)
+  p = ncol(X)
+  if (h <= 0.05) {
+    h = max(0.5 * (log(p) / n)^(0.25), 0.05);
+  }
+  type = 1
+  if (penalty == "lasso") {
+    para = 1.0
+  } else if (penalty == "scad") {
+    type = 2
+    if (is.null(para) || para <= 0) {
+      para = 3.7
+    }
+  } else if (penalty == "mcp") {
+    type = 3
+    if (is.null(para) || para <= 0) {
+      para = 3.0
+    }
+  }
   rst = NULL
   if (kernel == "Gaussian") {
-    rst = smqrGaussProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    rst = conquerHdGauss(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   } else if (kernel == "logistic") {
-    rst = smqrLogisticProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    rst = conquerHdLogistic(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   } else if (kernel == "uniform") {
-    rst = smqrUnifProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    rst = conquerHdUnif(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   } else if (kernel == "parabolic") {
-    rst = smqrParaProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    rst = conquerHdPara(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   } else {
-    rst = smqrTrianProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    rst = conquerHdTrian(X, Y, lambda, tau, h, type, phi0, gamma, epsilon, iteMax, iteTight, para)
   }
-  return (list(coeff = rst$coeff, bandwidth = rst$bandwidth, tauSeq = tauSeq, kernel = kernel, n = nrow(X), p = ncol(X)))
+  return (list(coeff = as.numeric(rst), bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
 }
 
 
