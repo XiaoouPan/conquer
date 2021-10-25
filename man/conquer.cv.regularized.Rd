@@ -2,7 +2,7 @@
 % Please edit documentation in R/smqr.R
 \name{conquer.cv.regularized}
 \alias{conquer.cv.regularized}
-\title{Cross-Validated Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties}
+\title{Cross-Validated Convolution-Type Smoothed Quantile Regression with Regularization}
 \usage{
 conquer.cv.regularized(
   X,
@@ -33,7 +33,7 @@ conquer.cv.regularized(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.}
+\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".}
 
@@ -67,7 +67,7 @@ An object containing the following items will be returned:
 }
 }
 \description{
-Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{lambda} is calibrated via cross-validation.
+Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{\lambda} is calibrated via cross-validation.
 }
 \references{
 Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.

@@ -37,7 +37,7 @@ conquer(
 
 \item{ci}{(\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
 
-\item{alpha}{(\strong{optional}) The nominal level for (1-\eqn{alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.}
+\item{alpha}{(\strong{optional}) The nominal level for (1-\eqn{\alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.}
 
 \item{B}{(\strong{optional}) The size of bootstrap samples. Default is 1000.}
 }

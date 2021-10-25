@@ -2,7 +2,7 @@
 % Please edit documentation in R/smqr.R
 \name{conquer.regularized}
 \alias{conquer.regularized}
-\title{Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties}
+\title{Convolution-Type Smoothed Quantile Regression with Regularization}
 \usage{
 conquer.regularized(
   X,
@@ -31,7 +31,7 @@ conquer.regularized(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.}
+\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".}
 
@@ -61,7 +61,7 @@ An object containing the following items will be returned:
 }
 }
 \description{
-Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{lambda} using a local majorize-minimize algorithm.
+Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{\lambda} using a local majorize-minimize algorithm.
 }
 \references{
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.

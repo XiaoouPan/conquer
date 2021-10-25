@@ -24,7 +24,7 @@ getNormCI = function(est, sd, z) {
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
 #' @param ci (\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
-#' @param alpha (\strong{optional}) The nominal level for (1-\eqn{alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.
+#' @param alpha (\strong{optional}) The nominal level for (1-\eqn{\alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.
 #' @param B (\strong{optional}) The size of bootstrap samples. Default is 1000.
 #' @return An object containing the following items will be returned:
 #' \describe{
@@ -137,9 +137,9 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' @description Fit a smoothed quantile regression process over a quantile range. The algorithm is essentially the same as \code{\link{conquer}}.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param tauSeq (\strong{optional}) The desired quantile grid. Default is {0.1, 0.15, 0.2, ..., 0.85, 0.9}. All values must be between 0 and 1.
+#' @param tauSeq (\strong{optional}) The desired quantile grid. Default is \eqn{{0.1, 0.15, 0.2, ..., 0.85, 0.9}}. All values must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(((log(n) + p) / n)^{0.4}, 0.05)}. The default will be used if the input value is less than 0.05.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
@@ -165,11 +165,11 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' Y = 1 + X %*% beta + rt(n, 2)
 #' 
 #' ## Smoothed quantile regression process with Gaussian kernel
-#' fit.Gauss = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")
+#' fit.Gauss = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")
 #' beta.hat.Gauss = fit.Gauss$coeff
 #' 
 #' ## Smoothe quantile regression with uniform kernel
-#' fit.unif = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
+#' fit.unif = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
 #' beta.hat.unif = fit.unif$coeff
 #' @export 
 conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
@@ -205,14 +205,14 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
   return (list(coeff = rst$coeff, bandwidth = rst$bandwidth, tauSeq = tauSeq, kernel = kernel, n = nrow(X), p = ncol(X)))
 }
 
-#' @title Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties
-#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{lambda} using a local majorize-minimize algorithm.
+#' @title Convolution-Type Smoothed Quantile Regression with Regularization
+#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{\lambda} using a local majorize-minimize algorithm.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambda (\strong{optional}) A prescribed value for the regularization parameter. Default is 0.2.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
 #' @param para (\strong{optional}) A parameter for concave penalties scad and mcp. Do not need to specify if the penalty is lasso. The default values are 3.7 for scand and 3 for mcp.
 #' @param epsilon (\strong{optional}) A tolerance level for the optimization stopping rule. The algorithm terminates when the maximal entry of the change of coefficients is less than \code{epsilon}. Default is 0.001.
@@ -287,14 +287,14 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
   return (list(coeff = as.numeric(rst), bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
 }
 
-#' @title Cross-Validated Convolution-Type Smoothed Quantile Regression with Lasso, Scad and Mcp Penalties
-#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{lambda} is calibrated via cross-validation.
+#' @title Cross-Validated Convolution-Type Smoothed Quantile Regression with Regularization
+#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties using a local majorize-minimize algorithm. The regularization parameter \eqn{\lambda} is calibrated via cross-validation.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambdaSeq (\strong{optional}) A sequence of regularization parameter candidates. if not specified, the sequence will be generated based on a simulated pivotal quantity proposed in Belloni and Chernozhukov (2011).
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(0.5 * (log(p) / n)^(1/4), 0.05)}.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
 #' @param kfolds (\strong{optional}) The number of folds for cross-validation. Default is 5.
 #' @param numLambda (\strong{optional}) The number of \eqn{lambda}'s for cross-validation if \code{lambdaSeq} is not speficied. Default is 50.

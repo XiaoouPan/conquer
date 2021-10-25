@@ -20,11 +20,11 @@ conquer.process(
 
 \item{Y}{An \eqn{n}-dimensional response vector.}
 
-\item{tauSeq}{(\strong{optional}) The desired quantile grid. Default is {0.1, 0.15, 0.2, ..., 0.85, 0.9}. All values must be between 0 and 1.}
+\item{tauSeq}{(\strong{optional}) The desired quantile grid. Default is \eqn{{0.1, 0.15, 0.2, ..., 0.85, 0.9}}. All values must be between 0 and 1.}
 
 \item{kernel}{(\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max(((log(n) + p) / n)^{0.4}, 0.05)}. The default will be used if the input value is less than 0.05.}
+\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.}
 
 \item{checkSing}{(\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer.}
 
@@ -53,11 +53,11 @@ X = matrix(rnorm(n * p), n, p)
 Y = 1 + X \%*\% beta + rt(n, 2)
 
 ## Smoothed quantile regression process with Gaussian kernel
-fit.Gauss = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")
+fit.Gauss = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "Gaussian")
 beta.hat.Gauss = fit.Gauss$coeff
 
 ## Smoothe quantile regression with uniform kernel
-fit.unif = conquer(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
+fit.unif = conquer.process(X, Y, tauSeq = seq(0.2, 0.8, by = 0.05), kernel = "uniform")
 beta.hat.unif = fit.unif$coeff
 }
 \references{
