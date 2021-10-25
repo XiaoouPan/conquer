@@ -91,8 +91,6 @@ Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. 
 
 He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://doi.org/10.1016/j.jeconom.2021.07.010)
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021). Scalable estimation and inference for censored quantile regression process. Preprint.
-
 Horowitz, J. L. (1998). Bootstrap methods for median regression models. *Econometrica* **66** 1327–1351. [Paper](https://www.jstor.org/stable/2999619)
 
 Koenker, R. (2005). Quantile Regression. Cambridge Univ. Press, Cambridge. [Book](https://www.cambridge.org/core/books/quantile-regression/C18AE7BCF3EC43C16937390D44A328B1)
@@ -100,8 +98,6 @@ Koenker, R. (2005). Quantile Regression. Cambridge Univ. Press, Cambridge. [Book
 Koenker, R. (2019). Package "quantreg", version 5.54. [CRAN](https://CRAN.R-project.org/package=quantreg)
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 33-50. [Paper](https://www.jstor.org/stable/1913643?seq=1#metadata_info_tab_contents)
-
-Peng, L. and Huang, Y. (2008). Survival analysis with quantile regression models. *J. Am. Stat. Assoc.* **103** 637–649. [Paper](https://doi.org/10.1198/016214508000000355)
 
 Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise: Computability of squared-error versus absolute-error estimators. *Statist. Sci.* **12** 279–300. [Paper](https://projecteuclid.org/euclid.ss/1030037960)
 
