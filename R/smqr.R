@@ -205,37 +205,37 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
   return (list(coeff = rst$coeff, bandwidth = rst$bandwidth, tauSeq = tauSeq, kernel = kernel, n = nrow(X), p = ncol(X)))
 }
 
-#' @title Convolution-Type Smoothed Quantile Regression with Regularization
-#' @description Fit a smoothed quantile regression with Lasso, scad and mcp penalties and a prescribed regularization parameter \eqn{\lambda} using a local majorize-minimize algorithm.
+#' @title Penalized Convolution-Type Smoothed Quantile Regression
+#' @description Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted l_1-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param lambda (\strong{optional}) A prescribed value for the regularization parameter. Default is 0.2.
-#' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
-#' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
-#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
-#' @param para (\strong{optional}) A parameter for concave penalties scad and mcp. Do not need to specify if the penalty is lasso. The default values are 3.7 for scand and 3 for mcp.
-#' @param epsilon (\strong{optional}) A tolerance level for the optimization stopping rule. The algorithm terminates when the maximal entry of the change of coefficients is less than \code{epsilon}. Default is 0.001.
+#' @param lambda (\strong{optional}) Regularization parameter. Default is 0.2.
+#' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
+#' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
+#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
+#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other two options are "scad" and "mcp".
+#' @param para (\strong{optional}) A constant parameter for "scad" and "mcp". Do not need to specify if the penalty is lasso. The default values are 3.7 for "scad" and 3 for "mcp".
+#' @param epsilon (\strong{optional}) A tolerance level for the stopping rule. The iteration will stop when the maximum magnitude of the change of coefficient updates is less than \code{epsilon}. Default is 0.001.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
-#' @param phi0 (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the initial value to search the largest eigen value of the covariance matrix. Default is 0.01.
-#' @param gamma (\strong{optional}) A parameter for the local majorize-minimize algorithm. It is the inflating parameter to search the largest eigen value of the covariance matrix. Default is 1.2.
-#' @param iteTight (\strong{optional}) Maximum number of tightening iterations. Do not need to specify if the penalty is lasso. Default is 3.
+#' @param phi0 (\strong{optional}) The initial quadratic coefficient parameter in the local adaptive majorize-minimize algorithm. Default is 0.01.
+#' @param gamma (\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted l_1-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
-#' \item{\code{bandwidth}}{The value of smoothing bandwidth.}
-#' \item{\code{tau}}{The desired quantile level for the regularized regression.}
-#' \item{\code{kernel}}{The choice of kernel function.}
-#' \item{\code{penalty}}{The choice of penalty type.}
-#' \item{\code{lambda}}{The value of regularization parameter.}
-#' \item{\code{n}}{The sample size.}
-#' \item{\code{p}}{The dimension of the covariates.}
+#' \item{\code{bandwidth}}{Bandwidth value.}
+#' \item{\code{tau}}{Quantile level.}
+#' \item{\code{kernel}}{Kernel function.}
+#' \item{\code{penalty}}{Penalty type.}
+#' \item{\code{lambda}}{Regularization parameter.}
+#' \item{\code{n}}{Sample size.}
+#' \item{\code{p}}{Number of the covariates.}
 #' }
 #' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
-#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
+#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
-#' @seealso See \code{\link{conquer.cv.regularized}} for regularized quantile regression with cross-validation.
+#' @seealso See \code{\link{conquer.cv.reg}} for regularized quantile regression with cross-validation.
 #' @examples 
 #' n = 200; p = 500; s = 10
 #' beta = c(rep(1.5, s), rep(0, p - s))
@@ -243,15 +243,15 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Regularized conquer with lasso penalty at tau = 0.8
-#' fit.lasso = conquer.regularized(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
 #' beta.lasso = fit.lasso$coeff
 #' 
 #' #' ## Regularized conquer with scad penalty at tau = 0.8
-#' fit.scad = conquer.regularized(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
 #' beta.scad = fit.scad$coeff
 #' @export 
-conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
-                               penalty = c("lasso", "scad", "mcp"), para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
+conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
+                       penalty = c("lasso", "scad", "mcp"), para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
@@ -333,7 +333,7 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. Preprint.
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
-#' @seealso See \code{\link{conquer.regularized}} for regularized quantile regression with a prescribed \eqn{lambda}.
+#' @seealso See \code{\link{conquer.reg}} for regularized quantile regression with a prescribed \eqn{lambda}.
 #' @examples 
 #' n = 200; p = 500; s = 10
 #' beta = c(rep(1.5, s), rep(0, p - s))
@@ -348,7 +348,7 @@ conquer.regularized = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussi
 #' fit.scad = conquer.cv.regularized(X, Y,tau = 0.8, kernel = "Gaussian", penalty = "scad")
 #' beta.scad = fit.scad$coeff
 #' @export 
-conquer.cv.regularized = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
+conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                                   penalty = c("lasso", "scad", "mcp"), kfolds = 5, numLambda = 50, para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, 
                                   gamma = 1.2, iteTight = 3) {
   if (nrow(X) != length(Y)) {
