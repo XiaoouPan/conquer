@@ -5,14 +5,14 @@
 \alias{conquer-package}
 \title{Conquer: Convolution-Type Smoothed Quantile Regression}
 \description{
-Fast and accurate convolution-type smoothed quantile regression for low/high-dimensional estimation and inference.
+Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with l_1-penalization and iteratively reweighted l_1-penalization are used to fit sparse models.
 }
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 
 Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
 
-Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
+Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 
 Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist. 39 338-357.
 
@@ -26,7 +26,7 @@ Koenker, R. Package "quantreg".
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 
-Pan, X. and Zhou, W.-X. (2020). Multiplier bootstrap for quantile regression: Non-asymptotic theory under random design. Information and Inference: A Journal of the IMA 10 813-861.
+Tan, K. M., Wang, L. and Zhou, W.-X. (2021+). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, in press.
 }
 \author{
 Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
