@@ -6,6 +6,9 @@
 
 The `conquer` library performs fast and accurate convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2021](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177), [He et al., 2021](https://doi.org/10.1016/j.jeconom.2021.07.010), [Tan, Wang and Zhou, 2021](https://arxiv.org/abs/2109.05640)) for low/high-dimensional estimation and bootstrap inference.
 
+In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with *&ell;<sub>1</sub>*-penalization and iteratively reweighted *&ell;<sub>1</sub>*-penalization are used to fit sparse models.
+
+
 ## Updates
 
 2021-10-24 (Version 1.2.0):
