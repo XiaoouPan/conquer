@@ -335,7 +335,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @author Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 #' @seealso See \code{\link{conquer.reg}} for regularized quantile regression with a prescribed \eqn{lambda}.
 #' @examples 
-#' n = 200; p = 500; s = 10
+#' n = 100; p = 100; s = 3
 #' beta = c(rep(1.5, s), rep(0, p - s))
 #' X = matrix(rnorm(n * p), n, p)
 #' Y = X %*% beta + rt(n, 2)
@@ -394,11 +394,11 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
     }
   } else if (kernel == "logistic") {
     if (penalty == "lasso") {
-      rst = cvSmqrLassoLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
+      rst = cvSmqrLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
     } else if (penalty == "scad") {
-      rst = cvSmqrScadLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+      rst = cvSmqrScadLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
     } else {
-      rst = cvSmqrMcpLassoLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+      rst = cvSmqrMcpLogistic(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
     }
   } else if (kernel == "uniform") {
     if (penalty == "lasso") {

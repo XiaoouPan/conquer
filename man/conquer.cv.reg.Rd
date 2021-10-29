@@ -70,7 +70,7 @@ An object containing the following items will be returned:
 Fit sparse quantile regression models via regularized conquer methods with "lasso", "scad" and "mcp" penalties. The regularization parameter \eqn{\lambda} is selected by cross-validation.
 }
 \examples{
-n = 200; p = 500; s = 10
+n = 100; p = 100; s = 3
 beta = c(rep(1.5, s), rep(0, p - s))
 X = matrix(rnorm(n * p), n, p)
 Y = X \%*\% beta + rt(n, 2)
