@@ -24,7 +24,7 @@ getNormCI = function(est, sd, z) {
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
 #' @param ci (\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
-#' @param alpha (\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.}.
+#' @param alpha (\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.
 #' @param B (\strong{optional}) The size of bootstrap samples. Default is 1000.
 #' @return An object containing the following items will be returned:
 #' \describe{

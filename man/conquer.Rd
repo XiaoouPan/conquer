@@ -37,6 +37,8 @@ conquer(
 
 \item{ci}{(\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
 
+\item{alpha}{(\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.}
+
 \item{B}{(\strong{optional}) The size of bootstrap samples. Default is 1000.}
 }
 \value{
