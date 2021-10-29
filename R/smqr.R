@@ -137,20 +137,20 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' @description Fit a smoothed quantile regression process over a quantile range. The algorithm is essentially the same as \code{\link{conquer}}.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param tauSeq (\strong{optional}) The desired quantile grid. Default is \eqn{{0.1, 0.15, 0.2, ..., 0.85, 0.9}}. All values must be between 0 and 1.
-#' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
+#' @param tauSeq (\strong{optional}) A sequence of quantile values (between 0 and 1). Default is \eqn{{0.1, 0.15, 0.2, ..., 0.85, 0.9}}.
+#' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
+#' @param h (\strong{optional}) The bandwidth/smoothing parameter. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
-#' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
+#' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} by \eqn{m} matrix of estimated quantile regression process coefficients, including the intercept. m is the length of \code{tauSeq}.}
-#' \item{\code{bandwidth}}{The value of smoothing bandwidth.}
-#' \item{\code{tauSeq}}{The desired quantile levels for the process.}
+#' \item{\code{bandwidth}}{Bandwidth value.}
+#' \item{\code{tauSeq}}{The sequence of quantile levels.}
 #' \item{\code{kernel}}{The choice of kernel function.}
-#' \item{\code{n}}{The sample size.}
-#' \item{\code{p}}{The dimension of the covariates.}
+#' \item{\code{n}}{Sample size.}
+#' \item{\code{p}}{Number the covariates.}
 #' }
 #' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 #' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
