@@ -118,7 +118,7 @@ Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. *I
 
 Belloni, A. and Chernozhukov, V. (2011) *&ell;<sub>1</sub>*-penalized quantile regression in high-dimensional sparse models. *Ann. Statist.* **39** 82-130. [Paper](https://doi.org/10.1214/10-AOS827)
 
-Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841. [Paper](https://projecteuclid.org/euclid.aos/1522742437)
+Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. *Ann. Statist.* **46** 814-841. [Paper](https://projecteuclid.org/euclid.aos/1522742437)
 
 Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. *J. Bus. Econ. Statist.* **39** 338-357, [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
 
@@ -136,5 +136,5 @@ Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise
 
 Sanderson, C. and Curtin, R. (2016). Armadillo: A template-based C++ library for linear algebra. *J. Open Source Softw.* **1** 26. [Paper](https://joss.theoj.org/papers/10.21105/joss.00026.pdf)
 
-Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. [arXiv](https://arxiv.org/abs/2109.05640)
+Tan, K. M., Wang, L. and Zhou, W.-X. (2021+). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [arXiv](https://arxiv.org/abs/2109.05640)
 
