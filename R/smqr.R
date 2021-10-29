@@ -14,28 +14,28 @@ getNormCI = function(est, sd, z) {
 }
 
 #' @title Convolution-Type Smoothed Quantile Regression
-#' @description Fit a smoothed quantile regression via convolution-type smoothing method. The solution is computed using gradient descent with Barzilai-Borwein step size. Constructs (1-\eqn{\alpha}) confidence intervals with multiplier bootstrap.
+#' @description Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
-#' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" or "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
+#' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
+#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
-#' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The gradient descent algorithm terminates when the maximal entry of the gradient is less than \code{tol}. Default is 1e-04. 
+#' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
 #' @param ci (\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
-#' @param alpha (\strong{optional}) The nominal level for (1-\eqn{\alpha})-confidence intervals. Default is 0.05. The input value must be in \eqn{(0, 1)}.
+#' @param alpha (\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.}.
 #' @param B (\strong{optional}) The size of bootstrap samples. Default is 1000.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)}-vector of estimated quantile regression coefficients, including the intercept.}
-#' \item{\code{ite}}{The number of iterations of the gradient descent algorithm for convergence.}
-#' \item{\code{residual}}{The residuals of the quantile regression fit.}
-#' \item{\code{bandwidth}}{The value of smoothing bandwidth.}
-#' \item{\code{tau}}{The desired quantile level.}
-#' \item{\code{kernel}}{The choice of kernel function.}
-#' \item{\code{n}}{The sample size.}
-#' \item{\code{p}}{The dimension of the covariates.}
+#' \item{\code{ite}}{Number of iterations until convergence.}
+#' \item{\code{residual}}{An \eqn{n}-vector of fitted residuals.}
+#' \item{\code{bandwidth}}{Bandwidth value.}
+#' \item{\code{tau}}{Quantile level.}
+#' \item{\code{kernel}}{Kernel function.}
+#' \item{\code{n}}{Sample size.}
+#' \item{\code{p}}{Number of covariates.}
 #' \item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
 #' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
 #' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
