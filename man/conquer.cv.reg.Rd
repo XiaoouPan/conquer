@@ -2,7 +2,7 @@
 % Please edit documentation in R/smqr.R
 \name{conquer.cv.reg}
 \alias{conquer.cv.reg}
-\title{Cross-Validated Penalized Convolution Smoothed Quantile Regression}
+\title{Cross-Validated Penalized Convolution-Type Smoothed Quantile Regression}
 \usage{
 conquer.cv.reg(
   X,
@@ -33,13 +33,13 @@ conquer.cv.reg(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.}
+\item{h}{(\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".}
 
 \item{kfolds}{(\strong{optional}) Number of folds for cross-validation. Default is 5.}
 
-\item{numLambda}{(\strong{optional}) Number of \eqn{lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.}
+\item{numLambda}{(\strong{optional}) Number of \eqn{\lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.}
 
 \item{para}{(\strong{optional}) A constant parameter for "scad" and "mcp". Do not need to specify if the penalty is lasso. The default values are 3.7 for "scad" and 3 for "mcp".}
 
@@ -51,7 +51,7 @@ conquer.cv.reg(
 
 \item{gamma}{(\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.}
 
-\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted l_1-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.}
+\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.}
 }
 \value{
 An object containing the following items will be returned:
@@ -84,7 +84,7 @@ fit.scad = conquer.cv.reg(X, Y,tau = 0.8, kernel = "Gaussian", penalty = "scad")
 beta.scad = fit.scad$coeff
 }
 \references{
-Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
+Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
 
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 

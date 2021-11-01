@@ -5,12 +5,12 @@
 \alias{conquer-package}
 \title{Conquer: Convolution-Type Smoothed Quantile Regression}
 \description{
-Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with \eqn{l_1}-penalization and iteratively reweighted \eqn{l_1}-penalization are used to fit sparse models.
+Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with \eqn{\ell_1}-penalization and iteratively reweighted \eqn{\ell_1}-penalization are used to fit sparse models.
 }
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 
-Belloni, A. and Chernozhukov, V. (2011). \eqn{l_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
+Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
 
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 

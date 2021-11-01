@@ -27,7 +27,7 @@ conquer(
 
 \item{kernel}{(\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is max\eqn{{((log(n) + p) / n)^0.4, 0.05}}. The default will be used if the input value is less than 0.05.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than 0.05.}
 
 \item{checkSing}{(\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer.}
 

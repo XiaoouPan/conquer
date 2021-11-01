@@ -31,7 +31,7 @@ conquer.reg(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". The other two options are "scad" and "mcp".}
 
@@ -61,7 +61,7 @@ An object containing the following items will be returned:
 }
 }
 \description{
-Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted l_1-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
+Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted \eqn{\ell_1}-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
 }
 \examples{
 n = 200; p = 500; s = 10
