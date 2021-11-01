@@ -219,7 +219,7 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
 #' @param phi0 (\strong{optional}) The initial quadratic coefficient parameter in the local adaptive majorize-minimize algorithm. Default is 0.01.
 #' @param gamma (\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.
-#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted l_1-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}

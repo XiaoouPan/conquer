@@ -45,7 +45,7 @@ conquer.reg(
 
 \item{gamma}{(\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.}
 
-\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted l_1-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.}
+\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.}
 }
 \value{
 An object containing the following items will be returned:
