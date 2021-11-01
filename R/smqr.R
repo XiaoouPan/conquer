@@ -19,7 +19,7 @@ getNormCI = function(est, sd, z) {
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
-#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
+#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
@@ -37,8 +37,8 @@ getNormCI = function(est, sd, z) {
 #' \item{\code{n}}{Sample size.}
 #' \item{\code{p}}{Number of covariates.}
 #' \item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
-#' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
-#' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}}
+#' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
+#' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
 #' }
 #' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 #' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
@@ -137,9 +137,9 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' @description Fit a smoothed quantile regression process over a quantile range. The algorithm is essentially the same as \code{\link{conquer}}.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
-#' @param tauSeq (\strong{optional}) A sequence of quantile values (between 0 and 1). Default is \eqn{{0.1, 0.15, 0.2, ..., 0.85, 0.9}}.
+#' @param tauSeq (\strong{optional}) A sequence of quantile values (between 0 and 1). Default is \eqn{\{0.1, 0.15, 0.2, ..., 0.85, 0.9\}}.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
-#' @param h (\strong{optional}) The bandwidth/smoothing parameter. Default is \eqn{max{((log(n) + p) / n)^{0.4}, 0.05}}. The default will be used if the input value is less than 0.05.
+#' @param h (\strong{optional}) The bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than 0.05.
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
@@ -206,13 +206,13 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 }
 
 #' @title Penalized Convolution-Type Smoothed Quantile Regression
-#' @description Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted l_1-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
+#' @description Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted \eqn{\ell_1}-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambda (\strong{optional}) Regularization parameter. Default is 0.2.
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
-#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
+#' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other two options are "scad" and "mcp".
 #' @param para (\strong{optional}) A constant parameter for "scad" and "mcp". Do not need to specify if the penalty is lasso. The default values are 3.7 for "scad" and 3 for "mcp".
 #' @param epsilon (\strong{optional}) A tolerance level for the stopping rule. The iteration will stop when the maximum magnitude of the change of coefficient updates is less than \code{epsilon}. Default is 0.001.
@@ -300,23 +300,23 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
   return (list(coeff = as.numeric(rst), bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
 }
 
-#' @title Cross-Validated Penalized Convolution Smoothed Quantile Regression
+#' @title Cross-Validated Penalized Convolution-Type Smoothed Quantile Regression
 #' @description Fit sparse quantile regression models via regularized conquer methods with "lasso", "scad" and "mcp" penalties. The regularization parameter \eqn{\lambda} is selected by cross-validation.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambdaSeq (\strong{optional}) A sequence of candidate regularization parameters. If unspecified, the sequence will be generated by a simulated pivotal quantity approach proposed by Belloni and Chernozhukov (2011).
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
-#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{max{0.5 * (log(p) / n)^(1/4), 0.05}}.
+#' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". Choices are "lasso", "scad" or "mcp".
 #' @param kfolds (\strong{optional}) Number of folds for cross-validation. Default is 5.
-#' @param numLambda (\strong{optional}) Number of \eqn{lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.
+#' @param numLambda (\strong{optional}) Number of \eqn{\lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.
 #' @param para (\strong{optional}) A constant parameter for "scad" and "mcp". Do not need to specify if the penalty is lasso. The default values are 3.7 for "scad" and 3 for "mcp".
 #' @param epsilon (\strong{optional}) A tolerance level for the stopping rule. The iteration will stop when the maximum magnitude of the change of coefficient updates is less than \code{epsilon}. Default is 0.001.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
 #' @param phi0 (\strong{optional}) The initial quadratic coefficient parameter in the local adaptive majorize-minimize algorithm. Default is 0.01.
 #' @param gamma (\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.
-#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted l_1-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
@@ -328,7 +328,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' \item{\code{n}}{Sample size.}
 #' \item{\code{p}}{Number of covariates.}
 #' }
-#' @references Belloni, A. and Chernozhukov, V. (2011). l_1 penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
+#' @references Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist. 39 82-130.
 #' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear.
