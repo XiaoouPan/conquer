@@ -382,7 +382,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
   } else if (penalty == "mcp" && is.null(para)) {
     para = 3.0
   }
-  folds = createFolds(Y, kfolds, FALSE)
+  folds = sample(rep(1:kfolds, ceiling(n / kfolds)), n)
   rst = NULL
   if (kernel == "Gaussian") {
     if (penalty == "lasso") {
