@@ -1,8 +1,8 @@
 Package: conquer
 Type: Package
 Title: Convolution-Type Smoothed Quantile Regression
-Version: 1.2.1
-Date: 2021-10-31
+Version: 1.2.2
+Date: 2022-02-12
 Authors@R: c(person("Xuming", "He", email = "xmhe@umich.edu", role = "aut"),
              person("Xiaoou", "Pan", email = "xip024@ucsd.edu", role = c("aut", "cre")), 
              person("Kean Ming", "Tan", email = "keanming@umich.edu", role = "aut"),
@@ -13,6 +13,6 @@ License: GPL-3
 Encoding: UTF-8
 URL: https://github.com/XiaoouPan/conquer
 SystemRequirements: C++11
-Imports: Rcpp (>= 1.0.3), Matrix, matrixStats, stats, caret
+Imports: Rcpp (>= 1.0.3), Matrix, matrixStats, stats
 LinkingTo: Rcpp, RcppArmadillo (>= 0.9.850.1.0)
 RoxygenNote: 7.1.1
