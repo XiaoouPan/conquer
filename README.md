@@ -45,6 +45,8 @@ install.packages("conquer")
 
 A collection of error / warning messages and their solutions:
 
+* Error: Compilation failed for package 'conquer' (with messages involving lgfortran, clang, etc.). **Solution**: This is a compilation error of Rcpp-based source packages. It happens when we recently submit a new version to CRAN, but it usually takes 3-5 days to build the binary package. Please use an older version or patiently wait for 3-5 days and then install the updated version.
+
 * Error: smqr.cpp: 'quantile' is not a member of 'arma’. **Solution**: 'quantile' function was added into `RcppArmadillo` version 0.9.850.1.0 (2020-02-09), so reinstalling / updating the library `RcppArmadillo` will fix this issue.
 
 * Error: unable to load shared object.. Symbol not found: _EXTPTR_PTR. **Solution**: This issue is common in some specific versions of `R` when we load Rcpp-based libraries. It is an error in R caused by a minor change about `EXTPTR_PTR`. Upgrading R to 4.0.2 will solve the problem.
