@@ -11,11 +11,11 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
-2022-02-12 (Version 1.2.2):
+**2022-02-12 (Version 1.2.2)**:
 
 Remove the unnecessary dependent packge `caret` for a cleaner installation.
 
-2021-10-24 (Version 1.2.1):
+**2021-10-24 (Version 1.2.1)**:
 
 Major updates:
 
