@@ -11,7 +11,11 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
-2021-10-24 (Version 1.2.0):
+2022-02-12 (Version 1.2.2):
+
+Remove the unnecessary dependent packge `caret` for a cleaner installation.
+
+2021-10-24 (Version 1.2.1):
 
 Major updates:
 
@@ -44,6 +48,8 @@ A collection of error / warning messages and their solutions:
 * Error: smqr.cpp: 'quantile' is not a member of 'arma’. **Solution**: 'quantile' function was added into `RcppArmadillo` version 0.9.850.1.0 (2020-02-09), so reinstalling / updating the library `RcppArmadillo` will fix this issue.
 
 * Error: unable to load shared object.. Symbol not found: _EXTPTR_PTR. **Solution**: This issue is common in some specific versions of `R` when we load Rcpp-based libraries. It is an error in R caused by a minor change about `EXTPTR_PTR`. Upgrading R to 4.0.2 will solve the problem.
+
+* Error: function 'Rcpp_precious_remove' not provided by package 'Rcpp'. **Solution**: This happens when a package is compiled against a recent `Rcpp` release, but users load it using an older version of `Rcpp`. Reinstalling the package `Rcpp` will solve the problem.
 
 ## Functions
 
