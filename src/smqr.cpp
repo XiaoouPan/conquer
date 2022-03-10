@@ -142,7 +142,7 @@ void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 
 // Low-dimensional conquer: estimation
 // [[Rcpp::export]]
-Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -191,7 +191,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
@@ -233,7 +233,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 }
 
 // [[Rcpp::export]]
-arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -280,7 +280,7 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 
 // [[Rcpp::export]]
 arma::vec smqrGaussIniWeight(const arma::mat& X, arma::vec Y, const arma::vec& weight, const arma::vec& betaHat, const int p, const double tau = 0.5, 
-                             double h = 0.0, const double tol = 0.0001, const int iteMax = 5000) {
+                             double h = 0.05, const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -325,7 +325,7 @@ arma::vec smqrGaussIniWeight(const arma::mat& X, arma::vec Y, const arma::vec& w
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -374,7 +374,7 @@ Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5,
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                            const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
@@ -416,7 +416,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
 }
 
 // [[Rcpp::export]]
-arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                           const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -462,7 +462,7 @@ arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& beta
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -511,7 +511,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
@@ -553,7 +553,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 }
 
 // [[Rcpp::export]]
-arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -599,7 +599,7 @@ arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
 }
   
 // [[Rcpp::export]]
-Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -648,7 +648,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
@@ -690,7 +690,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 }
 
 // [[Rcpp::export]]
-arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -736,7 +736,7 @@ arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -785,7 +785,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
@@ -827,7 +827,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 }
 
 // [[Rcpp::export]]
-arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.0,
+arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   if (h <= 0.05) {
@@ -874,7 +874,7 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 
 // Global conquer process with a quantile grid
 // [[Rcpp::export]]
-Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
                          const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -929,7 +929,7 @@ Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
                             const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -984,7 +984,7 @@ Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tau
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -1039,7 +1039,7 @@ Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -1094,7 +1094,7 @@ Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
 }
 
 // [[Rcpp::export]]
-Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.0, const double constTau = 1.345, 
+Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
                          const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
@@ -1150,7 +1150,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
 
 // Conquer with bootstrap inference
 // [[Rcpp::export]]
-arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   if (h <= 0.05) {
@@ -1178,7 +1178,7 @@ arma::mat smqrGaussInfWeight(const arma::mat& X, const arma::vec& Y, const arma:
 }
 
 // [[Rcpp::export]]
-arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                           const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   if (h <= 0.05) {
@@ -1194,7 +1194,7 @@ arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::ve
 }
 
 // [[Rcpp::export]]
-arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   if (h <= 0.05) {
@@ -1210,7 +1210,7 @@ arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 }
 
 // [[Rcpp::export]]
-arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   if (h <= 0.05) {
@@ -1226,7 +1226,7 @@ arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 }
 
 // [[Rcpp::export]]
-arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.0, const double tau = 0.5, 
+arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
   if (h <= 0.05) {
