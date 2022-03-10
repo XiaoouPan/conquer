@@ -14,7 +14,8 @@ getNormCI = function(est, sd, z) {
 }
 
 #' @title Convolution-Type Smoothed Quantile Regression
-#' @description Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
+#' @description Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. 
+#' Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
 #' @param X A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
@@ -23,7 +24,10 @@ getNormCI = function(est, sd, z) {
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
-#' @param ci (\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.
+#' @param ci (\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
+#' If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
+#' If \code{ci = "asymptotic"}, then confidence intervals will be constructed based on asymptotic covariance matrix. 
+#' If \code{ci = "both"}, then confidence intervals from both bootstrap and asymptotic covariance will be returned.
 #' @param alpha (\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.
 #' @param B (\strong{optional}) The size of bootstrap samples. Default is 1000.
 #' @return An object containing the following items will be returned:
@@ -36,9 +40,10 @@ getNormCI = function(est, sd, z) {
 #' \item{\code{kernel}}{Kernel function.}
 #' \item{\code{n}}{Sample size.}
 #' \item{\code{p}}{Number of covariates.}
-#' \item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
-#' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
-#' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
+#' \item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+#' \item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+#' \item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+#' \item{\code{asyCI}}{The asymptotic confidence intervals for regression coefficients. Only available if \code{ci = "asymptotic"} or \code{ci = "both"}.}
 #' }
 #' @references Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
 #' @references Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
@@ -60,13 +65,13 @@ getNormCI = function(est, sd, z) {
 #' beta.hat.unif = fit.unif$coeff
 #' 
 #' ## Construct three types of confidence intervals via multiplier bootstrap
-#' fit = conquer(X, Y, tau = 0.5, kernel = "Gaussian", ci = TRUE)
+#' fit = conquer(X, Y, tau = 0.5, kernel = "Gaussian", ci = "bootstrap")
 #' ci.per = fit$perCI
 #' ci.piv = fit$pivCI
 #' ci.norm = fit$normCI
 #' @export 
 conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
-                   iteMax = 5000, ci = FALSE, alpha = 0.05, B = 1000) {
+                   iteMax = 5000, ci = c("none", "bootstrap", "asymptotic", "both"), alpha = 0.05, B = 1000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
@@ -86,7 +91,8 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
     stop("Error: the design matrix X is singular.")
   }
   kernel = match.arg(kernel)
-  if (!ci) {
+  ci = match.arg(ci)
+  if (ci == "none") {
     rst = NULL
     if (kernel == "Gaussian") {
       rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
@@ -101,7 +107,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
     }
     return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, 
                  kernel = kernel, n = nrow(X), p = ncol(X)))
-  } else {
+  } else if (ci == "bootstrap") {
     rst = coeff = multiBeta = NULL
     if (kernel == "Gaussian") {
       rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
@@ -129,6 +135,78 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
     normCI = as.matrix(getNormCI(coeff, rowSds(multiBeta), z))
     return (list(coeff = coeff, ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, kernel = kernel, 
                  n = nrow(X), p = ncol(X), perCI = as.matrix(ciList$perCI), pivCI = as.matrix(ciList$pivCI), normCI = normCI))
+  } else if (ci == "asymptotic") {
+    rst = coeff = NULL
+    if (kernel == "Gaussian") {
+      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+    } else if (kernel == "logistic") {
+      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+    } else if (kernel == "uniform") {
+      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+    } else if (kernel == "parabolic") {
+      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+    } else {
+      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+    }
+    res = as.numeric(rst$residual)
+    h = rst$bandwidth
+    n = nrow(X)
+    X1 = cbind(1, X)
+    Wh = diag(as.vector(pnorm(-res / h) - tau)^2)
+    Stau = t(X1) %*% Wh %*% X1 / n
+    Dh = t(X1) %*% diag(dnorm(res / h)) %*% X1 / (n * h)
+    Dhinv = solve(Dh)
+    z = qnorm(1 - alpha / 2)
+    tm = z * sqrt(diag(Dhinv %*% Stau %*% Dhinv) / n)
+    lower = coeff - tm
+    upper = coeff + tm
+    asyCI = as.matrix(cbind(lower, upper))
+    return (list(coeff = coeff, ite = rst$ite, residual = res, bandwidth = h, tau = tau, kernel = kernel, n = n, p = ncol(X), asyCI = asyCI))
+  } else {
+    rst = coeff = multiBeta = NULL
+    if (kernel == "Gaussian") {
+      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    } else if (kernel == "logistic") {
+      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    } else if (kernel == "uniform") {
+      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    } else if (kernel == "parabolic") {
+      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    } else {
+      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      coeff = as.numeric(rst$coeff)
+      multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+    }
+    ciList = getPivCI(coeff, multiBeta, alpha)
+    z = qnorm(1 - alpha / 2)
+    normCI = as.matrix(getNormCI(coeff, rowSds(multiBeta), z))
+    res = as.numeric(rst$residual)
+    h = rst$bandwidth
+    n = nrow(X)
+    X1 = cbind(1, X)
+    Wh = diag(as.vector(pnorm(-res / h) - tau)^2)
+    Stau = t(X1) %*% Wh %*% X1 / n
+    Dh = t(X1) %*% diag(dnorm(res / h)) %*% X1 / (n * h)
+    Dhinv = solve(Dh)
+    tm = z * sqrt(diag(Dhinv %*% Stau %*% Dhinv) / n)
+    lower = coeff - tm
+    upper = coeff + tm
+    asyCI = as.matrix(cbind(lower, upper))
+    return (list(coeff = coeff, ite = rst$ite, residual = res, bandwidth = h, tau = tau, kernel = kernel, n = n, p = ncol(X), 
+                 perCI = as.matrix(ciList$perCI), pivCI = as.matrix(ciList$pivCI), normCI = normCI, asyCI = asyCI))
   }
 }
 

@@ -31,7 +31,7 @@ conquer.reg(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". The other two options are "scad" and "mcp".}
 
@@ -86,7 +86,4 @@ Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regressio
 }
 \seealso{
 See \code{\link{conquer.cv.reg}} for regularized quantile regression with cross-validation.
-}
-\author{
-Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 }

@@ -45,91 +45,91 @@ updateTrian <- function(Z, res, der, grad, n, tau, h, n1, h1, h2) {
     invisible(.Call('_conquer_updateTrian', PACKAGE = 'conquer', Z, res, der, grad, n, tau, h, n1, h1, h2))
 }
 
-smqrGauss <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrGauss <- function(X, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGauss', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrGaussNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrGaussNsd <- function(Z, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrGaussIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrGaussIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrGaussIniWeight <- function(X, Y, weight, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrGaussIniWeight <- function(X, Y, weight, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussIniWeight', PACKAGE = 'conquer', X, Y, weight, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrLogistic <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrLogistic <- function(X, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrLogistic', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrLogisticNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrLogisticNsd <- function(Z, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrLogisticNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrLogisticIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrLogisticIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrLogisticIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrUnif <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrUnif <- function(X, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrUnif', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrUnifNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrUnifNsd <- function(Z, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrUnifNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrUnifIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrUnifIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrUnifIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrPara <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrPara <- function(X, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrPara', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrParaNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrParaNsd <- function(Z, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrParaNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrParaIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrParaIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrParaIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrTrian <- function(X, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrTrian <- function(X, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrTrian', PACKAGE = 'conquer', X, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrTrianNsd <- function(Z, Y, tau = 0.5, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrTrianNsd <- function(Z, Y, tau = 0.5, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrTrianNsd', PACKAGE = 'conquer', Z, Y, tau, h, constTau, tol, iteMax)
 }
 
-smqrTrianIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.0, tol = 0.0001, iteMax = 5000L) {
+smqrTrianIni <- function(X, Y, betaHat, p, tau = 0.5, h = 0.05, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrTrianIni', PACKAGE = 'conquer', X, Y, betaHat, p, tau, h, tol, iteMax)
 }
 
-smqrGaussProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrGaussProc <- function(X, Y, tauSeq, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrLogisticProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrLogisticProc <- function(X, Y, tauSeq, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrLogisticProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrUnifProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrUnifProc <- function(X, Y, tauSeq, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrUnifProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrParaProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrParaProc <- function(X, Y, tauSeq, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrParaProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrTrianProc <- function(X, Y, tauSeq, h = 0.0, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
+smqrTrianProc <- function(X, Y, tauSeq, h = 0.05, constTau = 1.345, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrTrianProc', PACKAGE = 'conquer', X, Y, tauSeq, h, constTau, tol, iteMax)
 }
 
-smqrGaussInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+smqrGaussInf <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrGaussInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 
@@ -137,19 +137,19 @@ smqrGaussInfWeight <- function(X, Y, betaHat, n, p, tau = 0.5, B = 1000L, tol = 
     .Call('_conquer_smqrGaussInfWeight', PACKAGE = 'conquer', X, Y, betaHat, n, p, tau, B, tol, iteMax)
 }
 
-smqrLogisticInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+smqrLogisticInf <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrLogisticInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 
-smqrUnifInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+smqrUnifInf <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrUnifInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 
-smqrParaInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+smqrParaInf <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrParaInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 
-smqrTrianInf <- function(X, Y, betaHat, n, p, h = 0.0, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
+smqrTrianInf <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L, tol = 0.0001, iteMax = 5000L) {
     .Call('_conquer_smqrTrianInf', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 

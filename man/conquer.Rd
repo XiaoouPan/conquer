@@ -13,7 +13,7 @@ conquer(
   checkSing = FALSE,
   tol = 1e-04,
   iteMax = 5000,
-  ci = FALSE,
+  ci = c("none", "bootstrap", "asymptotic", "both"),
   alpha = 0.05,
   B = 1000
 )
@@ -27,7 +27,7 @@ conquer(
 
 \item{kernel}{(\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than 0.05.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.}
 
 \item{checkSing}{(\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer.}
 
@@ -35,7 +35,10 @@ conquer(
 
 \item{iteMax}{(\strong{optional}) Maximum number of iterations. Default is 5000.}
 
-\item{ci}{(\strong{optional}) A logical flag. Default is FALSE. If \code{ci = TRUE}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap.}
+\item{ci}{(\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
+If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
+If \code{ci = "asymptotic"}, then confidence intervals will be constructed based on asymptotic covariance matrix. 
+If \code{ci = "both"}, then both confidence intervals from both bootstrap and asymptotic covariance will be returned.}
 
 \item{alpha}{(\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.}
 
@@ -91,7 +94,4 @@ Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
 }
 \seealso{
 See \code{\link{conquer.process}} for smoothed quantile regression process.
-}
-\author{
-Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu>, and Wen-Xin Zhou <wez243@ucsd.edu>
 }
