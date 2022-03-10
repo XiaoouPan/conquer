@@ -119,7 +119,7 @@ C++11
 
 ## Authors
 
-Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu> and Wen-Xin Zhou <wez243@ucsd.edu>
+Xuming He <xmhe@umich.edu>, Rebeka Man <mrebeka@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu> and Wen-Xin Zhou <wez243@ucsd.edu>
 
 ## Maintainer
 
