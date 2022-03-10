@@ -101,7 +101,7 @@ time.conquer = as.numeric(difftime(end, start, units = "secs"))
 est.conquer = norm(fit.conquer$coeff - beta, "2")
 ```
 
-It takes 7.4 seconds to run the standard quantile regression but only 0.2 seconds to run conquer. In the meanwhile, the estimation error is 0.5186 for quantile regression and 0.4864 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory. We refer to [He et al., 2021](https://doi.org/10.1016/j.jeconom.2021.07.010) for a more extensive numerical study.
+It takes 7.4 seconds to run the standard quantile regression but only 0.2 seconds to run conquer. In the meanwhile, the estimation error is 0.5186 for quantile regression and 0.4864 for conquer. For readers’ reference, these runtimes are recorded on a Macbook Pro with 2.3 GHz 8-Core Intel Core i9 processor, and 16 GB 2667 MHz DDR4 memory. We refer to [He et al., 2022](https://doi.org/10.1016/j.jeconom.2021.07.010) for a more extensive numerical study.
 
 ## Getting help
 
@@ -135,7 +135,7 @@ Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simu
 
 Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. *J. Bus. Econ. Statist.* **39** 338-357, [Paper](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177)
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://doi.org/10.1016/j.jeconom.2021.07.010)
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2022). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://doi.org/10.1016/j.jeconom.2021.07.010)
 
 Koenker, R. (2005). Quantile Regression. Cambridge Univ. Press, Cambridge. [Book](https://www.cambridge.org/core/books/quantile-regression/C18AE7BCF3EC43C16937390D44A328B1)
 
@@ -143,5 +143,5 @@ Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 
 
 Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise: Computability of squared-error versus absolute-error estimators. *Statist. Sci.* **12** 279–300. [Paper](https://projecteuclid.org/euclid.ss/1030037960)
 
-Tan, K. M., Wang, L. and Zhou, W.-X. (2021+). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [Paper](https://doi.org/10.1111/rssb.12485)
+Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [Paper](https://doi.org/10.1111/rssb.12485)
 
