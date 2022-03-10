@@ -4,7 +4,7 @@
 
 ## Description
 
-The `conquer` library performs fast and accurate convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2021](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177), [He et al., 2021](https://doi.org/10.1016/j.jeconom.2021.07.010), [Tan, Wang and Zhou, 2021](https://arxiv.org/abs/2109.05640)) for low/high-dimensional estimation and bootstrap inference.
+The `conquer` library performs fast and accurate convolution-type smoothed quantile regression ([Fernandes, Guerre and Horta, 2021](https://www.tandfonline.com/doi/full/10.1080/07350015.2019.1660177), [He et al., 2022](https://doi.org/10.1016/j.jeconom.2021.07.010), [Tan, Wang and Zhou, 2022](https://doi.org/10.1111/rssb.12485) for low/high-dimensional estimation and bootstrap inference.
 
 In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with *&ell;<sub>1</sub>*-penalization and iteratively reweighted *&ell;<sub>1</sub>*-penalization are used to fit sparse models.
 
@@ -132,17 +132,11 @@ Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. 
 
 He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression with large-scale inference. *J. Econometrics*, to appear. [Paper](https://doi.org/10.1016/j.jeconom.2021.07.010)
 
-Horowitz, J. L. (1998). Bootstrap methods for median regression models. *Econometrica* **66** 1327–1351. [Paper](https://www.jstor.org/stable/2999619)
-
 Koenker, R. (2005). Quantile Regression. Cambridge Univ. Press, Cambridge. [Book](https://www.cambridge.org/core/books/quantile-regression/C18AE7BCF3EC43C16937390D44A328B1)
-
-Koenker, R. (2019). Package "quantreg", version 5.54. [CRAN](https://CRAN.R-project.org/package=quantreg)
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 33-50. [Paper](https://www.jstor.org/stable/1913643?seq=1#metadata_info_tab_contents)
 
 Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise: Computability of squared-error versus absolute-error estimators. *Statist. Sci.* **12** 279–300. [Paper](https://projecteuclid.org/euclid.ss/1030037960)
 
-Sanderson, C. and Curtin, R. (2016). Armadillo: A template-based C++ library for linear algebra. *J. Open Source Softw.* **1** 26. [Paper](https://joss.theoj.org/papers/10.21105/joss.00026.pdf)
-
-Tan, K. M., Wang, L. and Zhou, W.-X. (2021+). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [arXiv](https://arxiv.org/abs/2109.05640)
+Tan, K. M., Wang, L. and Zhou, W.-X. (2021+). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [Paper](https://doi.org/10.1111/rssb.12485)
 
