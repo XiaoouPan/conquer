@@ -11,6 +11,11 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
+**2022-03-08**:
+
+We are adding more flexible penalties and inference methods into the package.
+
+
 **2022-02-12 (Version 1.2.2)**:
 
 Remove the unnecessary dependent packge `caret` for a cleaner installation.
