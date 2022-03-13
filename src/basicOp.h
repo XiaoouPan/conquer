@@ -29,5 +29,4 @@ arma::vec softThresh(const arma::vec& x, const arma::vec& Lambda, const int p) {
   return arma::sign(x) % arma::max(arma::abs(x) - Lambda, arma::zeros(p + 1));
 }
 
-
 #endif
