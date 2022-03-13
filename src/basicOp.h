@@ -12,6 +12,11 @@ int sgn(const double x) {
 }
 
 // [[Rcpp::export]]
+double mad(const arma::vec& x) {
+  return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
+}
+
+// [[Rcpp::export]]
 arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1, const int p) {
   for (int i = 0; i < p; i++) {
     X.col(i) = (X.col(i) - mx(i)) * sx1(i);

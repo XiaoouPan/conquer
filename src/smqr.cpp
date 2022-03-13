@@ -1,17 +1,8 @@
 # include <RcppArmadillo.h>
 # include <cmath>
+# include "basicOp.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
-
-// [[Rcpp::export]]
-int sgn(const double x) {
-  return (x > 0) - (x < 0);
-}
-
-// [[Rcpp::export]]
-double mad(const arma::vec& x) {
-  return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
-}
 
 // Asymmetric huber regression adjusted to quantile tau for initialization 
 // [[Rcpp::export]]
@@ -62,25 +53,10 @@ arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const double tau, arm
   return beta;
 }
 
-// [[Rcpp::export]]
-arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1, const int p) {
-  for (int i = 0; i < p; i++) {
-    X.col(i) = (X.col(i) - mx(i)) * sx1(i);
-  }
-  return X;
-}
-
 // Different kernels for low-dimensional conquer 
 // [[Rcpp::export]]
 void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
   der = arma::normcdf(-res * h1) - tau;
-  grad = n1 * Z.t() * der;
-}
-
-// [[Rcpp::export]]
-void updateGaussWeight(const arma::mat& Z, const arma::vec& weight, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, 
-                       const double n1, const double h1) {
-  der = weight % (arma::normcdf(-res * h1) - tau);
   grad = n1 * Z.t() * der;
 }
 
@@ -270,52 +246,6 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
     beta += betaDiff;
     res -= Z * betaDiff;
     updateGauss(Z, res, der, gradNew, tau, n1, h1);
-    gradDiff = gradNew - gradOld;
-    ite++;
-  }
-  beta.rows(1, p) %= sx1;
-  beta(0) += my - arma::as_scalar(mx * beta.rows(1, p));
-  return beta;
-}
-
-// [[Rcpp::export]]
-arma::vec smqrGaussIniWeight(const arma::mat& X, arma::vec Y, const arma::vec& weight, const arma::vec& betaHat, const int p, const double tau = 0.5, 
-                             double h = 0.05, const double tol = 0.0001, const int iteMax = 5000) {
-  const int n = X.n_rows;
-  if (h <= 0.05) {
-    h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
-  }
-  const double n1 = 1.0 / n;
-  const double h1 = 1.0 / h;
-  arma::rowvec mx = arma::mean(X, 0);
-  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
-  double my = arma::mean(Y);
-  Y -= my;
-  arma::vec der(n);
-  arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = betaHat;
-  arma::vec res = Y - Z * beta;
-  updateGaussWeight(Z, weight, res, der, gradOld, tau, n1, h1);
-  beta -= gradOld;
-  arma::vec betaDiff = -gradOld;
-  res -= Z * betaDiff;
-  updateGaussWeight(Z, weight, res, der, gradNew, tau, n1, h1);
-  arma::vec gradDiff = gradNew - gradOld;
-  int ite = 1;
-  while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
-    double alpha = 1.0;
-    double cross = arma::as_scalar(betaDiff.t() * gradDiff);
-    if (cross > 0) {
-      double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
-      double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
-    }
-    gradOld = gradNew;
-    betaDiff = -alpha * gradNew;
-    beta += betaDiff;
-    res -= Z * betaDiff;
-    updateGaussWeight(Z, weight, res, der, gradNew, tau, n1, h1);
     gradDiff = gradNew - gradOld;
     ite++;
   }
@@ -1242,11 +1172,6 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
 }
 
 // The following code is high-dimensional conquer via an iterative local majorize-minimize algorithm
-// [[Rcpp::export]]
-arma::vec softThresh(const arma::vec& x, const arma::vec& lambda, const int p) {
-  return arma::sign(x) % arma::max(arma::abs(x) - lambda, arma::zeros(p + 1));
-}
-
 // [[Rcpp::export]]
 arma::vec cmptLambdaLasso(const double lambda, const int p) {
   arma::vec rst = lambda * arma::ones(p + 1);
