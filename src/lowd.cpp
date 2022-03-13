@@ -1158,4 +1158,3 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
   }
   return rst;
 }
-
