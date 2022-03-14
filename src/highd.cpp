@@ -1061,7 +1061,7 @@ arma::vec conquerHdTrian(const arma::mat& X, arma::vec Y, const double lambda, c
   return betaHat;
 }
 
-// cross-validation, no warm-start, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
+// cross-validation, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
 // [[Rcpp::export]]
 double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau) {
   arma::vec res = Y - Z * beta;
