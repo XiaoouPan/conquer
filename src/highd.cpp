@@ -1061,20 +1061,10 @@ arma::vec conquerHdTrian(const arma::mat& X, arma::vec Y, const double lambda, c
   return betaHat;
 }
 
-// cross-validation, the range of lambda is guided by the simulation-based mathod of Belloni & Chernozhukov (2011), AOS
+// cross-validation, the range of lambda is guided by the simulation-based mathod in Belloni & Chernozhukov (2011), AOS
 // [[Rcpp::export]]
-double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau) {
-  arma::vec res = Y - Z * beta;
-  double rst = 0.0;
-  for (int i = 0; i < res.size(); i++) {
-    rst += res(i) >= 0 ? tau * res(i) : (tau - 1) * res(i);
-  }
-  return rst;
-}
-
-// [[Rcpp::export]]
-Rcpp::List cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                            const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+Rcpp::List cvGaussLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                        const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -1091,21 +1081,22 @@ Rcpp::List cvSmqrLassoGauss(const arma::mat& X, arma::vec Y, const arma::vec& la
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrLassoGauss(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      betaHat = gaussLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrLassoGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat = gaussLasso(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrScadGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
-                           const int iteTight = 3, const double para = 3.7) {
+Rcpp::List cvGaussScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                       const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
+                       const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -1122,19 +1113,20 @@ Rcpp::List cvSmqrScadGauss(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrScadGauss(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = gaussScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrScadGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = gaussScad(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrMcpGauss(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+Rcpp::List cvGaussMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
                           const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
                           const int iteTight = 3, const double para = 3) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
@@ -1153,111 +1145,20 @@ Rcpp::List cvSmqrMcpGauss(const arma::mat& X, arma::vec Y, const arma::vec& lamb
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrMcpGauss(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = gaussMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrMcpGauss(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = gaussMcp(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrLassoLogistic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                               const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
-  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
-  const double h1 = 1.0 / h;
-  arma::vec betaHat(p + 1);
-  arma::vec mse = arma::zeros(nlambda);
-  arma::rowvec mx = arma::mean(X, 0);
-  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
-  double my = arma::mean(Y);
-  Y -= my;
-  for (int j = 1; j <= kfolds; j++) {
-    arma::uvec idx = arma::find(folds == j);
-    arma::uvec idxComp = arma::find(folds != j);
-    double n1Train = 1.0 / idxComp.size();
-    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
-    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
-    for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrLassoLogistic(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
-    }
-  }
-  arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrLassoLogistic(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
-  betaHat.rows(1, p) %= sx1;
-  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
-}
-
-// [[Rcpp::export]]
-Rcpp::List cvSmqrScadLogistic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                              const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
-                              const int iteTight = 3, const double para = 3.7) {
-  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
-  const double h1 = 1.0 / h;
-  arma::vec betaHat(p + 1);
-  arma::vec mse = arma::zeros(nlambda);
-  arma::rowvec mx = arma::mean(X, 0);
-  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
-  double my = arma::mean(Y);
-  Y -= my;
-  for (int j = 1; j <= kfolds; j++) {
-    arma::uvec idx = arma::find(folds == j);
-    arma::uvec idxComp = arma::find(folds != j);
-    double n1Train = 1.0 / idxComp.size();
-    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
-    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
-    for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrScadLogistic(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
-    }
-  }
-  arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrScadLogistic(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-  betaHat.rows(1, p) %= sx1;
-  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
-}
-
-// [[Rcpp::export]]
-Rcpp::List cvSmqrMcpLogistic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                             const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
-                             const int iteTight = 3, const double para = 3) {
-  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
-  const double h1 = 1.0 / h;
-  arma::vec betaHat(p + 1);
-  arma::vec mse = arma::zeros(nlambda);
-  arma::rowvec mx = arma::mean(X, 0);
-  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
-  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
-  double my = arma::mean(Y);
-  Y -= my;
-  for (int j = 1; j <= kfolds; j++) {
-    arma::uvec idx = arma::find(folds == j);
-    arma::uvec idxComp = arma::find(folds != j);
-    double n1Train = 1.0 / idxComp.size();
-    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
-    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
-    for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrMcpLogistic(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
-    }
-  }
-  arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrMcpLogistic(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-  betaHat.rows(1, p) %= sx1;
-  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
-}
-
-// [[Rcpp::export]]
-Rcpp::List cvSmqrLassoUnif(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+Rcpp::List cvLogisticLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
                            const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h;
@@ -1275,19 +1176,20 @@ Rcpp::List cvSmqrLassoUnif(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrLassoUnif(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
+      betaHat = logisticLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrLassoUnif(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
+  betaHat = logisticLasso(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrScadUnif(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+Rcpp::List cvLogisticScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
                           const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
@@ -1306,19 +1208,20 @@ Rcpp::List cvSmqrScadUnif(const arma::mat& X, arma::vec Y, const arma::vec& lamb
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrScadUnif(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = logisticScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrScadUnif(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = logisticScad(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrMcpUnif(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+Rcpp::List cvLogisticMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
                          const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
                          const int iteTight = 3, const double para = 3) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
@@ -1337,20 +1240,116 @@ Rcpp::List cvSmqrMcpUnif(const arma::mat& X, arma::vec Y, const arma::vec& lambd
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrMcpUnif(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = logisticMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrMcpUnif(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = logisticMcp(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrLassoPara(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+Rcpp::List cvUnifLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                       const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h;
+  arma::vec betaHat(p + 1);
+  arma::vec mse = arma::zeros(nlambda);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  for (int j = 1; j <= kfolds; j++) {
+    arma::uvec idx = arma::find(folds == j);
+    arma::uvec idxComp = arma::find(folds != j);
+    double n1Train = 1.0 / idxComp.size();
+    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
+    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
+    for (int i = 0; i < nlambda; i++) {
+      betaHat = unifLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
+      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+    }
+  }
+  mse /= n;
+  arma::uword cvIdx = arma::index_min(mse);
+  betaHat = unifLasso(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
+}
+
+// [[Rcpp::export]]
+Rcpp::List cvUnifScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                      const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
+                      const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h;
+  arma::vec betaHat(p + 1);
+  arma::vec mse = arma::zeros(nlambda);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  for (int j = 1; j <= kfolds; j++) {
+    arma::uvec idx = arma::find(folds == j);
+    arma::uvec idxComp = arma::find(folds != j);
+    double n1Train = 1.0 / idxComp.size();
+    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
+    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
+    for (int i = 0; i < nlambda; i++) {
+      betaHat = unifScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+    }
+  }
+  mse /= n;
+  arma::uword cvIdx = arma::index_min(mse);
+  betaHat = unifScad(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
+}
+
+// [[Rcpp::export]]
+Rcpp::List cvUnifMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                     const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
+                     const int iteTight = 3, const double para = 3) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h;
+  arma::vec betaHat(p + 1);
+  arma::vec mse = arma::zeros(nlambda);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  for (int j = 1; j <= kfolds; j++) {
+    arma::uvec idx = arma::find(folds == j);
+    arma::uvec idxComp = arma::find(folds != j);
+    double n1Train = 1.0 / idxComp.size();
+    arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
+    arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
+    for (int i = 0; i < nlambda; i++) {
+      betaHat = unifMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+    }
+  }
+  mse /= n;
+  arma::uword cvIdx = arma::index_min(mse);
+  betaHat = unifMcp(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
+}
+
+// [[Rcpp::export]]
+Rcpp::List cvParaLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                       const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
   arma::vec betaHat(p + 1);
@@ -1367,21 +1366,22 @@ Rcpp::List cvSmqrLassoPara(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrLassoPara(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax);
+      betaHat = paraLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrLassoPara(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax);
+  betaHat = paraLasso(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrScadPara(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                          const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
-                          const int iteTight = 3, const double para = 3.7) {
+Rcpp::List cvParaScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                      const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
+                      const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
   arma::vec betaHat(p + 1);
@@ -1398,21 +1398,22 @@ Rcpp::List cvSmqrScadPara(const arma::mat& X, arma::vec Y, const arma::vec& lamb
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrScadPara(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = paraScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrScadPara(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = paraScad(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrMcpPara(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                         const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
-                         const int iteTight = 3, const double para = 3) {
+Rcpp::List cvParaMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                     const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
+                     const int iteTight = 3, const double para = 3) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
   arma::vec betaHat(p + 1);
@@ -1429,20 +1430,21 @@ Rcpp::List cvSmqrMcpPara(const arma::mat& X, arma::vec Y, const arma::vec& lambd
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrMcpPara(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = paraMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrMcpPara(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = paraMcp(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrLassoTrian(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                            const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+Rcpp::List cvTrianLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                        const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -1459,21 +1461,22 @@ Rcpp::List cvSmqrLassoTrian(const arma::mat& X, arma::vec Y, const arma::vec& la
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrLassoTrian(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
+      betaHat = trianLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrLassoTrian(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat = trianLasso(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrScadTrian(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                           const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
-                           const int iteTight = 3, const double para = 3.7) {
+Rcpp::List cvTrianScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                       const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500,
+                       const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -1490,21 +1493,22 @@ Rcpp::List cvSmqrScadTrian(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrScadTrian(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = trianScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrScadTrian(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = trianScad(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 // [[Rcpp::export]]
-Rcpp::List cvSmqrMcpTrian(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                          const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
-                          const int iteTight = 3, const double para = 3) {
+Rcpp::List cvTrianMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
+                      const double h, const double phi0 = 0.01, const double gamma = 1.5, const double epsilon = 0.001, const int iteMax = 500,
+                      const int iteTight = 3, const double para = 3) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec betaHat(p + 1);
@@ -1521,15 +1525,16 @@ Rcpp::List cvSmqrMcpTrian(const arma::mat& X, arma::vec Y, const arma::vec& lamb
     arma::mat trainZ = Z.rows(idxComp), testZ = Z.rows(idx);
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
-      betaHat = smqrMcpTrian(trainZ, trainY, lambdaSeq(i), sx1, tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+      betaHat = trianMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
       mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
     }
   }
+  mse /= n;
   arma::uword cvIdx = arma::index_min(mse);
-  betaHat = smqrMcpTrian(Z, Y, lambdaSeq(cvIdx), sx1, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat = trianMcp(Z, Y, lambdaSeq(cvIdx), tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
-  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx));
+  return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
 
