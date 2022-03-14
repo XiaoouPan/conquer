@@ -898,7 +898,7 @@ Rcpp::List cvGaussScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaS
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = gaussScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -930,7 +930,7 @@ Rcpp::List cvGaussMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSe
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = gaussMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -961,7 +961,7 @@ Rcpp::List cvLogisticLasso(const arma::mat& X, arma::vec Y, const arma::vec& lam
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = logisticLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -993,7 +993,7 @@ Rcpp::List cvLogisticScad(const arma::mat& X, arma::vec Y, const arma::vec& lamb
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = logisticScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1025,7 +1025,7 @@ Rcpp::List cvLogisticMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambd
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = logisticMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1056,7 +1056,7 @@ Rcpp::List cvUnifLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaS
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = unifLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1088,7 +1088,7 @@ Rcpp::List cvUnifScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSe
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = unifScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1120,7 +1120,7 @@ Rcpp::List cvUnifMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = unifMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1151,7 +1151,7 @@ Rcpp::List cvParaLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaS
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = paraLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1183,7 +1183,7 @@ Rcpp::List cvParaScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSe
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = paraScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1215,7 +1215,7 @@ Rcpp::List cvParaMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = paraMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h3, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1246,7 +1246,7 @@ Rcpp::List cvTrianLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambda
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = trianLasso(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1278,7 +1278,7 @@ Rcpp::List cvTrianScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaS
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = trianScad(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
@@ -1310,7 +1310,7 @@ Rcpp::List cvTrianMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSe
     arma::vec trainY = Y.rows(idxComp), testY = Y.rows(idx);
     for (int i = 0; i < nlambda; i++) {
       betaHat = trianMcp(trainZ, trainY, lambdaSeq(i), tau, p, n1Train, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-      mse(i) += arma::accu(lossQr(testZ, testY, betaHat, tau));
+      mse(i) += lossQr(testZ, testY, betaHat, tau);
     }
   }
   mse /= n;
