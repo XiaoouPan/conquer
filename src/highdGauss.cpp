@@ -623,7 +623,7 @@ arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const
 }
 
 // [[Rcpp::export]]
-arma::vec conquerGaussScad(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+arma::vec conquerGaussScad(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const double phi0 = 0.01, 
                            const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols;
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -639,7 +639,7 @@ arma::vec conquerGaussScad(const arma::mat& X, arma::vec Y, const double lambda,
 }
 
 // [[Rcpp::export]]
-arma::mat conquerGaussScadSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, const int type = 1, 
+arma::mat conquerGaussScadSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, 
                               const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, 
                               const int iteTight = 3, const double para = 3.7) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
@@ -664,7 +664,7 @@ arma::mat conquerGaussScadSeq(const arma::mat& X, arma::vec Y, const arma::vec& 
 }
 
 // [[Rcpp::export]]
-arma::vec conquerGaussMcp(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+arma::vec conquerGaussMcp(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const double phi0 = 0.01, 
                           const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.0) {
   const int n = X.n_rows, p = X.n_cols;
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -680,7 +680,7 @@ arma::vec conquerGaussMcp(const arma::mat& X, arma::vec Y, const double lambda, 
 }
 
 // [[Rcpp::export]]
-arma::mat conquerGaussMcpSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, const int type = 1, 
+arma::mat conquerGaussMcpSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, 
                              const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, 
                              const int iteTight = 3, const double para = 3.0) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
