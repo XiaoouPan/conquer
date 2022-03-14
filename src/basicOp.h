@@ -255,4 +255,30 @@ arma::vec lasso(const arma::mat& Z, const arma::vec& Y, const double lambda, con
   return betaNew;
 }
 
+// [[Rcpp::export]]
+arma::vec cmptLambdaSCAD(const arma::vec& beta, const double lambda, const int p, const double para = 3.7) {
+  arma::vec rst = arma::zeros(p + 1);
+  for (int i = 1; i <= p; i++) {
+    double abBeta = std::abs(beta(i));
+    if (abBeta <= lambda) {
+      rst(i) = lambda;
+    } else if (abBeta <= para * lambda) {
+      rst(i) = (para * lambda - abBeta) / (para - 1);
+    } 
+  }
+  return rst;
+}
+
+// [[Rcpp::export]]
+arma::vec cmptLambdaMCP(const arma::vec& beta, const double lambda, const int p, const double para = 3.0) {
+  arma::vec rst = arma::zeros(p + 1);
+  for (int i = 1; i <= p; i++) {
+    double abBeta = std::abs(beta(i));
+    if (abBeta <= para * lambda) {
+      rst(i) = lambda - abBeta / para;
+    }
+  }
+  return rst;
+}
+
 #endif
