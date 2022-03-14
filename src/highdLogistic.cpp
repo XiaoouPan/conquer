@@ -22,7 +22,7 @@ double updateLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec&
 }
 
 // [[Rcpp::export]]
-double lammLogisticLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+double lammLogisticLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, 
                          const double gamma, const int p, const double h, const double n1, const double h1) {
   double phiNew = phi;
   arma::vec betaNew(p + 1);
@@ -56,7 +56,7 @@ arma::vec logisticLasso(const arma::mat& Z, const arma::vec& Y, const double lam
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -80,7 +80,7 @@ arma::vec logisticScad(const arma::mat& Z, const arma::vec& Y, const double lamb
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -99,7 +99,7 @@ arma::vec logisticScad(const arma::mat& Z, const arma::vec& Y, const double lamb
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammLogisticLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+      phi = lammLogisticLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;
@@ -127,7 +127,7 @@ arma::vec logisticMcp(const arma::mat& Z, const arma::vec& Y, const double lambd
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammLogisticLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -146,7 +146,7 @@ arma::vec logisticMcp(const arma::mat& Z, const arma::vec& Y, const double lambd
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammLogisticLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+      phi = lammLogisticLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;

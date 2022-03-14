@@ -39,7 +39,7 @@ double updateUnifHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& bet
 }
 
 // [[Rcpp::export]]
-double lammUnifLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+double lammUnifLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, 
                      const double gamma, const int p, const double h, const double n1, const double h1) {
   double phiNew = phi;
   arma::vec betaNew(p + 1);
@@ -73,7 +73,7 @@ arma::vec unifLasso(const arma::mat& Z, const arma::vec& Y, const double lambda,
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammUnifLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammUnifLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -97,7 +97,7 @@ arma::vec unifScad(const arma::mat& Z, const arma::vec& Y, const double lambda, 
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammUnifLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammUnifLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -116,7 +116,7 @@ arma::vec unifScad(const arma::mat& Z, const arma::vec& Y, const double lambda, 
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammUnifLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+      phi = lammUnifLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;
@@ -144,7 +144,7 @@ arma::vec unifMcp(const arma::mat& Z, const arma::vec& Y, const double lambda, c
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammUnifLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+    phi = lammUnifLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -163,7 +163,7 @@ arma::vec unifMcp(const arma::mat& Z, const arma::vec& Y, const double lambda, c
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammUnifLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1);
+      phi = lammUnifLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;

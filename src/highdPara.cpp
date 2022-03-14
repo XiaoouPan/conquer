@@ -39,7 +39,7 @@ double updateParaHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& bet
 }
 
 // [[Rcpp::export]]
-double lammParaLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
+double lammParaLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, 
                      const double gamma, const int p, const double h, const double n1, const double h1, const double h3) {
   double phiNew = phi;
   arma::vec betaNew(p + 1);
@@ -74,7 +74,7 @@ arma::vec paraLasso(const arma::mat& Z, const arma::vec& Y, const double lambda,
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammParaLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1, h3);
+    phi = lammParaLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1, h3);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -98,7 +98,7 @@ arma::vec paraScad(const arma::mat& Z, const arma::vec& Y, const double lambda, 
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammParaLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1, h3);
+    phi = lammParaLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1, h3);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -117,7 +117,7 @@ arma::vec paraScad(const arma::mat& Z, const arma::vec& Y, const double lambda, 
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammParaLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1, h3);
+      phi = lammParaLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1, h3);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;
@@ -145,7 +145,7 @@ arma::vec paraMcp(const arma::mat& Z, const arma::vec& Y, const double lambda, c
   int ite = 0;
   while (ite <= iteMax) {
     ite++;
-    phi = lammParaLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1, h3);
+    phi = lammParaLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1, h3);
     phi = std::max(phi0, phi / gamma);
     if (arma::norm(betaNew - beta, "inf") <= epsilon) {
       break;
@@ -164,7 +164,7 @@ arma::vec paraMcp(const arma::mat& Z, const arma::vec& Y, const double lambda, c
     ite = 0;
     while (ite <= iteMax) {
       ite++;
-      phi = lammParaLasso(Z, Y, Lambda, betaNew, phi, tau, gamma, p, h, n1, h1, h3);
+      phi = lammParaLasso(Z, Y, Lambda, betaNew, tau, phi, gamma, p, h, n1, h1, h3);
       phi = std::max(phi0, phi / gamma);
       if (arma::norm(betaNew - beta, "inf") <= epsilon) {
         break;
