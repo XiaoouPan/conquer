@@ -5,6 +5,23 @@
 // [[Rcpp::plugins(cpp11)]]
 
 // [[Rcpp::export]]
+double lossLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = tau * res + h * arma::log(1.0 + arma::exp(-h1 * res));
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double updateLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
+                        const double h1) {
+  arma::vec res = Y - Z * beta;
+  arma::vec der = 1.0 / (1.0 + arma::exp(res * h1)) - tau;
+  grad = n1 * Z.t() * der;
+  arma::vec temp = tau * res + h * arma::log(1.0 + arma::exp(-h1 * res));
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
 double lammLogisticLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double phi, const double tau, 
                          const double gamma, const int p, const double h, const double n1, const double h1) {
   double phiNew = phi;
