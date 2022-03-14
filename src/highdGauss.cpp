@@ -5,6 +5,23 @@
 // [[Rcpp::plugins(cpp11)]]
 
 // [[Rcpp::export]]
+double lossGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + tau * res - res % arma::normcdf(-h1 * res);
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
+double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
+                     const double h1, const double h2) {
+  arma::vec res = Y - Z * beta;
+  arma::vec der = arma::normcdf(-h1 * res) - tau;
+  grad = n1 * Z.t() * der;
+  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + tau * res - res % arma::normcdf(-h1 * res);
+  return arma::mean(temp);
+}
+
+// [[Rcpp::export]]
 double lammGaussLasso(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, 
                       const double gamma, const int p, const double h, const double n1, const double h1, const double h2) {
   double phiNew = phi;
@@ -428,10 +445,10 @@ arma::vec gaussMcpWarm(const arma::mat& Z, const arma::vec& Y, const double lamb
   return betaNew;
 }
 
-// high-dim conquer with a specified lambda
+// high-dim conquer with a specified lambda or a sequence of lambda
 // [[Rcpp::export]]
-arma::vec conquerHdGauss(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
-                         const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+arma::vec conquerGaussLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const double phi0 = 0.01, 
+                            const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols;
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::rowvec mx = arma::mean(X, 0);
@@ -439,17 +456,252 @@ arma::vec conquerHdGauss(const arma::mat& X, arma::vec Y, const double lambda, c
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec betaHat(p + 1);
-  if (type == 1) {
-    betaHat = gaussLasso(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
-  } else if (type == 2) {
-    betaHat = gaussScad(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-  } else {
-    betaHat = gaussMcp(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
-  }
+  arma::vec betaHat = gaussLasso(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
   return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, const double phi0 = 0.01, 
+                               const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussLasso(Z, Y, lambdaSeq(0), tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaSeq.col(0) = betaHat;
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussLassoWarm(Z, Y, lambdaSeq(i), betaWarm, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaSeq.col(i) = betaHat;
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerGaussElastic(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double alpha, const double h, 
+                              const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat = gaussElastic(Z, Y, lambda, tau, alpha, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussElasticSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double alpha, const double h, 
+                                 const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussElastic(Z, Y, lambdaSeq(0), tau, alpha, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussElasticWarm(Z, Y, lambdaSeq(i), betaWarm, tau, alpha, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, 
+                                 const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec weight = arma::zeros(G);
+  for (int i = 1; i <= p; i++) {
+    weight(group(i)) += 1;
+  }
+  weight = arma::sqrt(weight);
+  arma::vec betaHat = gaussGroupLasso(Z, Y, lambda, tau, group, weight, p, G, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, 
+                                    const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec weight = arma::zeros(G);
+  for (int i = 1; i <= p; i++) {
+    weight(group(i)) += 1;
+  }
+  weight = arma::sqrt(weight);
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussGroupLassoWarm(Z, Y, lambdaSeq(i), betaWarm, tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, 
+                                       const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
+                                       const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec weight = arma::zeros(G);
+  for (int i = 1; i <= p; i++) {
+    weight(group(i)) += 1;
+  }
+  weight = arma::sqrt(weight);
+  arma::vec betaHat = gaussSparseGroupLasso(Z, Y, lambda, tau, group, weight, p, G, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, 
+                                          const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
+                                          const int iteMax = 500) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec weight = arma::zeros(G);
+  for (int i = 1; i <= p; i++) {
+    weight(group(i)) += 1;
+  }
+  weight = arma::sqrt(weight);
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussSparseGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussSparseGroupLassoWarm(Z, Y, lambdaSeq(i), betaWarm, tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerGaussScad(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                           const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat = gaussScad(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussScadSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, const int type = 1, 
+                              const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, 
+                              const int iteTight = 3, const double para = 3.7) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussScad(Z, Y, lambdaSeq(0), tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaSeq.col(0) = betaHat;
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussScadWarm(Z, Y, lambdaSeq(i), betaWarm, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, para);
+    betaSeq.col(i) = betaHat;
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
+}
+
+// [[Rcpp::export]]
+arma::vec conquerGaussMcp(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const double h, const int type = 1, const double phi0 = 0.01, 
+                          const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, const int iteTight = 3, const double para = 3.0) {
+  const int n = X.n_rows, p = X.n_cols;
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::vec betaHat = gaussMcp(Z, Y, lambda, tau, p, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaHat.rows(1, p) %= sx1;
+  betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
+  return betaHat;
+}
+
+// [[Rcpp::export]]
+arma::mat conquerGaussMcpSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const double h, const int type = 1, 
+                             const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500, 
+                             const int iteTight = 3, const double para = 3.0) {
+  const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
+  const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
+  arma::rowvec mx = arma::mean(X, 0);
+  arma::vec sx1 = 1.0 / arma::stddev(X, 0, 0).t();
+  arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
+  double my = arma::mean(Y);
+  Y -= my;
+  arma::mat betaSeq(p + 1, nlambda);
+  arma::vec betaHat = gaussMcp(Z, Y, lambdaSeq(0), tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, iteTight, para);
+  betaSeq.col(0) = betaHat;
+  arma::vec betaWarm = betaHat;
+  for (int i = 1; i < nlambda; i++) {
+    betaHat = gaussMcpWarm(Z, Y, lambdaSeq(i), betaWarm, tau, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax, para);
+    betaSeq.col(i) = betaHat;
+    betaWarm = betaHat;
+  }
+  betaSeq.rows(1, p).each_col() %= sx1;
+  betaSeq.row(0) += my - mx * betaSeq.rows(1, p);
+  return betaSeq;
 }
 
 // cross-validation, the range of lambda is guided by the simulation-based mathod in Belloni & Chernozhukov (2011), AOS

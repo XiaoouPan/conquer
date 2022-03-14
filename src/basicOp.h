@@ -71,24 +71,6 @@ double updateL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, a
   return 0.5 * n1 * rst;
 }
 
-// conquer loss with different kernels
-// [[Rcpp::export]]
-double lossGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1, const double h2) {
-  arma::vec res = Y - Z * beta;
-  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + tau * res - res % arma::normcdf(-h1 * res);
-  return arma::mean(temp);
-}
-
-// [[Rcpp::export]]
-double updateGaussHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double tau, const double n1, const double h, 
-                     const double h1, const double h2) {
-  arma::vec res = Y - Z * beta;
-  arma::vec der = arma::normcdf(-h1 * res) - tau;
-  grad = n1 * Z.t() * der;
-  arma::vec temp = 0.3989423 * h  * arma::exp(-0.5 * h2 * arma::square(res)) + tau * res - res % arma::normcdf(-h1 * res);
-  return arma::mean(temp);
-}
-
 // [[Rcpp::export]]
 double lossLogisticHd(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const double h, const double h1) {
   arma::vec res = Y - Z * beta;
