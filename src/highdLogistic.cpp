@@ -1127,4 +1127,3 @@ Rcpp::List cvLogisticMcpWarm(const arma::mat& X, arma::vec Y, const arma::vec& l
   return Rcpp::List::create(Rcpp::Named("coeff") = betaHat, Rcpp::Named("lambda") = lambdaSeq(cvIdx), Rcpp::Named("deviance") = mse);
 }
 
-
