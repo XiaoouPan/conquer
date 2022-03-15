@@ -129,7 +129,6 @@ double lammLogisticSparseGroupLasso(const arma::mat& Z, const arma::vec& Y, cons
   return phiNew;
 }
 
-
 // [[Rcpp::export]]
 arma::vec logisticLasso(const arma::mat& Z, const arma::vec& Y, const double lambda, const double tau, const int p, const double n1, const double h, 
                         const double h1, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
