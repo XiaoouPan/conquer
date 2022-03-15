@@ -119,7 +119,7 @@ C++11
 
 ## Authors
 
-Xuming He <xmhe@umich.edu>, Rebeka Man <mrebeka@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu> and Wen-Xin Zhou <wez243@ucsd.edu>
+Xuming He <xmhe@umich.edu>, Xiaoou Pan <xip024@ucsd.edu>, Kean Ming Tan <keanming@umich.edu> and Wen-Xin Zhou <wez243@ucsd.edu>
 
 ## Maintainer
 
@@ -143,5 +143,5 @@ Koenker, R. and Bassett, G. (1978). Regression quantiles. *Econometrica* **46** 
 
 Portnoy, S. and Koenker, R. (1997). The Gaussian hare and the Laplacian tortoise: Computability of squared-error versus absolute-error estimators. *Statist. Sci.* **12** 279–300. [Paper](https://projecteuclid.org/euclid.ss/1030037960)
 
-Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear. [Paper](https://doi.org/10.1111/rssb.12485)
+Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. *J. Roy. Statist. Soc. Ser. B* **84(1)** 205-233. [Paper](https://doi.org/10.1111/rssb.12485)
 
