@@ -82,12 +82,23 @@ X = matrix(rnorm(n * p), n, p)
 Y = X \%*\% beta + rt(n, 2)
 
 ## Regularized conquer with lasso penalty at tau = 0.8
-fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, penalty = "lasso")
 beta.lasso = fit.lasso$coeff
 
-#' ## Regularized conquer with scad penalty at tau = 0.8
-fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+## Regularized conquer with elastic-net penalty at tau = 0.8
+fit.elastic = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "elastic", para.elastic = 0.7)
+beta.elastic = fit.elastic$coeff
+
+## Regularized conquer with scad penalty at tau = 0.8
+fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, penalty = "scad")
 beta.scad = fit.scad$coeff
+
+## Regularized conquer with group lasso at tau = 0.8
+beta = c(rep(1.3, 5), rep(1.5, 5), rep(0, p - s))
+err = rt(n, 2)
+Y = X \%*\% beta + err
+group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
+fit.group = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "group", group = group)
 }
 \references{
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.

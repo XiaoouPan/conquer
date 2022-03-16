@@ -324,12 +324,23 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Regularized conquer with lasso penalty at tau = 0.8
-#' fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, penalty = "lasso")
 #' beta.lasso = fit.lasso$coeff
 #' 
-#' #' ## Regularized conquer with scad penalty at tau = 0.8
-#' fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' ## Regularized conquer with elastic-net penalty at tau = 0.8
+#' fit.elastic = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "elastic", para.elastic = 0.7)
+#' beta.elastic = fit.elastic$coeff
+#' 
+#' ## Regularized conquer with scad penalty at tau = 0.8
+#' fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, penalty = "scad")
 #' beta.scad = fit.scad$coeff
+#' 
+#' ## Regularized conquer with group lasso at tau = 0.8
+#' beta = c(rep(1.3, 5), rep(1.5, 5), rep(0, p - s))
+#' err = rt(n, 2)
+#' Y = X %*% beta + err
+#' group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
+#' fit.group = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "group", group = group)
 #' @export 
 conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                        penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, para.scad = 3.7, 
@@ -610,18 +621,30 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84(1), 205-233.
 #' @seealso See \code{\link{conquer.reg}} for regularized quantile regression with a prescribed \eqn{lambda}.
 #' @examples 
-#' n = 100; p = 100; s = 3
+#' n = 100; p = 200; s = 5
 #' beta = c(rep(1.5, s), rep(0, p - s))
 #' X = matrix(rnorm(n * p), n, p)
 #' Y = X %*% beta + rt(n, 2)
 #' 
 #' ## Cross-validated regularized conquer with lasso penalty at tau = 0.8
-#' fit.lasso = conquer.cv.reg(X, Y, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+#' fit.lasso = conquer.cv.reg(X, Y, tau = 0.8, penalty = "lasso")
 #' beta.lasso = fit.lasso$coeff
 #' 
-#' #' ## Cross-validated regularized conquer with scad penalty at tau = 0.8
-#' fit.scad = conquer.cv.reg(X, Y,tau = 0.8, kernel = "Gaussian", penalty = "scad")
+#' ## Cross-validated regularized conquer with elastic-net penalty at tau = 0.8
+#' fit.elastic = conquer.cv.reg(X, Y, tau = 0.8, penalty = "elastic", para.elastic = 0.7)
+#' beta.elastic = fit.elastic$coeff
+#' 
+#' ## Cross-validated regularized conquer with scad penalty at tau = 0.8
+#' fit.scad = conquer.cv.reg(X, Y, tau = 0.8, penalty = "scad")
 #' beta.scad = fit.scad$coeff
+#' 
+#' ## Regularized conquer with group lasso at tau = 0.8
+#' beta = c(rep(1.3, 5), rep(1.5, 5), rep(0, p - s))
+#' err = rt(n, 2)
+#' Y = X %*% beta + err
+#' group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
+#' fit.group = conquer.cv.reg(X, Y,tau = 0.8, penalty = "group", group = group)
+#' beta.group = fit.group$coeff
 #' @export 
 conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                           penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, para.scad = 3.7, 

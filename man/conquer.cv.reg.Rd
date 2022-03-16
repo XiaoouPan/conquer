@@ -83,18 +83,30 @@ An object containing the following items will be returned:
 Fit sparse quantile regression models via regularized conquer methods with "lasso", "elastic-net", "group lasso", "sparse group lasso", "scad" and "mcp" penalties. The regularization parameter \eqn{\lambda} is selected via cross-validation.
 }
 \examples{
-n = 100; p = 100; s = 3
+n = 100; p = 200; s = 5
 beta = c(rep(1.5, s), rep(0, p - s))
 X = matrix(rnorm(n * p), n, p)
 Y = X \%*\% beta + rt(n, 2)
 
 ## Cross-validated regularized conquer with lasso penalty at tau = 0.8
-fit.lasso = conquer.cv.reg(X, Y, tau = 0.8, kernel = "Gaussian", penalty = "lasso")
+fit.lasso = conquer.cv.reg(X, Y, tau = 0.8, penalty = "lasso")
 beta.lasso = fit.lasso$coeff
 
-#' ## Cross-validated regularized conquer with scad penalty at tau = 0.8
-fit.scad = conquer.cv.reg(X, Y,tau = 0.8, kernel = "Gaussian", penalty = "scad")
+## Cross-validated regularized conquer with elastic-net penalty at tau = 0.8
+fit.elastic = conquer.cv.reg(X, Y, tau = 0.8, penalty = "elastic", para.elastic = 0.7)
+beta.elastic = fit.elastic$coeff
+
+## Cross-validated regularized conquer with scad penalty at tau = 0.8
+fit.scad = conquer.cv.reg(X, Y, tau = 0.8, penalty = "scad")
 beta.scad = fit.scad$coeff
+
+## Regularized conquer with group lasso at tau = 0.8
+beta = c(rep(1.3, 5), rep(1.5, 5), rep(0, p - s))
+err = rt(n, 2)
+Y = X \%*\% beta + err
+group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
+fit.group = conquer.cv.reg(X, Y,tau = 0.8, penalty = "group", group = group)
+beta.group = fit.group$coeff
 }
 \references{
 Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist., 39, 82-130.
