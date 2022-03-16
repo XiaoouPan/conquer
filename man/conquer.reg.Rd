@@ -81,24 +81,29 @@ beta = c(rep(1.5, s), rep(0, p - s))
 X = matrix(rnorm(n * p), n, p)
 Y = X \%*\% beta + rt(n, 2)
 
-## Regularized conquer with lasso penalty at tau = 0.8
-fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.8, penalty = "lasso")
+## Regularized conquer with lasso penalty at tau = 0.7
+fit.lasso = conquer.reg(X, Y, lambda = 0.05, tau = 0.7, penalty = "lasso")
 beta.lasso = fit.lasso$coeff
 
-## Regularized conquer with elastic-net penalty at tau = 0.8
-fit.elastic = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "elastic", para.elastic = 0.7)
+## Regularized conquer with elastic-net penalty at tau = 0.7
+fit.elastic = conquer.reg(X, Y, lambda = 0.1, tau = 0.7, penalty = "elastic", para.elastic = 0.7)
 beta.elastic = fit.elastic$coeff
 
-## Regularized conquer with scad penalty at tau = 0.8
-fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, penalty = "scad")
+## Regularized conquer with scad penalty at tau = 0.7
+fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.7, penalty = "scad")
 beta.scad = fit.scad$coeff
 
-## Regularized conquer with group lasso at tau = 0.8
+## Regularized conquer with group lasso at tau = 0.7
 beta = c(rep(1.3, 5), rep(1.5, 5), rep(0, p - s))
 err = rt(n, 2)
 Y = X \%*\% beta + err
 group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
-fit.group = conquer.reg(X, Y, lambda = 0.1, tau = 0.8, penalty = "group", group = group)
+fit.group = conquer.reg(X, Y, lambda = 0.05, tau = 0.7, penalty = "group", group = group)
+beta.group = fit.group$coeff
+
+## Regularized conquer with spaarse group lasso at tau = 0.7
+fit.sparse.group = conquer.reg(X, Y, lambda = 0.03, tau = 0.7, penalty = "sparse-group", group = group)
+beta.sparse.group = fit.sparse.group$coeff
 }
 \references{
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.
