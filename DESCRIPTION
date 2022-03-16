@@ -1,8 +1,8 @@
 Package: conquer
 Type: Package
 Title: Convolution-Type Smoothed Quantile Regression
-Version: 1.2.2
-Date: 2022-02-12
+Version: 1.3.0
+Date: 2022-03-15
 Authors@R: c(person("Xuming", "He", email = "xmhe@umich.edu", role = "aut"),
              person("Xiaoou", "Pan", email = "xip024@ucsd.edu", role = c("aut", "cre")), 
              person("Kean Ming", "Tan", email = "keanming@umich.edu", role = "aut"),
