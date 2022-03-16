@@ -69,6 +69,7 @@ For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to t
 An object containing the following items will be returned:
 \describe{
 \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+\item{\code{lambdaSeq}}{The sequence of regularization parameter candidates for cross-validation.}
 \item{\code{lambda}}{Regularization parameter selected by cross-validation.}
 \item{\code{bandwidth}}{Bandwidth value.}
 \item{\code{tau}}{Quantile level.}

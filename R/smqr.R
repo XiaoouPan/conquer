@@ -595,6 +595,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+#' \item{\code{lambdaSeq}}{The sequence of regularization parameter candidates for cross-validation.}
 #' \item{\code{lambda}}{Regularization parameter selected by cross-validation.}
 #' \item{\code{bandwidth}}{Bandwidth value.}
 #' \item{\code{tau}}{Quantile level.}
@@ -752,6 +753,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
       rst = cvTrianMcpWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
     }
   } 
-  return (list(coeff = as.numeric(rst$coeff), lambda = rst$lambda, bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, n = n, p = p))
+  return (list(coeff = as.numeric(rst$coeff), lambdaSeq = lambdaSeq, lambda = rst$lambda, bandwidth = h, tau = tau, kernel = kernel, 
+               penalty = penalty, n = n, p = p))
 }
 
