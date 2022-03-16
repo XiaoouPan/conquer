@@ -4,14 +4,17 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 
+// [[Rcpp::export]]
 int sgn(const double x) {
   return (x > 0) - (x < 0);
 }
 
+// [[Rcpp::export]]
 double mad(const arma::vec& x) {
   return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
 }
 
+// [[Rcpp::export]]
 arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1, const int p) {
   for (int i = 0; i < p; i++) {
     X.col(i) = (X.col(i) - mx(i)) * sx1(i);
@@ -19,10 +22,12 @@ arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1,
   return X;
 }
 
+// [[Rcpp::export]]
 arma::vec softThresh(const arma::vec& x, const arma::vec& Lambda, const int p) {
   return arma::sign(x) % arma::max(arma::abs(x) - Lambda, arma::zeros(p + 1));
 }
 
+// [[Rcpp::export]]
 double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau) {
   arma::vec res = Y - Z * beta;
   double rst = 0.0;
@@ -32,12 +37,14 @@ double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, con
   return rst;
 }
 
+// [[Rcpp::export]]
 arma::vec cmptLambdaLasso(const double lambda, const int p) {
   arma::vec rst = lambda * arma::ones(p + 1);
   rst(0) = 0;
   return rst;
 }
 
+// [[Rcpp::export]]
 double lossL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double n1, const double tau) {
   arma::vec res = Y - Z * beta;
   double rst = 0.0;
@@ -47,6 +54,7 @@ double lossL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, con
   return 0.5 * n1 * rst;
 }
 
+// [[Rcpp::export]]
 double updateL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, arma::vec& grad, const double n1, const double tau) {
   arma::vec res = Y - Z * beta;
   double rst = 0.0;
@@ -61,6 +69,7 @@ double updateL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, a
 }
 
 // LAMM code for initialization
+// [[Rcpp::export]]
 double lammL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, arma::vec& beta, const double tau, const double phi, const double gamma, 
               const int p, const double n1) {
   double phiNew = phi;
@@ -83,6 +92,7 @@ double lammL2(const arma::mat& Z, const arma::vec& Y, const arma::vec& Lambda, a
   return phiNew;
 }
 
+// [[Rcpp::export]]
 arma::vec lasso(const arma::mat& Z, const arma::vec& Y, const double lambda, const double tau, const int p, const double n1, const double phi0, 
                 const double gamma, const double epsilon, const int iteMax) {
   arma::vec beta = arma::zeros(p + 1);
@@ -102,6 +112,7 @@ arma::vec lasso(const arma::mat& Z, const arma::vec& Y, const double lambda, con
   return betaNew;
 }
 
+// [[Rcpp::export]]
 arma::vec cmptLambdaSCAD(const arma::vec& beta, const double lambda, const int p, const double para) {
   arma::vec rst = arma::zeros(p + 1);
   for (int i = 1; i <= p; i++) {
@@ -115,6 +126,7 @@ arma::vec cmptLambdaSCAD(const arma::vec& beta, const double lambda, const int p
   return rst;
 }
 
+// [[Rcpp::export]]
 arma::vec cmptLambdaMCP(const arma::vec& beta, const double lambda, const int p, const double para) {
   arma::vec rst = arma::zeros(p + 1);
   for (int i = 1; i <= p; i++) {

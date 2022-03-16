@@ -37,15 +37,15 @@ lammL2 <- function(Z, Y, Lambda, beta, tau, phi, gamma, p, n1) {
     .Call('_conquer_lammL2', PACKAGE = 'conquer', Z, Y, Lambda, beta, tau, phi, gamma, p, n1)
 }
 
-lasso <- function(Z, Y, lambda, tau, p, n1, phi0 = 0.1, gamma = 1.2, epsilon = 0.01, iteMax = 500L) {
+lasso <- function(Z, Y, lambda, tau, p, n1, phi0, gamma, epsilon, iteMax) {
     .Call('_conquer_lasso', PACKAGE = 'conquer', Z, Y, lambda, tau, p, n1, phi0, gamma, epsilon, iteMax)
 }
 
-cmptLambdaSCAD <- function(beta, lambda, p, para = 3.7) {
+cmptLambdaSCAD <- function(beta, lambda, p, para) {
     .Call('_conquer_cmptLambdaSCAD', PACKAGE = 'conquer', beta, lambda, p, para)
 }
 
-cmptLambdaMCP <- function(beta, lambda, p, para = 3.0) {
+cmptLambdaMCP <- function(beta, lambda, p, para) {
     .Call('_conquer_cmptLambdaMCP', PACKAGE = 'conquer', beta, lambda, p, para)
 }
 
