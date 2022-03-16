@@ -653,7 +653,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
     U = matrix(runif(nsim * n), nsim, n)
     pivot = tau - (U <= tau)
     lambda0 = quantile(rowMaxs(abs(pivot %*% scale(X))), 0.9) / n
-    lambdaSeq = seq(0.05, 1.5, length.out = numLambda) * lambda0
+    lambdaSeq = seq(0.05, 2, length.out = numLambda) * lambda0
   } else if (length(lambdaSeq) == 1) {
     stop("Error: lambdaSeq must be a sequence. Please use conquer.reg instead for a specific lambda.")
   } else {
