@@ -4,6 +4,23 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 
+// The declared functions in the header
+int sgn(const double x) {
+  return (x > 0) - (x < 0);
+}
+
+double mad(const arma::vec& x) {
+  return 1.482602 * arma::median(arma::abs(x - arma::median(x)));
+}
+
+arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1, const int p) {
+  for (int i = 0; i < p; i++) {
+    X.col(i) = (X.col(i) - mx(i)) * sx1(i);
+  }
+  return X;
+}
+// End of definition for the declared functions in the header
+
 // Asymmetric huber regression adjusted to quantile tau for initialization 
 // [[Rcpp::export]]
 void updateHuber(const arma::mat& Z, const arma::vec& res, const double tau, arma::vec& der, arma::vec& grad, const int n, const double rob, const double n1) {

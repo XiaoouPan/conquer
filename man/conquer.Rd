@@ -37,8 +37,8 @@ conquer(
 
 \item{ci}{(\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
 If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
-If \code{ci = "asymptotic"}, then confidence intervals will be constructed based on asymptotic covariance matrix. 
-If \code{ci = "both"}, then both confidence intervals from both bootstrap and asymptotic covariance will be returned.}
+If \code{ci = "asymptotic"}, then confidence intervals will be constructed based on estimated asymptotic covariance matrix. 
+If \code{ci = "both"}, then confidence intervals from both bootstrap and asymptotic covariance will be returned.}
 
 \item{alpha}{(\strong{optional}) Miscoverage level for each confidence interval. Default is 0.05.}
 
@@ -55,13 +55,15 @@ An object containing the following items will be returned:
 \item{\code{kernel}}{Kernel function.}
 \item{\code{n}}{Sample size.}
 \item{\code{p}}{Number of covariates.}
-\item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
-\item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
-\item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Not available if \code{ci = FALSE}.}
+\item{\code{perCI}}{The percentile confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+\item{\code{pivCI}}{The pivotal confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+\item{\code{normCI}}{The normal-based confidence intervals for regression coefficients. Only available if \code{ci = "bootstrap"} or \code{ci = "both"}.}
+\item{\code{asyCI}}{The asymptotic confidence intervals for regression coefficients. Only available if \code{ci = "asymptotic"} or \code{ci = "both"}.}
 }
 }
 \description{
-Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
+Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. 
+Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
 }
 \examples{
 n = 500; p = 10
@@ -78,19 +80,19 @@ fit.unif = conquer(X, Y, tau = 0.5, kernel = "uniform")
 beta.hat.unif = fit.unif$coeff
 
 ## Construct three types of confidence intervals via multiplier bootstrap
-fit = conquer(X, Y, tau = 0.5, kernel = "Gaussian", ci = TRUE)
+fit = conquer(X, Y, tau = 0.5, kernel = "Gaussian", ci = "bootstrap")
 ci.per = fit$perCI
 ci.piv = fit$pivCI
 ci.norm = fit$normCI
 }
 \references{
-Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal. 8 141–148.
+Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal., 8, 141–148.
 
-Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., in press.
+Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., 39, 338-357.
 
 He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
 
-Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica, 46, 33-50.
 }
 \seealso{
 See \code{\link{conquer.process}} for smoothed quantile regression process.

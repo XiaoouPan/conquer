@@ -11,8 +11,11 @@ conquer.reg(
   tau = 0.5,
   kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"),
   h = 0,
-  penalty = c("lasso", "scad", "mcp"),
-  para = NULL,
+  penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"),
+  para.elastic = 0.5,
+  group = NULL,
+  para.scad = 3.7,
+  para.mcp = 3,
   epsilon = 0.001,
   iteMax = 500,
   phi0 = 0.01,
@@ -25,7 +28,7 @@ conquer.reg(
 
 \item{Y}{An \eqn{n}-dimensional response vector.}
 
-\item{lambda}{(\strong{optional}) Regularization parameter. Default is 0.2.}
+\item{lambda}{(\strong{optional}) Regularization parameter. Can be a scalar or a sequence. If the input is a sequence, the function will sort it in ascending order, and run the regression accordingly. Default is 0.2.}
 
 \item{tau}{(\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.}
 
@@ -33,9 +36,17 @@ conquer.reg(
 
 \item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.}
 
-\item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". The other two options are "scad" and "mcp".}
+\item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".}
 
-\item{para}{(\strong{optional}) A constant parameter for "scad" and "mcp". Do not need to specify if the penalty is lasso. The default values are 3.7 for "scad" and 3 for "mcp".}
+\item{para.elastic}{(\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + 0.5 * (1 - \alpha) ||\beta||_2^2}, which is consistent with the widely used package "glmnet". Default is 0.5.
+Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.}
+
+\item{group}{(\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
+For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.}
+
+\item{para.scad}{(\strong{optional}) The constant parameter for "scad". Default value is 3.7. Only specify it if \code{penalty = "scad"}.}
+
+\item{para.mcp}{(\strong{optional}) The constant parameter for "mcp". Default value is 3. Only specify it if \code{penalty = "mcp"}.}
 
 \item{epsilon}{(\strong{optional}) A tolerance level for the stopping rule. The iteration will stop when the maximum magnitude of the change of coefficient updates is less than \code{epsilon}. Default is 0.001.}
 
@@ -45,23 +56,24 @@ conquer.reg(
 
 \item{gamma}{(\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.}
 
-\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.}
+\item{iteTight}{(\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Only specify it if the penalty is scad or mcp. Default is 3.}
 }
 \value{
 An object containing the following items will be returned:
 \describe{
-\item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+\item{\code{coeff}}{If the input \code{lambda} is a scalar, then \code{coeff} returns a \eqn{(p + 1)} vector of estimated coefficients, including the intercept. If the input \code{lambda} is a sequence, then \code{coeff} returns a \eqn{(p + 1)} by \eqn{nlambda} matrix, where \eqn{nlambda} refers to the length of \code{lambda} sequence.}
 \item{\code{bandwidth}}{Bandwidth value.}
 \item{\code{tau}}{Quantile level.}
 \item{\code{kernel}}{Kernel function.}
 \item{\code{penalty}}{Penalty type.}
-\item{\code{lambda}}{Regularization parameter.}
+\item{\code{lambda}}{Regularization parameter(s).}
 \item{\code{n}}{Sample size.}
 \item{\code{p}}{Number of the covariates.}
 }
 }
 \description{
-Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "scad" and "mcp" penalties. For "scad" and "mcp", the iteratively reweighted \eqn{\ell_1}-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
+Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "elastic-net", "group lasso", "sparse group lasso", "scad" and "mcp" penalties. 
+For "scad" and "mcp", the iteratively reweighted \eqn{\ell_1}-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
 }
 \examples{
 n = 200; p = 500; s = 10
@@ -78,11 +90,11 @@ fit.scad = conquer.reg(X, Y, lambda = 0.13, tau = 0.8, kernel = "Gaussian", pena
 beta.scad = fit.scad$coeff
 }
 \references{
-Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist. 46 814-841.
+Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.
 
-Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica 46 33-50.
+Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica, 46, 33-50.
 
-Tan, K. M., Wang, L. and Zhou, W.-X. (2021). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, to appear.
+Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84(1), 205-233.
 }
 \seealso{
 See \code{\link{conquer.cv.reg}} for regularized quantile regression with cross-validation.
