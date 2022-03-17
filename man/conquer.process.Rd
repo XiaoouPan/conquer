@@ -16,7 +16,7 @@ conquer.process(
 )
 }
 \arguments{
-\item{X}{A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.}
+\item{X}{An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.}
 
 \item{Y}{An \eqn{n}-dimensional response vector.}
 

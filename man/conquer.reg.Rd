@@ -24,7 +24,7 @@ conquer.reg(
 )
 }
 \arguments{
-\item{X}{A \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates.}
+\item{X}{An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates.}
 
 \item{Y}{An \eqn{n}-dimensional response vector.}
 
