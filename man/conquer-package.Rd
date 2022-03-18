@@ -8,6 +8,7 @@
 Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. 
 In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. 
 In high dimensions, the conquer methods complemented with \eqn{\ell_1}-penalization and iteratively reweighted \eqn{\ell_1}-penalization are used to fit sparse models.
+Commonly used penalities, such as the elastic-net, group lasso and sparse group lasso, are also incorporated to deal with more complex low-dimensional structures.
 }
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal., 8, 141–148.
@@ -16,9 +17,9 @@ Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regress
 
 Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.
 
-Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., 39, 338-357.
+Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. J. Bus. Econ. Statist., 39, 338-357.
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2022+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
 
 Koenker, R. (2005). Quantile Regression. Cambridge University Press, Cambridge.
 

@@ -88,9 +88,9 @@ ci.norm = fit$normCI
 \references{
 Barzilai, J. and Borwein, J. M. (1988). Two-point step size gradient methods. IMA J. Numer. Anal., 8, 141–148.
 
-Fernandes, M., Guerre, E. and Horta, E. (2019). Smoothing quantile regressions. J. Bus. Econ. Statist., 39, 338-357.
+Fernandes, M., Guerre, E. and Horta, E. (2021). Smoothing quantile regressions. J. Bus. Econ. Statist., 39, 338-357.
 
-He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2021+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
+He, X., Pan, X., Tan, K. M., and Zhou, W.-X. (2022+). Smoothed quantile regression for large-scale inference. J. Econometrics, in press.
 
 Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica, 46, 33-50.
 }
