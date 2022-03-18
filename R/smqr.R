@@ -16,7 +16,7 @@ getNormCI = function(est, sd, z) {
 #' @title Convolution-Type Smoothed Quantile Regression
 #' @description Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. Efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. 
 #' Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed.
-#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
+#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observations with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tau (\strong{optional}) The desired quantile level. Default is 0.5. Value must be between 0 and 1.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
@@ -212,7 +212,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 
 #' @title Convolution-Type Smoothed Quantile Regression Process
 #' @description Fit a smoothed quantile regression process over a quantile range. The algorithm is essentially the same as \code{\link{conquer}}.
-#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
+#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observations with \eqn{p} covariates. Number of observations \eqn{n} must be greater than number of covariates \eqn{p}.
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param tauSeq (\strong{optional}) A sequence of quantile values (between 0 and 1). Default is \eqn{\{0.1, 0.15, 0.2, ..., 0.85, 0.9\}}.
 #' @param kernel (\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
@@ -284,14 +284,14 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @title Penalized Convolution-Type Smoothed Quantile Regression
 #' @description Fit sparse quantile regression models in high dimensions via regularized conquer methods with "lasso", "elastic-net", "group lasso", "sparse group lasso", "scad" and "mcp" penalties. 
 #' For "scad" and "mcp", the iteratively reweighted \eqn{\ell_1}-penalized algorithm is complemented with a local adpative majorize-minimize algorithm.
-#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
+#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observations with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambda (\strong{optional}) Regularization parameter. Can be a scalar or a sequence. If the input is a sequence, the function will sort it in ascending order, and run the regression accordingly. Default is 0.2.
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
 #' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".
-#' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + 0.5 * (1 - \alpha) ||\beta||_2^2}, which is consistent with the widely used package "glmnet". Default is 0.5.
+#' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic-net. The penalty is defined as \eqn{\alpha ||\beta||_1 + (1 - \alpha) ||\beta||_2^2}. Default is 0.5.
 #' Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.
 #' @param group (\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
 #' For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.
@@ -588,7 +588,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 
 #' @title Cross-Validated Penalized Convolution-Type Smoothed Quantile Regression
 #' @description Fit sparse quantile regression models via regularized conquer methods with "lasso", "elastic-net", "group lasso", "sparse group lasso", "scad" and "mcp" penalties. The regularization parameter \eqn{\lambda} is selected via cross-validation.
-#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates. 
+#' @param X An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observations with \eqn{p} covariates. 
 #' @param Y An \eqn{n}-dimensional response vector.
 #' @param lambdaSeq (\strong{optional}) A sequence of candidate regularization parameters. If unspecified, the sequence will be generated by a simulated pivotal quantity approach proposed in Belloni and Chernozhukov (2011).
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
@@ -597,7 +597,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".
 #' @param kfolds (\strong{optional}) Number of folds for cross-validation. Default is 5.
 #' @param numLambda (\strong{optional}) Number of \eqn{\lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.
-#' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + 0.5 * (1 - \alpha) ||\beta||_2^2}, which is consistent with the widely used package "glmnet". Default is 0.5.
+#' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + (1 - \alpha) ||\beta||_2^2}. Default is 0.5.
 #' Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.
 #' @param group (\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
 #' For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.
@@ -607,7 +607,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 500.
 #' @param phi0 (\strong{optional}) The initial quadratic coefficient parameter in the local adaptive majorize-minimize algorithm. Default is 0.01.
 #' @param gamma (\strong{optional}) The adaptive search parameter (greater than 1) in the local adaptive majorize-minimize algorithm. Default is 1.2.
-#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Do not need to specify if the penalty is lasso. Default is 3.
+#' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Only specify it if the penalty is scad or mcp. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
