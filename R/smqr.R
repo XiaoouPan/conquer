@@ -290,7 +290,7 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
 #' @param h (\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.
-#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".
+#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso" (Tibshirani, 1996). The other options are "elastic" for elastic-net (Zou and Hastie, 2005), "group" for group lasso (Yuan and Lin, 2006), "sparse-group" for sparse group lasso (Simon et al., 2013), "scad" (Fan and Li, 2001) and "mcp" (Zhang, 2010).
 #' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic-net. The penalty is defined as \eqn{\alpha ||\beta||_1 + (1 - \alpha) ||\beta||_2^2}. Default is 0.5.
 #' Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.
 #' @param group (\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
@@ -313,9 +313,16 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' \item{\code{n}}{Sample size.}
 #' \item{\code{p}}{Number of the covariates.}
 #' }
+#' @references Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist., 39, 82-130.
+#' @references Fan, J. and Li, R. (2001). Variable selection via nonconcave regularized likelihood and its oracle properties. J. Amer. Statist. Assoc., 96, 1348-1360.
 #' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica, 46, 33-50.
-#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84(1), 205-233.
+#' @references Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2013). A sparse-group lasso. J. Comp. Graph. Statist., 22, 231-245.
+#' @references Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J. R. Statist. Soc. Ser. B, 58, 267–288.
+#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84, 205-233.
+#' @references Yuan, M. and Lin, Y. (2006). Model selection and estimation in regression with grouped variables., J. Roy. Statist. Soc. Ser. B, 68, 49-67.
+#' @references Zhang, C.-H. (2010). Nearly unbiased variable selection under minimax concave penalty. Ann. Statist., 38, 894-942.
+#' @references Zou, H. and Hastie, T. (2005). Regularization and variable selection via the elastic net. J. R. Statist. Soc. Ser. B, 67, 301-320.
 #' @seealso See \code{\link{conquer.cv.reg}} for regularized quantile regression with cross-validation.
 #' @examples 
 #' n = 200; p = 500; s = 10
@@ -594,7 +601,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @param tau (\strong{optional}) Quantile level (between 0 and 1). Default is 0.5.
 #' @param kernel (\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".
 #' @param h (\strong{optional}) The bandwidth parameter for kernel smoothing. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.
-#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".
+#' @param penalty (\strong{optional}) A character string specifying the penalty. Default is "lasso" (Tibshirani, 1996). The other options are "elastic" for elastic-net (Zou and Hastie, 2005), "group" for group lasso (Yuan and Lin, 2006), "sparse-group" for sparse group lasso (Simon et al., 2013), "scad" (Fan and Li, 2001) and "mcp" (Zhang, 2010).
 #' @param kfolds (\strong{optional}) Number of folds for cross-validation. Default is 5.
 #' @param numLambda (\strong{optional}) Number of \eqn{\lambda} values for cross-validation if \code{lambdaSeq} is unspeficied. Default is 50.
 #' @param para.elastic (\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + (1 - \alpha) ||\beta||_2^2}. Default is 0.5.
@@ -621,9 +628,15 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' \item{\code{p}}{Number of covariates.}
 #' }
 #' @references Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist., 39, 82-130.
+#' @references Fan, J. and Li, R. (2001). Variable selection via nonconcave regularized likelihood and its oracle properties. J. Amer. Statist. Assoc., 96, 1348-1360.
 #' @references Fan, J., Liu, H., Sun, Q. and Zhang, T. (2018). I-LAMM for sparse learning: Simultaneous control of algorithmic complexity and statistical error. Ann. Statist., 46, 814-841.
 #' @references Koenker, R. and Bassett, G. (1978). Regression quantiles. Econometrica, 46, 33-50.
-#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84(1), 205-233.
+#' @references Simon, N., Friedman, J., Hastie, T. and Tibshirani, R. (2013). A sparse-group lasso. J. Comp. Graph. Statist., 22, 231-245.
+#' @references Tibshirani, R. (1996). Regression shrinkage and selection via the lasso. J. R. Statist. Soc. Ser. B, 58, 267–288.
+#' @references Tan, K. M., Wang, L. and Zhou, W.-X. (2022). High-dimensional quantile regression: convolution smoothing and concave regularization. J. Roy. Statist. Soc. Ser. B, 84, 205-233.
+#' @references Yuan, M. and Lin, Y. (2006). Model selection and estimation in regression with grouped variables., J. Roy. Statist. Soc. Ser. B, 68, 49-67.
+#' @references Zhang, C.-H. (2010). Nearly unbiased variable selection under minimax concave penalty. Ann. Statist., 38, 894-942.
+#' @references Zou, H. and Hastie, T. (2005). Regularization and variable selection via the elastic net. J. R. Statist. Soc. Ser. B, 67, 301-320.
 #' @seealso See \code{\link{conquer.reg}} for regularized quantile regression with a prescribed \eqn{lambda}.
 #' @examples 
 #' n = 100; p = 200; s = 5
