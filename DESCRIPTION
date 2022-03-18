@@ -7,7 +7,7 @@ Authors@R: c(person("Xuming", "He", email = "xmhe@umich.edu", role = "aut"),
              person("Xiaoou", "Pan", email = "xip024@ucsd.edu", role = c("aut", "cre")), 
              person("Kean Ming", "Tan", email = "keanming@umich.edu", role = "aut"),
              person("Wen-Xin", "Zhou", email = "wez243@ucsd.edu", role = "aut"))
-Description: Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer methods complemented with flexible types of penalties are used to fit sparse models.
+Description: Estimation and inference for conditional linear quantile regression models using a convolution smoothed approach. In the low-dimensional setting, efficient gradient-based methods are employed for fitting both a single model and a regression process over a quantile range. Normal-based and (multiplier) bootstrap confidence intervals for all slope coefficients are constructed. In high dimensions, the conquer method is complemented with flexible types of penalties (Lasso, elastic-net, group lasso, sparse group lasso, scad and mcp) to deal with complex low-dimensional structures.
 Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
