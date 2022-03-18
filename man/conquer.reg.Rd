@@ -24,7 +24,7 @@ conquer.reg(
 )
 }
 \arguments{
-\item{X}{An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observation with \eqn{p} covariates.}
+\item{X}{An \eqn{n} by \eqn{p} design matrix. Each row is a vector of observations with \eqn{p} covariates.}
 
 \item{Y}{An \eqn{n}-dimensional response vector.}
 
@@ -38,7 +38,7 @@ conquer.reg(
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso". The other options are "elastic" (for elastic-net), "group" (for group lasso), "sparse-group" (for sparse group lasso), "scad" and "mcp".}
 
-\item{para.elastic}{(\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic net. The penalty is defined as \eqn{\alpha ||\beta||_1 + 0.5 * (1 - \alpha) ||\beta||_2^2}, which is consistent with the widely used package "glmnet". Default is 0.5.
+\item{para.elastic}{(\strong{optional}) The mixing parameter between 0 and 1 (usually noted as \eqn{\alpha}) for elastic-net. The penalty is defined as \eqn{\alpha ||\beta||_1 + (1 - \alpha) ||\beta||_2^2}. Default is 0.5.
 Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.}
 
 \item{group}{(\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
