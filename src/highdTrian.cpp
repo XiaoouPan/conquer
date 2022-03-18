@@ -74,7 +74,7 @@ double lammTrianElastic(const arma::mat& Z, const arma::vec& Y, const arma::vec&
   while (true) {
     arma::vec first = beta - grad / phiNew;
     arma::vec second = alpha * Lambda / phiNew;
-    betaNew = softThresh(first, second, p) / (1.0 + (1.0 - alpha) * Lambda / phiNew);
+    betaNew = softThresh(first, second, p) / (1.0 + (2.0 - 2 * alpha) * Lambda / phiNew);
     double fVal = lossTrianHd(Z, Y, betaNew, tau, h, h1, h2);
     arma::vec diff = betaNew - beta;
     double psiVal = loss + arma::as_scalar(grad.t() * diff) + 0.5 * phiNew * arma::as_scalar(diff.t() * diff);
