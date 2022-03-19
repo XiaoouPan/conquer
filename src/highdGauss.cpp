@@ -1,6 +1,6 @@
 # include <RcppArmadillo.h>
 # include <cmath>
-# include "basicOp.hpp"
+# include "basicOp.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 
