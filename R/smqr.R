@@ -349,10 +349,6 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
 #' fit.group = conquer.reg(X, Y, lambda = 0.05, tau = 0.7, penalty = "group", group = group)
 #' beta.group = fit.group$coeff
-#' 
-#' ## Regularized conquer with spaarse group lasso at tau = 0.7
-#' fit.sparse.group = conquer.reg(X, Y, lambda = 0.03, tau = 0.7, penalty = "sparse-group", group = group)
-#' beta.sparse.group = fit.sparse.group$coeff
 #' @export 
 conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                        penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, para.scad = 3.7, 
@@ -666,7 +662,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @export 
 conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                           penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, para.scad = 3.7, 
-                          para.mcp = 3.0, kfolds = 5, numLambda = 50, para = NULL, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
+                          para.mcp = 3.0, kfolds = 5, numLambda = 50, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
   n = nrow(X)
   p = ncol(X)
   if (length(Y) != n) {
