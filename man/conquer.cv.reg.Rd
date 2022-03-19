@@ -18,7 +18,6 @@ conquer.cv.reg(
   para.mcp = 3,
   kfolds = 5,
   numLambda = 50,
-  para = NULL,
   epsilon = 0.001,
   iteMax = 500,
   phi0 = 0.01,

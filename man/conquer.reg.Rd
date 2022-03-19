@@ -100,10 +100,6 @@ Y = X \%*\% beta + err
 group = c(rep(1, 5), rep(2, 5), rep(3, p - s))
 fit.group = conquer.reg(X, Y, lambda = 0.05, tau = 0.7, penalty = "group", group = group)
 beta.group = fit.group$coeff
-
-## Regularized conquer with spaarse group lasso at tau = 0.7
-fit.sparse.group = conquer.reg(X, Y, lambda = 0.03, tau = 0.7, penalty = "sparse-group", group = group)
-beta.sparse.group = fit.sparse.group$coeff
 }
 \references{
 Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist., 39, 82-130.
