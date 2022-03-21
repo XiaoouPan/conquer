@@ -11,10 +11,9 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
-**2022-03-08**:
+**2022-03-21**:
 
-We are adding more flexible penalties and inference methods into the package.
-
+An updated version (1.3.0) has been submitted to CRAN.
 
 **2022-02-12 (Version 1.2.2)**:
 
