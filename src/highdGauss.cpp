@@ -525,7 +525,7 @@ arma::mat conquerGaussElasticSeq(const arma::mat& X, arma::vec Y, const arma::ve
 }
 
 // [[Rcpp::export]]
-arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, 
+arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, 
                                  const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols;
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -534,11 +534,6 @@ arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double l
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   arma::vec betaHat = gaussGroupLasso(Z, Y, lambda, tau, group, weight, p, G, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
@@ -546,7 +541,7 @@ arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double l
 }
 
 // [[Rcpp::export]]
-arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, 
+arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, 
                                     const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h), n1 = 1.0 / n;
@@ -555,11 +550,6 @@ arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma:
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   arma::mat betaSeq(p + 1, nlambda);
   arma::vec betaHat = gaussGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
   arma::vec betaWarm = betaHat;
@@ -573,7 +563,7 @@ arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma:
 }
 
 // [[Rcpp::export]]
-arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, 
+arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, 
                                        const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
                                        const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols;
@@ -583,11 +573,6 @@ arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const do
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   arma::vec betaHat = gaussSparseGroupLasso(Z, Y, lambda, tau, group, weight, p, G, 1.0 / n, h, h1, h2, phi0, gamma, epsilon, iteMax);
   betaHat.rows(1, p) %= sx1;
   betaHat(0) += my - arma::as_scalar(mx * betaHat.rows(1, p));
@@ -595,7 +580,7 @@ arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const do
 }
 
 // [[Rcpp::export]]
-arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, 
+arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, 
                                           const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, const double epsilon = 0.001, 
                                           const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
@@ -605,11 +590,6 @@ arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   arma::mat betaSeq(p + 1, nlambda);
   arma::vec betaHat = gaussSparseGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
   arma::vec betaWarm = betaHat;
@@ -841,7 +821,7 @@ Rcpp::List cvGaussElasticWarm(const arma::mat& X, arma::vec Y, const arma::vec& 
 
 // [[Rcpp::export]]
 Rcpp::List cvGaussGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                             const arma::vec& group, const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, 
+                             const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, 
                              const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -852,11 +832,6 @@ Rcpp::List cvGaussGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& l
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   for (int j = 1; j <= kfolds; j++) {
     arma::uvec idx = arma::find(folds == j);
     arma::uvec idxComp = arma::find(folds != j);
@@ -878,7 +853,7 @@ Rcpp::List cvGaussGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& l
 
 // [[Rcpp::export]]
 Rcpp::List cvGaussGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, 
-                                 const arma::vec& group, const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, 
+                                 const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0 = 0.01, const double gamma = 1.2, 
                                  const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -889,11 +864,6 @@ Rcpp::List cvGaussGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::ve
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   for (int j = 1; j <= kfolds; j++) {
     arma::uvec idx = arma::find(folds == j);
     arma::uvec idxComp = arma::find(folds != j);
@@ -919,7 +889,7 @@ Rcpp::List cvGaussGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::ve
 
 // [[Rcpp::export]]
 Rcpp::List cvGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, 
-                                   const int kfolds, const arma::vec& group, const int G, const double h, const double phi0 = 0.01, 
+                                   const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0 = 0.01, 
                                    const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -930,11 +900,6 @@ Rcpp::List cvGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   for (int j = 1; j <= kfolds; j++) {
     arma::uvec idx = arma::find(folds == j);
     arma::uvec idxComp = arma::find(folds != j);
@@ -956,7 +921,7 @@ Rcpp::List cvGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::
 
 // [[Rcpp::export]]
 Rcpp::List cvGaussSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, 
-                                       const int kfolds, const arma::vec& group, const int G, const double h, const double phi0 = 0.01, 
+                                       const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0 = 0.01, 
                                        const double gamma = 1.2, const double epsilon = 0.001, const int iteMax = 500) {
   const int n = X.n_rows, p = X.n_cols, nlambda = lambdaSeq.size();
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
@@ -967,11 +932,6 @@ Rcpp::List cvGaussSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const ar
   arma::mat Z = arma::join_rows(arma::ones(n), standardize(X, mx, sx1, p));
   double my = arma::mean(Y);
   Y -= my;
-  arma::vec weight = arma::zeros(G);
-  for (int i = 1; i <= p; i++) {
-    weight(group(i)) += 1;
-  }
-  weight = arma::sqrt(weight);
   for (int j = 1; j <= kfolds; j++) {
     arma::uvec idx = arma::find(folds == j);
     arma::uvec idxComp = arma::find(folds != j);
