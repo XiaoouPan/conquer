@@ -14,7 +14,7 @@ arma::mat standardize(arma::mat X, const arma::rowvec& mx, const arma::vec& sx1,
 
 arma::vec softThresh(const arma::vec& x, const arma::vec& Lambda, const int p);
 
-double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau);
+arma::vec lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau);
 
 arma::vec cmptLambdaLasso(const double lambda, const int p);
 
