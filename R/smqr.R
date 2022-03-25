@@ -627,9 +627,13 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' @param iteTight (\strong{optional}) Maximum number of tightening iterations in the iteratively reweighted \eqn{\ell_1}-penalized algorithm. Only specify it if the penalty is scad or mcp. Default is 3.
 #' @return An object containing the following items will be returned:
 #' \describe{
-#' \item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+#' \item{\code{coeff.min}}{A \eqn{(p + 1)} vector of estimated coefficients including the intercept selected by minimizing the cross-validation errors.}
+#' \item{\code{coeff.1se}}{A \eqn{(p + 1)} vector of estimated coefficients including the intercept. The corresponding \eqn{\lambda} is the largest \eqn{\lambda} such that the cross-validation error is within 1 standard error of the minimum.}
 #' \item{\code{lambdaSeq}}{The sequence of regularization parameter candidates for cross-validation.}
-#' \item{\code{lambda}}{Regularization parameter selected by cross-validation.}
+#' \item{\code{lambda.min}}{Regularization parameter selected by minimizing the cross-validation errors. This is the corresponding \eqn{\lambda} of \code{coeff.min}.}
+#' \item{\code{lambda.1se}}{The largest regularization parameter such that the cross-validation error is within 1 standard error of the minimum. This is the corresponding \eqn{\lambda} of \code{coeff.1se}.}
+#' \item{\code{deviance}}{Cross-validation errors based on the quantile loss. The length is equal to the length of \code{lambdaSeq}.}
+#' \item{\code{deviance.se}}{Estimated standard errors of \code{deviance}. The length is equal to the length of \code{lambdaSeq}.}
 #' \item{\code{bandwidth}}{Bandwidth value.}
 #' \item{\code{tau}}{Quantile level.}
 #' \item{\code{kernel}}{Kernel function.}
@@ -656,15 +660,15 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' 
 #' ## Cross-validated regularized conquer with lasso penalty at tau = 0.7
 #' fit.lasso = conquer.cv.reg(X, Y, tau = 0.7, penalty = "lasso")
-#' beta.lasso = fit.lasso$coeff
+#' beta.lasso = fit.lasso$coeff.min
 #' 
 #' ## Cross-validated regularized conquer with elastic-net penalty at tau = 0.7
 #' fit.elastic = conquer.cv.reg(X, Y, tau = 0.7, penalty = "elastic", para.elastic = 0.7)
-#' beta.elastic = fit.elastic$coeff
+#' beta.elastic = fit.elastic$coeff.min
 #' 
 #' ## Cross-validated regularized conquer with scad penalty at tau = 0.7
 #' fit.scad = conquer.cv.reg(X, Y, tau = 0.7, penalty = "scad")
-#' beta.scad = fit.scad$coeff
+#' beta.scad = fit.scad$coeff.min
 #' 
 #' ## Regularized conquer with group lasso at tau = 0.7
 #' beta = c(rep(1.3, 2), rep(1.5, 3), rep(0, p - s))
@@ -672,7 +676,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
 #' Y = X %*% beta + err
 #' group = c(rep(1, 2), rep(2, 3), rep(3, p - s))
 #' fit.group = conquer.cv.reg(X, Y,tau = 0.7, penalty = "group", group = group)
-#' beta.group = fit.group$coeff
+#' beta.group = fit.group$coeff.min
 #' @export 
 conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
                           penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, weights = NULL,
@@ -815,7 +819,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
     }
   } 
   return (list(coeff.min = as.numeric(rst$coeff), coeff.1se = as.numeric(rst$coeffSe), lambdaSeq = lambdaSeq, lambda.min = rst$lambdaMin, 
-               lambda.1se = rst$lambdaSe, deviance = as.numeric(rst$deviance), deviance.sd = as.numeric(rst$devianceSd), bandwidth = h, tau = tau, 
+               lambda.1se = rst$lambdaSe, deviance = as.numeric(rst$deviance), deviance.se = as.numeric(rst$devianceSd), bandwidth = h, tau = tau, 
                kernel = kernel, penalty = penalty, n = n, p = p))
 }
 
