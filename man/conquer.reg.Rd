@@ -14,6 +14,7 @@ conquer.reg(
   penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"),
   para.elastic = 0.5,
   group = NULL,
+  weights = NULL,
   para.scad = 3.7,
   para.mcp = 3,
   epsilon = 0.001,
@@ -43,6 +44,9 @@ Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.
 
 \item{group}{(\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
 For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.}
+
+\item{weights}{(\strong{optional}) A vector specifying groups weights for group Lasso and sparse group Lasso. The length must be equal to the number of groups. If not specified, the default weights are square roots of group sizes. 
+For example , if \code{group = c(rep(1, 3), rep(2, 7))}, then the default weights are \eqn{\sqrt{3}} for the first group, and \eqn{\sqrt{7}} for the second group.}
 
 \item{para.scad}{(\strong{optional}) The constant parameter for "scad". Default value is 3.7. Only specify it if \code{penalty = "scad"}.}
 

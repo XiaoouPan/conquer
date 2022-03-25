@@ -61,17 +61,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // lossQr
-double lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau);
-RcppExport SEXP _conquer_lossQr(SEXP ZSEXP, SEXP YSEXP, SEXP betaSEXP, SEXP tauSEXP) {
+void lossQr(const arma::mat& Z, const arma::vec& Y, const arma::vec& beta, const double tau, const int i, arma::vec& dev, arma::vec& devsq);
+RcppExport SEXP _conquer_lossQr(SEXP ZSEXP, SEXP YSEXP, SEXP betaSEXP, SEXP tauSEXP, SEXP iSEXP, SEXP devSEXP, SEXP devsqSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    rcpp_result_gen = Rcpp::wrap(lossQr(Z, Y, beta, tau));
-    return rcpp_result_gen;
+    Rcpp::traits::input_parameter< const int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type dev(devSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type devsq(devsqSEXP);
+    lossQr(Z, Y, beta, tau, i, dev, devsq);
+    return R_NilValue;
 END_RCPP
 }
 // cmptLambdaLasso
@@ -697,8 +699,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // conquerGaussGroupLasso
-arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerGaussGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerGaussGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerGaussGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -707,19 +709,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerGaussGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerGaussGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerGaussGroupLassoSeq
-arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerGaussGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerGaussGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerGaussGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -728,19 +731,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerGaussGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerGaussGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerGaussSparseGroupLasso
-arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerGaussSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerGaussSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -749,19 +753,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerGaussSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerGaussSparseGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerGaussSparseGroupLassoSeq
-arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerGaussSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerGaussSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerGaussSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -770,13 +775,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerGaussSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerGaussSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -864,27 +870,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvGaussLasso
-Rcpp::List cvGaussLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussLasso(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvGaussLassoWarm
 Rcpp::List cvGaussLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
 RcppExport SEXP _conquer_cvGaussLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
@@ -903,28 +888,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
     rcpp_result_gen = Rcpp::wrap(cvGaussLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvGaussElastic
-Rcpp::List cvGaussElastic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const double alpha, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussElastic(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP alphaSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussElastic(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -950,32 +913,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvGaussGroupLasso
-Rcpp::List cvGaussGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvGaussGroupLassoWarm
-Rcpp::List cvGaussGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvGaussGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvGaussGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -986,42 +926,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvGaussSparseGroupLasso
-Rcpp::List cvGaussSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussSparseGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(cvGaussGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // cvGaussSparseGroupLassoWarm
-Rcpp::List cvGaussSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvGaussSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvGaussSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvGaussSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1032,36 +950,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvGaussScad
-Rcpp::List cvGaussScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvGaussScad(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussScad(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
+    rcpp_result_gen = Rcpp::wrap(cvGaussSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1085,29 +981,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
     Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
     rcpp_result_gen = Rcpp::wrap(cvGaussScadWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvGaussMcp
-Rcpp::List cvGaussMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvGaussMcp(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvGaussMcp(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1629,8 +1502,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // conquerLogisticGroupLasso
-arma::vec conquerLogisticGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerLogisticGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerLogisticGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerLogisticGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1639,19 +1512,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerLogisticGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerLogisticGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerLogisticGroupLassoSeq
-arma::mat conquerLogisticGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerLogisticGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerLogisticGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerLogisticGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1660,19 +1534,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerLogisticGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerLogisticGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerLogisticSparseGroupLasso
-arma::vec conquerLogisticSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerLogisticSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerLogisticSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerLogisticSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1681,19 +1556,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerLogisticSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerLogisticSparseGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerLogisticSparseGroupLassoSeq
-arma::mat conquerLogisticSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerLogisticSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerLogisticSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerLogisticSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1702,13 +1578,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerLogisticSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerLogisticSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1796,27 +1673,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvLogisticLasso
-Rcpp::List cvLogisticLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticLasso(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvLogisticLassoWarm
 Rcpp::List cvLogisticLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
 RcppExport SEXP _conquer_cvLogisticLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
@@ -1835,28 +1691,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
     rcpp_result_gen = Rcpp::wrap(cvLogisticLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvLogisticElastic
-Rcpp::List cvLogisticElastic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const double alpha, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticElastic(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP alphaSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticElastic(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1882,32 +1716,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvLogisticGroupLasso
-Rcpp::List cvLogisticGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvLogisticGroupLassoWarm
-Rcpp::List cvLogisticGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvLogisticGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvLogisticGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1918,42 +1729,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvLogisticSparseGroupLasso
-Rcpp::List cvLogisticSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticSparseGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(cvLogisticGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // cvLogisticSparseGroupLassoWarm
-Rcpp::List cvLogisticSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvLogisticSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvLogisticSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvLogisticSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1964,36 +1753,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvLogisticScad
-Rcpp::List cvLogisticScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvLogisticScad(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticScad(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
+    rcpp_result_gen = Rcpp::wrap(cvLogisticSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2017,29 +1784,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
     Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
     rcpp_result_gen = Rcpp::wrap(cvLogisticScadWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvLogisticMcp
-Rcpp::List cvLogisticMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvLogisticMcp(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvLogisticMcp(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2579,8 +2323,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // conquerParaGroupLasso
-arma::vec conquerParaGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerParaGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerParaGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerParaGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2589,19 +2333,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerParaGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerParaGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerParaGroupLassoSeq
-arma::mat conquerParaGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerParaGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerParaGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerParaGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2610,19 +2355,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerParaGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerParaGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerParaSparseGroupLasso
-arma::vec conquerParaSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerParaSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerParaSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerParaSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2631,19 +2377,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerParaSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerParaSparseGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerParaSparseGroupLassoSeq
-arma::mat conquerParaSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerParaSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerParaSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerParaSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2652,13 +2399,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerParaSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerParaSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2746,27 +2494,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvParaLasso
-Rcpp::List cvParaLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaLasso(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvParaLassoWarm
 Rcpp::List cvParaLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
 RcppExport SEXP _conquer_cvParaLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
@@ -2785,28 +2512,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
     rcpp_result_gen = Rcpp::wrap(cvParaLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvParaElastic
-Rcpp::List cvParaElastic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const double alpha, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaElastic(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP alphaSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaElastic(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2832,32 +2537,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvParaGroupLasso
-Rcpp::List cvParaGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvParaGroupLassoWarm
-Rcpp::List cvParaGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvParaGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvParaGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2868,42 +2550,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvParaSparseGroupLasso
-Rcpp::List cvParaSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaSparseGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(cvParaGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // cvParaSparseGroupLassoWarm
-Rcpp::List cvParaSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvParaSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvParaSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvParaSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -2914,36 +2574,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvParaScad
-Rcpp::List cvParaScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvParaScad(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaScad(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
+    rcpp_result_gen = Rcpp::wrap(cvParaSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2967,29 +2605,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
     Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
     rcpp_result_gen = Rcpp::wrap(cvParaScadWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvParaMcp
-Rcpp::List cvParaMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvParaMcp(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvParaMcp(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -3529,8 +3144,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // conquerTrianGroupLasso
-arma::vec conquerTrianGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerTrianGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerTrianGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerTrianGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3539,19 +3154,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerTrianGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerTrianGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerTrianGroupLassoSeq
-arma::mat conquerTrianGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerTrianGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerTrianGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerTrianGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3560,19 +3176,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerTrianGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerTrianGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerTrianSparseGroupLasso
-arma::vec conquerTrianSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerTrianSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerTrianSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerTrianSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3581,19 +3198,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerTrianSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerTrianSparseGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerTrianSparseGroupLassoSeq
-arma::mat conquerTrianSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerTrianSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerTrianSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerTrianSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3602,13 +3220,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerTrianSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerTrianSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -3696,27 +3315,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvTrianLasso
-Rcpp::List cvTrianLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianLasso(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvTrianLassoWarm
 Rcpp::List cvTrianLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
 RcppExport SEXP _conquer_cvTrianLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
@@ -3735,28 +3333,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
     rcpp_result_gen = Rcpp::wrap(cvTrianLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvTrianElastic
-Rcpp::List cvTrianElastic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const double alpha, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianElastic(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP alphaSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianElastic(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -3782,32 +3358,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvTrianGroupLasso
-Rcpp::List cvTrianGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvTrianGroupLassoWarm
-Rcpp::List cvTrianGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvTrianGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvTrianGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3818,42 +3371,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvTrianSparseGroupLasso
-Rcpp::List cvTrianSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianSparseGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(cvTrianGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // cvTrianSparseGroupLassoWarm
-Rcpp::List cvTrianSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvTrianSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvTrianSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvTrianSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -3864,36 +3395,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvTrianScad
-Rcpp::List cvTrianScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvTrianScad(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianScad(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
+    rcpp_result_gen = Rcpp::wrap(cvTrianSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -3917,29 +3426,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
     Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
     rcpp_result_gen = Rcpp::wrap(cvTrianScadWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvTrianMcp
-Rcpp::List cvTrianMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvTrianMcp(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvTrianMcp(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -4461,8 +3947,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // conquerUnifGroupLasso
-arma::vec conquerUnifGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerUnifGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerUnifGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerUnifGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4471,19 +3957,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerUnifGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerUnifGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerUnifGroupLassoSeq
-arma::mat conquerUnifGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerUnifGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerUnifGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerUnifGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4492,19 +3979,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerUnifGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerUnifGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerUnifSparseGroupLasso
-arma::vec conquerUnifSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerUnifSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::vec conquerUnifSparseGroupLasso(const arma::mat& X, arma::vec Y, const double lambda, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerUnifSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4513,19 +4001,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerUnifSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerUnifSparseGroupLasso(X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // conquerUnifSparseGroupLassoSeq
-arma::mat conquerUnifSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_conquerUnifSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+arma::mat conquerUnifSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const double tau, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_conquerUnifSparseGroupLassoSeq(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP tauSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4534,13 +4023,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(conquerUnifSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(conquerUnifSparseGroupLassoSeq(X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -4628,27 +4118,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvUnifLasso
-Rcpp::List cvUnifLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifLasso(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvUnifLassoWarm
 Rcpp::List cvUnifLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
 RcppExport SEXP _conquer_cvUnifLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
@@ -4667,28 +4136,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
     rcpp_result_gen = Rcpp::wrap(cvUnifLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvUnifElastic
-Rcpp::List cvUnifElastic(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const double alpha, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifElastic(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP alphaSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifElastic(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -4714,32 +4161,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cvUnifGroupLasso
-Rcpp::List cvUnifGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cvUnifGroupLassoWarm
-Rcpp::List cvUnifGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvUnifGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvUnifGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4750,42 +4174,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvUnifSparseGroupLasso
-Rcpp::List cvUnifSparseGroupLasso(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifSparseGroupLasso(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
-    Rcpp::traits::input_parameter< const int >::type G(GSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifSparseGroupLasso(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
+    rcpp_result_gen = Rcpp::wrap(cvUnifGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
 // cvUnifSparseGroupLassoWarm
-Rcpp::List cvUnifSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
-RcppExport SEXP _conquer_cvUnifSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
+Rcpp::List cvUnifSparseGroupLassoWarm(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const arma::vec& group, const arma::vec& weight, const int G, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax);
+RcppExport SEXP _conquer_cvUnifSparseGroupLassoWarm(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP groupSEXP, SEXP weightSEXP, SEXP GSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -4796,36 +4198,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
     Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type weight(weightSEXP);
     Rcpp::traits::input_parameter< const int >::type G(GSEXP);
     Rcpp::traits::input_parameter< const double >::type h(hSEXP);
     Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
     Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
     Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvUnifScad
-Rcpp::List cvUnifScad(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvUnifScad(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifScad(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
+    rcpp_result_gen = Rcpp::wrap(cvUnifSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -4849,29 +4229,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
     Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
     rcpp_result_gen = Rcpp::wrap(cvUnifScadWarm(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cvUnifMcp
-Rcpp::List cvUnifMcp(const arma::mat& X, arma::vec Y, const arma::vec& lambdaSeq, const arma::vec& folds, const double tau, const int kfolds, const double h, const double phi0, const double gamma, const double epsilon, const int iteMax, const int iteTight, const double para);
-RcppExport SEXP _conquer_cvUnifMcp(SEXP XSEXP, SEXP YSEXP, SEXP lambdaSeqSEXP, SEXP foldsSEXP, SEXP tauSEXP, SEXP kfoldsSEXP, SEXP hSEXP, SEXP phi0SEXP, SEXP gammaSEXP, SEXP epsilonSEXP, SEXP iteMaxSEXP, SEXP iteTightSEXP, SEXP paraSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type lambdaSeq(lambdaSeqSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type folds(foldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const int >::type kfolds(kfoldsSEXP);
-    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
-    Rcpp::traits::input_parameter< const double >::type phi0(phi0SEXP);
-    Rcpp::traits::input_parameter< const double >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const double >::type epsilon(epsilonSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteMax(iteMaxSEXP);
-    Rcpp::traits::input_parameter< const int >::type iteTight(iteTightSEXP);
-    Rcpp::traits::input_parameter< const double >::type para(paraSEXP);
-    rcpp_result_gen = Rcpp::wrap(cvUnifMcp(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -5476,7 +4833,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_mad", (DL_FUNC) &_conquer_mad, 1},
     {"_conquer_standardize", (DL_FUNC) &_conquer_standardize, 4},
     {"_conquer_softThresh", (DL_FUNC) &_conquer_softThresh, 3},
-    {"_conquer_lossQr", (DL_FUNC) &_conquer_lossQr, 4},
+    {"_conquer_lossQr", (DL_FUNC) &_conquer_lossQr, 7},
     {"_conquer_cmptLambdaLasso", (DL_FUNC) &_conquer_cmptLambdaLasso, 2},
     {"_conquer_lossL2", (DL_FUNC) &_conquer_lossL2, 5},
     {"_conquer_updateL2", (DL_FUNC) &_conquer_updateL2, 6},
@@ -5506,25 +4863,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_conquerGaussLassoSeq", (DL_FUNC) &_conquer_conquerGaussLassoSeq, 9},
     {"_conquer_conquerGaussElastic", (DL_FUNC) &_conquer_conquerGaussElastic, 10},
     {"_conquer_conquerGaussElasticSeq", (DL_FUNC) &_conquer_conquerGaussElasticSeq, 10},
-    {"_conquer_conquerGaussGroupLasso", (DL_FUNC) &_conquer_conquerGaussGroupLasso, 11},
-    {"_conquer_conquerGaussGroupLassoSeq", (DL_FUNC) &_conquer_conquerGaussGroupLassoSeq, 11},
-    {"_conquer_conquerGaussSparseGroupLasso", (DL_FUNC) &_conquer_conquerGaussSparseGroupLasso, 11},
-    {"_conquer_conquerGaussSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerGaussSparseGroupLassoSeq, 11},
+    {"_conquer_conquerGaussGroupLasso", (DL_FUNC) &_conquer_conquerGaussGroupLasso, 12},
+    {"_conquer_conquerGaussGroupLassoSeq", (DL_FUNC) &_conquer_conquerGaussGroupLassoSeq, 12},
+    {"_conquer_conquerGaussSparseGroupLasso", (DL_FUNC) &_conquer_conquerGaussSparseGroupLasso, 12},
+    {"_conquer_conquerGaussSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerGaussSparseGroupLassoSeq, 12},
     {"_conquer_conquerGaussScad", (DL_FUNC) &_conquer_conquerGaussScad, 11},
     {"_conquer_conquerGaussScadSeq", (DL_FUNC) &_conquer_conquerGaussScadSeq, 11},
     {"_conquer_conquerGaussMcp", (DL_FUNC) &_conquer_conquerGaussMcp, 11},
     {"_conquer_conquerGaussMcpSeq", (DL_FUNC) &_conquer_conquerGaussMcpSeq, 11},
-    {"_conquer_cvGaussLasso", (DL_FUNC) &_conquer_cvGaussLasso, 11},
     {"_conquer_cvGaussLassoWarm", (DL_FUNC) &_conquer_cvGaussLassoWarm, 11},
-    {"_conquer_cvGaussElastic", (DL_FUNC) &_conquer_cvGaussElastic, 12},
     {"_conquer_cvGaussElasticWarm", (DL_FUNC) &_conquer_cvGaussElasticWarm, 12},
-    {"_conquer_cvGaussGroupLasso", (DL_FUNC) &_conquer_cvGaussGroupLasso, 13},
-    {"_conquer_cvGaussGroupLassoWarm", (DL_FUNC) &_conquer_cvGaussGroupLassoWarm, 13},
-    {"_conquer_cvGaussSparseGroupLasso", (DL_FUNC) &_conquer_cvGaussSparseGroupLasso, 13},
-    {"_conquer_cvGaussSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvGaussSparseGroupLassoWarm, 13},
-    {"_conquer_cvGaussScad", (DL_FUNC) &_conquer_cvGaussScad, 13},
+    {"_conquer_cvGaussGroupLassoWarm", (DL_FUNC) &_conquer_cvGaussGroupLassoWarm, 14},
+    {"_conquer_cvGaussSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvGaussSparseGroupLassoWarm, 14},
     {"_conquer_cvGaussScadWarm", (DL_FUNC) &_conquer_cvGaussScadWarm, 13},
-    {"_conquer_cvGaussMcp", (DL_FUNC) &_conquer_cvGaussMcp, 13},
     {"_conquer_cvGaussMcpWarm", (DL_FUNC) &_conquer_cvGaussMcpWarm, 13},
     {"_conquer_lossLogisticHd", (DL_FUNC) &_conquer_lossLogisticHd, 6},
     {"_conquer_updateLogisticHd", (DL_FUNC) &_conquer_updateLogisticHd, 8},
@@ -5548,25 +4899,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_conquerLogisticLassoSeq", (DL_FUNC) &_conquer_conquerLogisticLassoSeq, 9},
     {"_conquer_conquerLogisticElastic", (DL_FUNC) &_conquer_conquerLogisticElastic, 10},
     {"_conquer_conquerLogisticElasticSeq", (DL_FUNC) &_conquer_conquerLogisticElasticSeq, 10},
-    {"_conquer_conquerLogisticGroupLasso", (DL_FUNC) &_conquer_conquerLogisticGroupLasso, 11},
-    {"_conquer_conquerLogisticGroupLassoSeq", (DL_FUNC) &_conquer_conquerLogisticGroupLassoSeq, 11},
-    {"_conquer_conquerLogisticSparseGroupLasso", (DL_FUNC) &_conquer_conquerLogisticSparseGroupLasso, 11},
-    {"_conquer_conquerLogisticSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerLogisticSparseGroupLassoSeq, 11},
+    {"_conquer_conquerLogisticGroupLasso", (DL_FUNC) &_conquer_conquerLogisticGroupLasso, 12},
+    {"_conquer_conquerLogisticGroupLassoSeq", (DL_FUNC) &_conquer_conquerLogisticGroupLassoSeq, 12},
+    {"_conquer_conquerLogisticSparseGroupLasso", (DL_FUNC) &_conquer_conquerLogisticSparseGroupLasso, 12},
+    {"_conquer_conquerLogisticSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerLogisticSparseGroupLassoSeq, 12},
     {"_conquer_conquerLogisticScad", (DL_FUNC) &_conquer_conquerLogisticScad, 11},
     {"_conquer_conquerLogisticScadSeq", (DL_FUNC) &_conquer_conquerLogisticScadSeq, 11},
     {"_conquer_conquerLogisticMcp", (DL_FUNC) &_conquer_conquerLogisticMcp, 11},
     {"_conquer_conquerLogisticMcpSeq", (DL_FUNC) &_conquer_conquerLogisticMcpSeq, 11},
-    {"_conquer_cvLogisticLasso", (DL_FUNC) &_conquer_cvLogisticLasso, 11},
     {"_conquer_cvLogisticLassoWarm", (DL_FUNC) &_conquer_cvLogisticLassoWarm, 11},
-    {"_conquer_cvLogisticElastic", (DL_FUNC) &_conquer_cvLogisticElastic, 12},
     {"_conquer_cvLogisticElasticWarm", (DL_FUNC) &_conquer_cvLogisticElasticWarm, 12},
-    {"_conquer_cvLogisticGroupLasso", (DL_FUNC) &_conquer_cvLogisticGroupLasso, 13},
-    {"_conquer_cvLogisticGroupLassoWarm", (DL_FUNC) &_conquer_cvLogisticGroupLassoWarm, 13},
-    {"_conquer_cvLogisticSparseGroupLasso", (DL_FUNC) &_conquer_cvLogisticSparseGroupLasso, 13},
-    {"_conquer_cvLogisticSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvLogisticSparseGroupLassoWarm, 13},
-    {"_conquer_cvLogisticScad", (DL_FUNC) &_conquer_cvLogisticScad, 13},
+    {"_conquer_cvLogisticGroupLassoWarm", (DL_FUNC) &_conquer_cvLogisticGroupLassoWarm, 14},
+    {"_conquer_cvLogisticSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvLogisticSparseGroupLassoWarm, 14},
     {"_conquer_cvLogisticScadWarm", (DL_FUNC) &_conquer_cvLogisticScadWarm, 13},
-    {"_conquer_cvLogisticMcp", (DL_FUNC) &_conquer_cvLogisticMcp, 13},
     {"_conquer_cvLogisticMcpWarm", (DL_FUNC) &_conquer_cvLogisticMcpWarm, 13},
     {"_conquer_lossParaHd", (DL_FUNC) &_conquer_lossParaHd, 7},
     {"_conquer_updateParaHd", (DL_FUNC) &_conquer_updateParaHd, 9},
@@ -5590,25 +4935,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_conquerParaLassoSeq", (DL_FUNC) &_conquer_conquerParaLassoSeq, 9},
     {"_conquer_conquerParaElastic", (DL_FUNC) &_conquer_conquerParaElastic, 10},
     {"_conquer_conquerParaElasticSeq", (DL_FUNC) &_conquer_conquerParaElasticSeq, 10},
-    {"_conquer_conquerParaGroupLasso", (DL_FUNC) &_conquer_conquerParaGroupLasso, 11},
-    {"_conquer_conquerParaGroupLassoSeq", (DL_FUNC) &_conquer_conquerParaGroupLassoSeq, 11},
-    {"_conquer_conquerParaSparseGroupLasso", (DL_FUNC) &_conquer_conquerParaSparseGroupLasso, 11},
-    {"_conquer_conquerParaSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerParaSparseGroupLassoSeq, 11},
+    {"_conquer_conquerParaGroupLasso", (DL_FUNC) &_conquer_conquerParaGroupLasso, 12},
+    {"_conquer_conquerParaGroupLassoSeq", (DL_FUNC) &_conquer_conquerParaGroupLassoSeq, 12},
+    {"_conquer_conquerParaSparseGroupLasso", (DL_FUNC) &_conquer_conquerParaSparseGroupLasso, 12},
+    {"_conquer_conquerParaSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerParaSparseGroupLassoSeq, 12},
     {"_conquer_conquerParaScad", (DL_FUNC) &_conquer_conquerParaScad, 11},
     {"_conquer_conquerParaScadSeq", (DL_FUNC) &_conquer_conquerParaScadSeq, 11},
     {"_conquer_conquerParaMcp", (DL_FUNC) &_conquer_conquerParaMcp, 11},
     {"_conquer_conquerParaMcpSeq", (DL_FUNC) &_conquer_conquerParaMcpSeq, 11},
-    {"_conquer_cvParaLasso", (DL_FUNC) &_conquer_cvParaLasso, 11},
     {"_conquer_cvParaLassoWarm", (DL_FUNC) &_conquer_cvParaLassoWarm, 11},
-    {"_conquer_cvParaElastic", (DL_FUNC) &_conquer_cvParaElastic, 12},
     {"_conquer_cvParaElasticWarm", (DL_FUNC) &_conquer_cvParaElasticWarm, 12},
-    {"_conquer_cvParaGroupLasso", (DL_FUNC) &_conquer_cvParaGroupLasso, 13},
-    {"_conquer_cvParaGroupLassoWarm", (DL_FUNC) &_conquer_cvParaGroupLassoWarm, 13},
-    {"_conquer_cvParaSparseGroupLasso", (DL_FUNC) &_conquer_cvParaSparseGroupLasso, 13},
-    {"_conquer_cvParaSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvParaSparseGroupLassoWarm, 13},
-    {"_conquer_cvParaScad", (DL_FUNC) &_conquer_cvParaScad, 13},
+    {"_conquer_cvParaGroupLassoWarm", (DL_FUNC) &_conquer_cvParaGroupLassoWarm, 14},
+    {"_conquer_cvParaSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvParaSparseGroupLassoWarm, 14},
     {"_conquer_cvParaScadWarm", (DL_FUNC) &_conquer_cvParaScadWarm, 13},
-    {"_conquer_cvParaMcp", (DL_FUNC) &_conquer_cvParaMcp, 13},
     {"_conquer_cvParaMcpWarm", (DL_FUNC) &_conquer_cvParaMcpWarm, 13},
     {"_conquer_lossTrianHd", (DL_FUNC) &_conquer_lossTrianHd, 7},
     {"_conquer_updateTrianHd", (DL_FUNC) &_conquer_updateTrianHd, 9},
@@ -5632,25 +4971,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_conquerTrianLassoSeq", (DL_FUNC) &_conquer_conquerTrianLassoSeq, 9},
     {"_conquer_conquerTrianElastic", (DL_FUNC) &_conquer_conquerTrianElastic, 10},
     {"_conquer_conquerTrianElasticSeq", (DL_FUNC) &_conquer_conquerTrianElasticSeq, 10},
-    {"_conquer_conquerTrianGroupLasso", (DL_FUNC) &_conquer_conquerTrianGroupLasso, 11},
-    {"_conquer_conquerTrianGroupLassoSeq", (DL_FUNC) &_conquer_conquerTrianGroupLassoSeq, 11},
-    {"_conquer_conquerTrianSparseGroupLasso", (DL_FUNC) &_conquer_conquerTrianSparseGroupLasso, 11},
-    {"_conquer_conquerTrianSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerTrianSparseGroupLassoSeq, 11},
+    {"_conquer_conquerTrianGroupLasso", (DL_FUNC) &_conquer_conquerTrianGroupLasso, 12},
+    {"_conquer_conquerTrianGroupLassoSeq", (DL_FUNC) &_conquer_conquerTrianGroupLassoSeq, 12},
+    {"_conquer_conquerTrianSparseGroupLasso", (DL_FUNC) &_conquer_conquerTrianSparseGroupLasso, 12},
+    {"_conquer_conquerTrianSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerTrianSparseGroupLassoSeq, 12},
     {"_conquer_conquerTrianScad", (DL_FUNC) &_conquer_conquerTrianScad, 11},
     {"_conquer_conquerTrianScadSeq", (DL_FUNC) &_conquer_conquerTrianScadSeq, 11},
     {"_conquer_conquerTrianMcp", (DL_FUNC) &_conquer_conquerTrianMcp, 11},
     {"_conquer_conquerTrianMcpSeq", (DL_FUNC) &_conquer_conquerTrianMcpSeq, 11},
-    {"_conquer_cvTrianLasso", (DL_FUNC) &_conquer_cvTrianLasso, 11},
     {"_conquer_cvTrianLassoWarm", (DL_FUNC) &_conquer_cvTrianLassoWarm, 11},
-    {"_conquer_cvTrianElastic", (DL_FUNC) &_conquer_cvTrianElastic, 12},
     {"_conquer_cvTrianElasticWarm", (DL_FUNC) &_conquer_cvTrianElasticWarm, 12},
-    {"_conquer_cvTrianGroupLasso", (DL_FUNC) &_conquer_cvTrianGroupLasso, 13},
-    {"_conquer_cvTrianGroupLassoWarm", (DL_FUNC) &_conquer_cvTrianGroupLassoWarm, 13},
-    {"_conquer_cvTrianSparseGroupLasso", (DL_FUNC) &_conquer_cvTrianSparseGroupLasso, 13},
-    {"_conquer_cvTrianSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvTrianSparseGroupLassoWarm, 13},
-    {"_conquer_cvTrianScad", (DL_FUNC) &_conquer_cvTrianScad, 13},
+    {"_conquer_cvTrianGroupLassoWarm", (DL_FUNC) &_conquer_cvTrianGroupLassoWarm, 14},
+    {"_conquer_cvTrianSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvTrianSparseGroupLassoWarm, 14},
     {"_conquer_cvTrianScadWarm", (DL_FUNC) &_conquer_cvTrianScadWarm, 13},
-    {"_conquer_cvTrianMcp", (DL_FUNC) &_conquer_cvTrianMcp, 13},
     {"_conquer_cvTrianMcpWarm", (DL_FUNC) &_conquer_cvTrianMcpWarm, 13},
     {"_conquer_lossUnifHd", (DL_FUNC) &_conquer_lossUnifHd, 6},
     {"_conquer_updateUnifHd", (DL_FUNC) &_conquer_updateUnifHd, 8},
@@ -5674,25 +5007,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_conquerUnifLassoSeq", (DL_FUNC) &_conquer_conquerUnifLassoSeq, 9},
     {"_conquer_conquerUnifElastic", (DL_FUNC) &_conquer_conquerUnifElastic, 10},
     {"_conquer_conquerUnifElasticSeq", (DL_FUNC) &_conquer_conquerUnifElasticSeq, 10},
-    {"_conquer_conquerUnifGroupLasso", (DL_FUNC) &_conquer_conquerUnifGroupLasso, 11},
-    {"_conquer_conquerUnifGroupLassoSeq", (DL_FUNC) &_conquer_conquerUnifGroupLassoSeq, 11},
-    {"_conquer_conquerUnifSparseGroupLasso", (DL_FUNC) &_conquer_conquerUnifSparseGroupLasso, 11},
-    {"_conquer_conquerUnifSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerUnifSparseGroupLassoSeq, 11},
+    {"_conquer_conquerUnifGroupLasso", (DL_FUNC) &_conquer_conquerUnifGroupLasso, 12},
+    {"_conquer_conquerUnifGroupLassoSeq", (DL_FUNC) &_conquer_conquerUnifGroupLassoSeq, 12},
+    {"_conquer_conquerUnifSparseGroupLasso", (DL_FUNC) &_conquer_conquerUnifSparseGroupLasso, 12},
+    {"_conquer_conquerUnifSparseGroupLassoSeq", (DL_FUNC) &_conquer_conquerUnifSparseGroupLassoSeq, 12},
     {"_conquer_conquerUnifScad", (DL_FUNC) &_conquer_conquerUnifScad, 11},
     {"_conquer_conquerUnifScadSeq", (DL_FUNC) &_conquer_conquerUnifScadSeq, 11},
     {"_conquer_conquerUnifMcp", (DL_FUNC) &_conquer_conquerUnifMcp, 11},
     {"_conquer_conquerUnifMcpSeq", (DL_FUNC) &_conquer_conquerUnifMcpSeq, 11},
-    {"_conquer_cvUnifLasso", (DL_FUNC) &_conquer_cvUnifLasso, 11},
     {"_conquer_cvUnifLassoWarm", (DL_FUNC) &_conquer_cvUnifLassoWarm, 11},
-    {"_conquer_cvUnifElastic", (DL_FUNC) &_conquer_cvUnifElastic, 12},
     {"_conquer_cvUnifElasticWarm", (DL_FUNC) &_conquer_cvUnifElasticWarm, 12},
-    {"_conquer_cvUnifGroupLasso", (DL_FUNC) &_conquer_cvUnifGroupLasso, 13},
-    {"_conquer_cvUnifGroupLassoWarm", (DL_FUNC) &_conquer_cvUnifGroupLassoWarm, 13},
-    {"_conquer_cvUnifSparseGroupLasso", (DL_FUNC) &_conquer_cvUnifSparseGroupLasso, 13},
-    {"_conquer_cvUnifSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvUnifSparseGroupLassoWarm, 13},
-    {"_conquer_cvUnifScad", (DL_FUNC) &_conquer_cvUnifScad, 13},
+    {"_conquer_cvUnifGroupLassoWarm", (DL_FUNC) &_conquer_cvUnifGroupLassoWarm, 14},
+    {"_conquer_cvUnifSparseGroupLassoWarm", (DL_FUNC) &_conquer_cvUnifSparseGroupLassoWarm, 14},
     {"_conquer_cvUnifScadWarm", (DL_FUNC) &_conquer_cvUnifScadWarm, 13},
-    {"_conquer_cvUnifMcp", (DL_FUNC) &_conquer_cvUnifMcp, 13},
     {"_conquer_cvUnifMcpWarm", (DL_FUNC) &_conquer_cvUnifMcpWarm, 13},
     {"_conquer_updateHuber", (DL_FUNC) &_conquer_updateHuber, 8},
     {"_conquer_huberReg", (DL_FUNC) &_conquer_huberReg, 12},

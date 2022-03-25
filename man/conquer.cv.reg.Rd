@@ -14,6 +14,7 @@ conquer.cv.reg(
   penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"),
   para.elastic = 0.5,
   group = NULL,
+  weights = NULL,
   para.scad = 3.7,
   para.mcp = 3,
   kfolds = 5,
@@ -46,6 +47,9 @@ Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.
 \item{group}{(\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
 For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.}
 
+\item{weights}{(\strong{optional}) A vector specifying groups weights for group Lasso and sparse group Lasso. The length must be equal to the number of groups. If not specified, the default weights are square roots of group sizes. 
+For example , if \code{group = c(rep(1, 3), rep(2, 7))}, then the default weights are \eqn{\sqrt{3}} for the first group, and \eqn{\sqrt{7}} for the second group.}
+
 \item{para.scad}{(\strong{optional}) The constant parameter for "scad". Default value is 3.7. Only specify it if \code{penalty = "scad"}.}
 
 \item{para.mcp}{(\strong{optional}) The constant parameter for "mcp". Default value is 3. Only specify it if \code{penalty = "mcp"}.}
@@ -67,9 +71,13 @@ For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to t
 \value{
 An object containing the following items will be returned:
 \describe{
-\item{\code{coeff}}{A \eqn{(p + 1)} vector of estimated coefficients, including the intercept.}
+\item{\code{coeff.min}}{A \eqn{(p + 1)} vector of estimated coefficients including the intercept selected by minimizing the cross-validation errors.}
+\item{\code{coeff.1se}}{A \eqn{(p + 1)} vector of estimated coefficients including the intercept. The corresponding \eqn{\lambda} is the largest \eqn{\lambda} such that the cross-validation error is within 1 standard error of the minimum.}
 \item{\code{lambdaSeq}}{The sequence of regularization parameter candidates for cross-validation.}
-\item{\code{lambda}}{Regularization parameter selected by cross-validation.}
+\item{\code{lambda.min}}{Regularization parameter selected by minimizing the cross-validation errors. This is the corresponding \eqn{\lambda} of \code{coeff.min}.}
+\item{\code{lambda.1se}}{The largest regularization parameter such that the cross-validation error is within 1 standard error of the minimum. This is the corresponding \eqn{\lambda} of \code{coeff.1se}.}
+\item{\code{deviance}}{Cross-validation errors based on the quantile loss. The length is equal to the length of \code{lambdaSeq}.}
+\item{\code{deviance.se}}{Estimated standard errors of \code{deviance}. The length is equal to the length of \code{lambdaSeq}.}
 \item{\code{bandwidth}}{Bandwidth value.}
 \item{\code{tau}}{Quantile level.}
 \item{\code{kernel}}{Kernel function.}
@@ -89,15 +97,15 @@ Y = X \%*\% beta + rt(n, 2)
 
 ## Cross-validated regularized conquer with lasso penalty at tau = 0.7
 fit.lasso = conquer.cv.reg(X, Y, tau = 0.7, penalty = "lasso")
-beta.lasso = fit.lasso$coeff
+beta.lasso = fit.lasso$coeff.min
 
 ## Cross-validated regularized conquer with elastic-net penalty at tau = 0.7
 fit.elastic = conquer.cv.reg(X, Y, tau = 0.7, penalty = "elastic", para.elastic = 0.7)
-beta.elastic = fit.elastic$coeff
+beta.elastic = fit.elastic$coeff.min
 
 ## Cross-validated regularized conquer with scad penalty at tau = 0.7
 fit.scad = conquer.cv.reg(X, Y, tau = 0.7, penalty = "scad")
-beta.scad = fit.scad$coeff
+beta.scad = fit.scad$coeff.min
 
 ## Regularized conquer with group lasso at tau = 0.7
 beta = c(rep(1.3, 2), rep(1.5, 3), rep(0, p - s))
@@ -105,7 +113,7 @@ err = rt(n, 2)
 Y = X \%*\% beta + err
 group = c(rep(1, 2), rep(2, 3), rep(3, p - s))
 fit.group = conquer.cv.reg(X, Y,tau = 0.7, penalty = "group", group = group)
-beta.group = fit.group$coeff
+beta.group = fit.group$coeff.min
 }
 \references{
 Belloni, A. and Chernozhukov, V. (2011). \eqn{\ell_1} penalized quantile regression in high-dimensional sparse models. Ann. Statist., 39, 82-130.

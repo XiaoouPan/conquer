@@ -17,8 +17,8 @@ softThresh <- function(x, Lambda, p) {
     .Call('_conquer_softThresh', PACKAGE = 'conquer', x, Lambda, p)
 }
 
-lossQr <- function(Z, Y, beta, tau) {
-    .Call('_conquer_lossQr', PACKAGE = 'conquer', Z, Y, beta, tau)
+lossQr <- function(Z, Y, beta, tau, i, dev, devsq) {
+    invisible(.Call('_conquer_lossQr', PACKAGE = 'conquer', Z, Y, beta, tau, i, dev, devsq))
 }
 
 cmptLambdaLasso <- function(lambda, p) {
@@ -137,20 +137,20 @@ conquerGaussElasticSeq <- function(X, Y, lambdaSeq, tau, alpha, h, phi0 = 0.01, 
     .Call('_conquer_conquerGaussElasticSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, alpha, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerGaussGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerGaussGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerGaussGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerGaussGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerGaussGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerGaussGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerGaussGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerGaussGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerGaussSparseGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerGaussSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerGaussSparseGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerGaussSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerGaussSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerGaussSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerGaussSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerGaussSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 conquerGaussScad <- function(X, Y, lambda, tau, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
@@ -169,48 +169,24 @@ conquerGaussMcpSeq <- function(X, Y, lambdaSeq, tau, h, phi0 = 0.01, gamma = 1.2
     .Call('_conquer_conquerGaussMcpSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
-cvGaussLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
 cvGaussLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvGaussLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvGaussElastic <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussElastic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvGaussElasticWarm <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvGaussElasticWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvGaussGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
+cvGaussGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvGaussGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvGaussGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvGaussSparseGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvGaussSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvGaussSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvGaussScad <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
-    .Call('_conquer_cvGaussScad', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+cvGaussSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvGaussSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvGaussScadWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
     .Call('_conquer_cvGaussScadWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
-}
-
-cvGaussMcp <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
-    .Call('_conquer_cvGaussMcp', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
 cvGaussMcpWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
@@ -305,20 +281,20 @@ conquerLogisticElasticSeq <- function(X, Y, lambdaSeq, tau, alpha, h, phi0 = 0.0
     .Call('_conquer_conquerLogisticElasticSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, alpha, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerLogisticGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerLogisticGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerLogisticGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerLogisticGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerLogisticGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerLogisticGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerLogisticGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerLogisticGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerLogisticSparseGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerLogisticSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerLogisticSparseGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerLogisticSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerLogisticSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerLogisticSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerLogisticSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerLogisticSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 conquerLogisticScad <- function(X, Y, lambda, tau, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
@@ -337,48 +313,24 @@ conquerLogisticMcpSeq <- function(X, Y, lambdaSeq, tau, h, phi0 = 0.01, gamma = 
     .Call('_conquer_conquerLogisticMcpSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
-cvLogisticLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
 cvLogisticLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvLogisticLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvLogisticElastic <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticElastic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvLogisticElasticWarm <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvLogisticElasticWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvLogisticGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
+cvLogisticGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvLogisticGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvLogisticGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvLogisticSparseGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvLogisticSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvLogisticSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvLogisticScad <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
-    .Call('_conquer_cvLogisticScad', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+cvLogisticSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvLogisticSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvLogisticScadWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
     .Call('_conquer_cvLogisticScadWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
-}
-
-cvLogisticMcp <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
-    .Call('_conquer_cvLogisticMcp', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
 cvLogisticMcpWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
@@ -473,20 +425,20 @@ conquerParaElasticSeq <- function(X, Y, lambdaSeq, tau, alpha, h, phi0 = 0.01, g
     .Call('_conquer_conquerParaElasticSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, alpha, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerParaGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerParaGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerParaGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerParaGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerParaGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerParaGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerParaGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerParaGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerParaSparseGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerParaSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerParaSparseGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerParaSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerParaSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerParaSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerParaSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerParaSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 conquerParaScad <- function(X, Y, lambda, tau, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
@@ -505,48 +457,24 @@ conquerParaMcpSeq <- function(X, Y, lambdaSeq, tau, h, phi0 = 0.01, gamma = 1.2,
     .Call('_conquer_conquerParaMcpSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
-cvParaLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
 cvParaLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvParaLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvParaElastic <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaElastic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvParaElasticWarm <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvParaElasticWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvParaGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
+cvParaGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvParaGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvParaGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvParaSparseGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvParaSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvParaSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvParaScad <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
-    .Call('_conquer_cvParaScad', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+cvParaSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvParaSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvParaScadWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
     .Call('_conquer_cvParaScadWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
-}
-
-cvParaMcp <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
-    .Call('_conquer_cvParaMcp', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
 cvParaMcpWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
@@ -641,20 +569,20 @@ conquerTrianElasticSeq <- function(X, Y, lambdaSeq, tau, alpha, h, phi0 = 0.01, 
     .Call('_conquer_conquerTrianElasticSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, alpha, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerTrianGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerTrianGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerTrianGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerTrianGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerTrianGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerTrianGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerTrianGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerTrianGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerTrianSparseGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerTrianSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerTrianSparseGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerTrianSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerTrianSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerTrianSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerTrianSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerTrianSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 conquerTrianScad <- function(X, Y, lambda, tau, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
@@ -673,48 +601,24 @@ conquerTrianMcpSeq <- function(X, Y, lambdaSeq, tau, h, phi0 = 0.01, gamma = 1.2
     .Call('_conquer_conquerTrianMcpSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
-cvTrianLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
 cvTrianLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvTrianLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvTrianElastic <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianElastic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvTrianElasticWarm <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvTrianElasticWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvTrianGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
+cvTrianGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvTrianGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvTrianGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvTrianSparseGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvTrianSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvTrianSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvTrianScad <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
-    .Call('_conquer_cvTrianScad', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+cvTrianSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvTrianSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvTrianScadWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
     .Call('_conquer_cvTrianScadWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
-}
-
-cvTrianMcp <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
-    .Call('_conquer_cvTrianMcp', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
 cvTrianMcpWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
@@ -809,20 +713,20 @@ conquerUnifElasticSeq <- function(X, Y, lambdaSeq, tau, alpha, h, phi0 = 0.01, g
     .Call('_conquer_conquerUnifElasticSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, alpha, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerUnifGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerUnifGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerUnifGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerUnifGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerUnifGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerUnifGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerUnifGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerUnifGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerUnifSparseGroupLasso <- function(X, Y, lambda, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerUnifSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerUnifSparseGroupLasso <- function(X, Y, lambda, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerUnifSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambda, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-conquerUnifSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_conquerUnifSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+conquerUnifSparseGroupLassoSeq <- function(X, Y, lambdaSeq, tau, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_conquerUnifSparseGroupLassoSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 conquerUnifScad <- function(X, Y, lambda, tau, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
@@ -841,48 +745,24 @@ conquerUnifMcpSeq <- function(X, Y, lambdaSeq, tau, h, phi0 = 0.01, gamma = 1.2,
     .Call('_conquer_conquerUnifMcpSeq', PACKAGE = 'conquer', X, Y, lambdaSeq, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
-cvUnifLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
 cvUnifLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvUnifLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvUnifElastic <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifElastic', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvUnifElasticWarm <- function(X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
     .Call('_conquer_cvUnifElasticWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, alpha, kfolds, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvUnifGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
+cvUnifGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvUnifGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
-cvUnifGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvUnifSparseGroupLasso <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifSparseGroupLasso', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvUnifSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
-    .Call('_conquer_cvUnifSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, G, h, phi0, gamma, epsilon, iteMax)
-}
-
-cvUnifScad <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
-    .Call('_conquer_cvUnifScad', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
+cvUnifSparseGroupLassoWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L) {
+    .Call('_conquer_cvUnifSparseGroupLassoWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, group, weight, G, h, phi0, gamma, epsilon, iteMax)
 }
 
 cvUnifScadWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.2, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3.7) {
     .Call('_conquer_cvUnifScadWarm', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
-}
-
-cvUnifMcp <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
-    .Call('_conquer_cvUnifMcp', PACKAGE = 'conquer', X, Y, lambdaSeq, folds, tau, kfolds, h, phi0, gamma, epsilon, iteMax, iteTight, para)
 }
 
 cvUnifMcpWarm <- function(X, Y, lambdaSeq, folds, tau, kfolds, h, phi0 = 0.01, gamma = 1.5, epsilon = 0.001, iteMax = 500L, iteTight = 3L, para = 3) {
