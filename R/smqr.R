@@ -295,6 +295,8 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' Setting \code{para.elastic = 1} gives the lasso penalty, and setting \code{para.elastic = 0} yields the ridge penalty. Only specify it when \code{penalty = "elastic"}.
 #' @param group (\strong{optional}) A \eqn{p}-dimensional vector specifying group indices. Only specify it if \code{penalty = "group"} or \code{penalty = "sparse-group"}. 
 #' For example, if \eqn{p = 10}, and we assume the first 3 coefficients belong to the first group, and the last 7 coefficients belong to the second group, then the argument should be \code{group = c(rep(1, 3), rep(2, 7))}. If not specified, then the penalty will be the classical lasso.
+#' @param weights (\strong{optional}) A vector specifying groups weights for group Lasso and sparse group Lasso. The length must be equal to the number of groups. If not specified, the default weights are square roots of group sizes. 
+#' For example , if \code{group = c(rep(1, 3), rep(2, 7))}, then the default weights are \eqn{\sqrt{3}} for the first group, and \eqn{\sqrt{7}} for the second group.
 #' @param para.scad (\strong{optional}) The constant parameter for "scad". Default value is 3.7. Only specify it if \code{penalty = "scad"}.
 #' @param para.mcp (\strong{optional}) The constant parameter for "mcp". Default value is 3. Only specify it if \code{penalty = "mcp"}.
 #' @param epsilon (\strong{optional}) A tolerance level for the stopping rule. The iteration will stop when the maximum magnitude of the change of coefficient updates is less than \code{epsilon}. Default is 0.001.
@@ -351,8 +353,8 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
 #' beta.group = fit.group$coeff
 #' @export 
 conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
-                       penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, para.scad = 3.7, 
-                       para.mcp = 3.0, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
+                       penalty = c("lasso", "elastic", "group", "sparse-group", "scad", "mcp"), para.elastic = 0.5, group = NULL, weights = NULL, 
+                       para.scad = 3.7, para.mcp = 3.0, epsilon = 0.001, iteMax = 500, phi0 = 0.01, gamma = 1.2, iteTight = 3) {
   n = nrow(X)
   p = ncol(X)
   if (length(Y) != n) {
@@ -445,74 +447,84 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (length(group) != p) {
       stop("Error: the argument group refers to the group indices, and its length must be the same as the number of columns of X.")
     }
-    group = c(0, group - 1)
     G = length(unique(group))
+    group = c(0, group - 1)
+    if (!is.null(weights) && length(weights) != G) {
+      stop("Error: the length of weights must be equal to the number of groups.")
+    } else if (is.null(weights)) {
+      weights = sqrt(as.numeric(table(groups)))
+    }
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
-        rst = conquerGaussGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerGaussGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerGaussGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerGaussGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
-        rst = conquerLogisticGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerLogisticGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerLogisticGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerLogisticGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
-        rst = conquerUnifGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerUnifGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerUnifGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerUnifGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
-        rst = conquerParaGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerParaGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerParaGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerParaGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
-        rst = conquerTrianGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerTrianGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerTrianGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerTrianGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     }
   } else if (penalty == "sparse-group") {
     if (length(group) != p) {
       stop("Error: the argument group refers to the group indices, and its length must be the same as the number of columns of X.")
     }
-    group = c(0, group - 1)
     G = length(unique(group))
+    group = c(0, group - 1)
+    if (!is.null(weights) && length(weights) != G) {
+      stop("Error: the length of weights must be equal to the number of groups.")
+    } else if (is.null(weights)) {
+      weights = sqrt(as.numeric(table(groups)))
+    }
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
-        rst = conquerGaussSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerGaussSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerGaussSparseGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerGaussSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
-        rst = conquerLogisticSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerLogisticSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerLogisticSparseGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerLogisticSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
-        rst = conquerUnifSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerUnifSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerUnifSparseGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerUnifSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
-        rst = conquerParaSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerParaSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerParaSparseGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerParaSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
-        rst = conquerTrianSparseGroupLasso(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerTrianSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       } else {
-        rst = conquerTrianSparseGroupLassoSeq(X, Y, lambda, tau, group, G, h, phi0, gamma, epsilon, iteMax)
+        rst = conquerTrianSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     }
   } else if (penalty == "scad") {
