@@ -11,9 +11,13 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
-**2022-03-21**:
+**2022-03-24 (Version 1.3.0)**:
 
-An updated version (1.3.0) has been submitted to CRAN.
+1. Add inference methods based on estimated asymptotic covariance matrix for low-dimensional conquer.
+
+2. Add more flexible penalties (elastic-net, group Lasso and sparse group Lasso) into `conquer.reg` and `conquer.cv.reg` functions.
+
+3. Speed up cross-validation using warm start along a sequence of *&lambda;*'s.
 
 **2022-02-12 (Version 1.2.2)**:
 
