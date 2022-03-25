@@ -752,7 +752,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
     if (!is.null(weights) && length(weights) != G) {
       stop("Error: the length of weights must be equal to the number of groups.")
     } else if (is.null(weights)) {
-      weights = sqrt(as.numeric(table(groups)))
+      weights = sqrt(as.numeric(table(group)))
     }
     if (kernel == "Gaussian") {
       rst = cvGaussGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weights, G, h, phi0, gamma, epsilon, iteMax)
@@ -774,7 +774,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
     if (!is.null(weights) && length(weights) != G) {
       stop("Error: the length of weights must be equal to the number of groups.")
     } else if (is.null(weights)) {
-      weights = sqrt(as.numeric(table(groups)))
+      weights = sqrt(as.numeric(table(group)))
     }
     if (kernel == "Gaussian") {
       rst = cvGaussSparseGroupLassoWarm(X, Y, lambdaSeq, folds, tau, kfolds, group, weights, G, h, phi0, gamma, epsilon, iteMax)
