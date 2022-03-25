@@ -452,7 +452,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (!is.null(weights) && length(weights) != G) {
       stop("Error: the length of weights must be equal to the number of groups.")
     } else if (is.null(weights)) {
-      weights = sqrt(as.numeric(table(groups)))
+      weights = sqrt(as.numeric(table(group)))
     }
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
@@ -494,7 +494,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (!is.null(weights) && length(weights) != G) {
       stop("Error: the length of weights must be equal to the number of groups.")
     } else if (is.null(weights)) {
-      weights = sqrt(as.numeric(table(groups)))
+      weights = sqrt(as.numeric(table(group)))
     }
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
