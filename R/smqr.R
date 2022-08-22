@@ -371,7 +371,7 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
   }
   kernel = match.arg(kernel)
   penalty = match.arg(penalty)
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = max(0.5 * (log(p) / n)^(0.25), 0.05);
   }
   rst = NULL
@@ -697,7 +697,7 @@ conquer.cv.reg = function(X, Y, lambdaSeq = NULL, tau = 0.5, kernel = c("Gaussia
   }
   kernel = match.arg(kernel)
   penalty = match.arg(penalty)
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = max(0.5 * (log(p) / n)^(0.25), 0.05);
   }
   if (is.null(lambdaSeq)) {
