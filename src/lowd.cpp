@@ -122,7 +122,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -171,7 +171,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -212,7 +212,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -259,7 +259,7 @@ Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5,
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -308,7 +308,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
                            const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -349,7 +349,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
 arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                           const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -396,7 +396,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -445,7 +445,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -486,7 +486,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -533,7 +533,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
                     const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -582,7 +582,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -623,7 +623,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                       const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -670,7 +670,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
                      const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
   const int p = X.n_cols;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -719,7 +719,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
                         const double tol = 0.0001, const int iteMax = 5000) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -760,7 +760,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
                        const double tol = 0.0001, const int iteMax = 5000) {
   const int n = X.n_rows;
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -809,7 +809,7 @@ Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -864,7 +864,7 @@ Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tau
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -919,7 +919,7 @@ Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -974,7 +974,7 @@ Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -1029,7 +1029,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   const double n1 = 1.0 / n;
@@ -1083,7 +1083,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
 arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   for (int b = 0; b < B; b++) {
@@ -1099,7 +1099,7 @@ arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
 arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                           const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   for (int b = 0; b < B; b++) {
@@ -1115,7 +1115,7 @@ arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::ve
 arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   for (int b = 0; b < B; b++) {
@@ -1131,7 +1131,7 @@ arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   for (int b = 0; b < B; b++) {
@@ -1147,7 +1147,7 @@ arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
                        const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
   arma::mat rst(p + 1, B);
-  if (h <= 0.05) {
+  if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
   }
   for (int b = 0; b < B; b++) {
