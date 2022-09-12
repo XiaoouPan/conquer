@@ -119,7 +119,7 @@ void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
 // Low-dimensional conquer: estimation
 // [[Rcpp::export]]
 Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                     const double tol = 0.0001, const int iteMax = 5000) {
+                     const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   if (h <= 0.0) {
@@ -151,7 +151,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -168,7 +168,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
 
 // [[Rcpp::export]]
 Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                        const double tol = 0.0001, const int iteMax = 5000) {
+                        const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
   if (h <= 0.0) {
@@ -195,7 +195,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -210,7 +210,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 
 // [[Rcpp::export]]
 arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
-                       const double tol = 0.0001, const int iteMax = 5000) {
+                       const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -239,7 +239,7 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -256,7 +256,7 @@ arma::vec smqrGaussIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 
 // [[Rcpp::export]]
 Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                        const double tol = 0.0001, const int iteMax = 5000) {
+                        const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   if (h <= 0.0) {
@@ -288,7 +288,7 @@ Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5,
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -305,7 +305,7 @@ Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5,
 
 // [[Rcpp::export]]
 Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                           const double tol = 0.0001, const int iteMax = 5000) {
+                           const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
   if (h <= 0.0) {
@@ -332,7 +332,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -347,7 +347,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
 
 // [[Rcpp::export]]
 arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
-                          const double tol = 0.0001, const int iteMax = 5000) {
+                          const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -376,7 +376,7 @@ arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& beta
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -393,7 +393,7 @@ arma::vec smqrLogisticIni(const arma::mat& X, arma::vec Y, const arma::vec& beta
 
 // [[Rcpp::export]]
 Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                    const double tol = 0.0001, const int iteMax = 5000) {
+                    const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   if (h <= 0.0) {
@@ -425,7 +425,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -442,7 +442,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
 
 // [[Rcpp::export]]
 Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                       const double tol = 0.0001, const int iteMax = 5000) {
+                       const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
   if (h <= 0.0) {
@@ -469,7 +469,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -484,7 +484,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 
 // [[Rcpp::export]]
 arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
-                      const double tol = 0.0001, const int iteMax = 5000) {
+                      const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -513,7 +513,7 @@ arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -530,7 +530,7 @@ arma::vec smqrUnifIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
   
 // [[Rcpp::export]]
 Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                    const double tol = 0.0001, const int iteMax = 5000) {
+                    const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   if (h <= 0.0) {
@@ -562,7 +562,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -579,7 +579,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
 
 // [[Rcpp::export]]
 Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                       const double tol = 0.0001, const int iteMax = 5000) {
+                       const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
   if (h <= 0.0) {
@@ -606,7 +606,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -621,7 +621,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
 
 // [[Rcpp::export]]
 arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
-                      const double tol = 0.0001, const int iteMax = 5000) {
+                      const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -650,7 +650,7 @@ arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -667,7 +667,7 @@ arma::vec smqrParaIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat,
 
 // [[Rcpp::export]]
 Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                     const double tol = 0.0001, const int iteMax = 5000) {
+                     const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   if (h <= 0.0) {
@@ -699,7 +699,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -716,7 +716,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
 
 // [[Rcpp::export]]
 Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau = 0.5, double h = 0.05, const double constTau = 1.345, 
-                        const double tol = 0.0001, const int iteMax = 5000) {
+                        const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = Z.n_rows;
   const int p = Z.n_cols - 1;
   if (h <= 0.0) {
@@ -743,7 +743,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -758,7 +758,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
 
 // [[Rcpp::export]]
 arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat, const int p, const double tau = 0.5, double h = 0.05,
-                       const double tol = 0.0001, const int iteMax = 5000) {
+                       const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -787,7 +787,7 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
     if (cross > 0) {
       double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
       double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), 100.0);
+      alpha = std::min(std::min(a1, a2), stepMax);
     }
     gradOld = gradNew;
     betaDiff = -alpha * gradNew;
@@ -805,7 +805,7 @@ arma::vec smqrTrianIni(const arma::mat& X, arma::vec Y, const arma::vec& betaHat
 // Global conquer process with a quantile grid
 // [[Rcpp::export]]
 Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
-                         const double tol = 0.0001, const int iteMax = 5000) {
+                         const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
@@ -841,7 +841,7 @@ Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
       if (cross > 0) {
         double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
         double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-        alpha = std::min(std::min(a1, a2), 100.0);
+        alpha = std::min(std::min(a1, a2), stepMax);
       }
       gradOld = gradNew;
       betaDiff = -alpha * gradNew;
@@ -860,7 +860,7 @@ Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
 
 // [[Rcpp::export]]
 Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
-                            const double tol = 0.0001, const int iteMax = 5000) {
+                            const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
@@ -896,7 +896,7 @@ Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tau
       if (cross > 0) {
         double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
         double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-        alpha = std::min(std::min(a1, a2), 100.0);
+        alpha = std::min(std::min(a1, a2), stepMax);
       }
       gradOld = gradNew;
       betaDiff = -alpha * gradNew;
@@ -915,7 +915,7 @@ Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tau
 
 // [[Rcpp::export]]
 Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
-                        const double tol = 0.0001, const int iteMax = 5000) {
+                        const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
@@ -951,7 +951,7 @@ Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
       if (cross > 0) {
         double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
         double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-        alpha = std::min(std::min(a1, a2), 100.0);
+        alpha = std::min(std::min(a1, a2), stepMax);
       }
       gradOld = gradNew;
       betaDiff = -alpha * gradNew;
@@ -970,7 +970,7 @@ Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
 
 // [[Rcpp::export]]
 Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
-                        const double tol = 0.0001, const int iteMax = 5000) {
+                        const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
@@ -1006,7 +1006,7 @@ Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
       if (cross > 0) {
         double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
         double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-        alpha = std::min(std::min(a1, a2), 100.0);
+        alpha = std::min(std::min(a1, a2), stepMax);
       }
       gradOld = gradNew;
       betaDiff = -alpha * gradNew;
@@ -1025,7 +1025,7 @@ Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
 
 // [[Rcpp::export]]
 Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq, double h = 0.05, const double constTau = 1.345, 
-                         const double tol = 0.0001, const int iteMax = 5000) {
+                         const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   const int n = X.n_rows;
   const int p = X.n_cols;
   const int m = tauSeq.size();
@@ -1061,7 +1061,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
       if (cross > 0) {
         double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
         double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-        alpha = std::min(std::min(a1, a2), 100.0);
+        alpha = std::min(std::min(a1, a2), stepMax);
       }
       gradOld = gradNew;
       betaDiff = -alpha * gradNew;
@@ -1081,7 +1081,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
 // Conquer with bootstrap inference
 // [[Rcpp::export]]
 arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
-                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   arma::mat rst(p + 1, B);
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -1097,7 +1097,7 @@ arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
 
 // [[Rcpp::export]]
 arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
-                          const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+                          const int B = 1000, const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   arma::mat rst(p + 1, B);
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -1113,7 +1113,7 @@ arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::ve
 
 // [[Rcpp::export]]
 arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
-                      const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+                      const int B = 1000, const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   arma::mat rst(p + 1, B);
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -1129,7 +1129,7 @@ arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 
 // [[Rcpp::export]]
 arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
-                      const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+                      const int B = 1000, const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   arma::mat rst(p + 1, B);
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
@@ -1145,7 +1145,7 @@ arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
 
 // [[Rcpp::export]]
 arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& betaHat, const int n, const int p, double h = 0.05, const double tau = 0.5, 
-                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000) {
+                       const int B = 1000, const double tol = 0.0001, const int iteMax = 5000, stepMax = 100.0) {
   arma::mat rst(p + 1, B);
   if (h <= 0.0) {
     h = std::max(std::pow((std::log(n) + p) / n, 0.4), 0.05);
