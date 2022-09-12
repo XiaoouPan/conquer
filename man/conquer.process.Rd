@@ -12,7 +12,9 @@ conquer.process(
   h = 0,
   checkSing = FALSE,
   tol = 1e-04,
-  iteMax = 5000
+  iteMax = 5000,
+  stepBounded = TRUE,
+  stepMax = 100
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ conquer.process(
 \item{tol}{(\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.}
 
 \item{iteMax}{(\strong{optional}) Maximum number of iterations. Default is 5000.}
+
+\item{stepBounded}{(\strong{optional}) A logical flag. Default is TRUE.  If \code{stepBounded = TRUE}, then the step size of gradient descent is upper bounded by \code{stepMax}. If \code{stepBounded = FALSE}, then the step size is unbounded.}
+
+\item{stepMax}{(\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.}
 }
 \value{
 An object containing the following items will be returned:
