@@ -22,37 +22,6 @@ void updateHuber(const arma::mat& Z, const arma::vec& res, const double tau, arm
   grad = n1 * Z.t() * der;
 }
 
-// [[Rcpp::export]]
-arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const double tau, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, const int n, const int p, 
-                   const double n1, const double tol = 0.0001, const double constTau = 1.345, const int iteMax = 5000, stepMax = 100.0) {
-  double rob = constTau * mad(Y);
-  updateHuber(Z, Y, tau, der, gradOld, n, rob, n1);
-  arma::vec beta = -gradOld, betaDiff = -gradOld;
-  arma::vec res = Y - Z * beta;
-  rob = constTau * mad(res);
-  updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
-  arma::vec gradDiff = gradNew - gradOld;
-  int ite = 1;
-  while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
-    double alpha = 1.0;
-    double cross = arma::as_scalar(betaDiff.t() * gradDiff);
-    if (cross > 0) {
-      double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
-      double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
-      alpha = std::min(std::min(a1, a2), stepMax);
-    }
-    gradOld = gradNew;
-    betaDiff = -alpha * gradNew;
-    beta += betaDiff;
-    res -= Z * betaDiff;
-    rob = constTau * mad(res);
-    updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
-    gradDiff = gradNew - gradOld;
-    ite++;
-  }
-  return beta;
-}
-
 // Different kernels for low-dimensional conquer 
 // [[Rcpp::export]]
 void updateGauss(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma::vec& grad, const double tau, const double n1, const double h1) {
@@ -114,6 +83,37 @@ void updateTrian(const arma::mat& Z, const arma::vec& res, arma::vec& der, arma:
     }
   }
   grad = n1 * Z.t() * der;
+}
+
+// [[Rcpp::export]]
+arma::vec huberReg(const arma::mat& Z, const arma::vec& Y, const double tau, arma::vec& der, arma::vec& gradOld, arma::vec& gradNew, const int n, const int p, 
+                   const double n1, const double tol = 0.0001, const double constTau = 1.345, const int iteMax = 5000, stepMax = 100.0) {
+  double rob = constTau * mad(Y);
+  updateHuber(Z, Y, tau, der, gradOld, n, rob, n1);
+  arma::vec beta = -gradOld, betaDiff = -gradOld;
+  arma::vec res = Y - Z * beta;
+  rob = constTau * mad(res);
+  updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
+  arma::vec gradDiff = gradNew - gradOld;
+  int ite = 1;
+  while (arma::norm(gradNew, "inf") > tol && ite <= iteMax) {
+    double alpha = 1.0;
+    double cross = arma::as_scalar(betaDiff.t() * gradDiff);
+    if (cross > 0) {
+      double a1 = cross / arma::as_scalar(gradDiff.t() * gradDiff);
+      double a2 = arma::as_scalar(betaDiff.t() * betaDiff) / cross;
+      alpha = std::min(std::min(a1, a2), stepMax);
+    }
+    gradOld = gradNew;
+    betaDiff = -alpha * gradNew;
+    beta += betaDiff;
+    res -= Z * betaDiff;
+    rob = constTau * mad(res);
+    updateHuber(Z, res, tau, der, gradNew, n, rob, n1);
+    gradDiff = gradNew - gradOld;
+    ite++;
+  }
+  return beta;
 }
 
 // Low-dimensional conquer: estimation
