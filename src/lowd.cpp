@@ -134,7 +134,7 @@ Rcpp::List smqrGauss(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -178,7 +178,7 @@ Rcpp::List smqrGaussNsd(const arma::mat& Z, const arma::vec& Y, const double tau
   const double h1 = 1.0 / h;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -271,7 +271,7 @@ Rcpp::List smqrLogistic(const arma::mat& X, arma::vec Y, const double tau = 0.5,
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -315,7 +315,7 @@ Rcpp::List smqrLogisticNsd(const arma::mat& Z, const arma::vec& Y, const double 
   const double h1 = 1.0 / h;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -408,7 +408,7 @@ Rcpp::List smqrUnif(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -452,7 +452,7 @@ Rcpp::List smqrUnifNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
   const double h1 = 1.0 / h;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -545,7 +545,7 @@ Rcpp::List smqrPara(const arma::mat& X, arma::vec Y, const double tau = 0.5, dou
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -589,7 +589,7 @@ Rcpp::List smqrParaNsd(const arma::mat& Z, const arma::vec& Y, const double tau 
   const double h1 = 1.0 / h, h3 = 1.0 / (h * h * h);
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -682,7 +682,7 @@ Rcpp::List smqrTrian(const arma::mat& X, arma::vec Y, const double tau = 0.5, do
   Y -= my;
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -726,7 +726,7 @@ Rcpp::List smqrTrianNsd(const arma::mat& Z, const arma::vec& Y, const double tau
   const double h1 = 1.0 / h, h2 = 1.0 / (h * h);
   arma::vec der(n);
   arma::vec gradOld(p + 1), gradNew(p + 1);
-  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+  arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
   arma::vec quant = {tau};
   beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
   arma::vec res = Y - Z * beta;
@@ -824,7 +824,7 @@ Rcpp::List smqrGaussProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
   arma::mat betaProc(p + 1, m);
   for (int i = 0; i < m; i++) {
     double tau = tauSeq(i);
-    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
     arma::vec quant = {tau};
     beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
     arma::vec res = Y - Z * beta;
@@ -879,7 +879,7 @@ Rcpp::List smqrLogisticProc(const arma::mat& X, arma::vec Y, const arma::vec tau
   arma::mat betaProc(p + 1, m);
   for (int i = 0; i < m; i++) {
     double tau = tauSeq(i);
-    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
     arma::vec quant = {tau};
     beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
     arma::vec res = Y - Z * beta;
@@ -934,7 +934,7 @@ Rcpp::List smqrUnifProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
   arma::mat betaProc(p + 1, m);
   for (int i = 0; i < m; i++) {
     double tau = tauSeq(i);
-    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
     arma::vec quant = {tau};
     beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
     arma::vec res = Y - Z * beta;
@@ -989,7 +989,7 @@ Rcpp::List smqrParaProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq,
   arma::mat betaProc(p + 1, m);
   for (int i = 0; i < m; i++) {
     double tau = tauSeq(i);
-    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
     arma::vec quant = {tau};
     beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
     arma::vec res = Y - Z * beta;
@@ -1044,7 +1044,7 @@ Rcpp::List smqrTrianProc(const arma::mat& X, arma::vec Y, const arma::vec tauSeq
   arma::mat betaProc(p + 1, m);
   for (int i = 0; i < m; i++) {
     double tau = tauSeq(i);
-    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax);
+    arma::vec beta = huberReg(Z, Y, tau, der, gradOld, gradNew, n, p, n1, tol, constTau, iteMax, stepMax);
     arma::vec quant = {tau};
     beta(0) = arma::as_scalar(arma::quantile(Y - Z.cols(1, p) * beta.rows(1, p), quant));
     arma::vec res = Y - Z * beta;
@@ -1090,7 +1090,7 @@ arma::mat smqrGaussInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
     arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrGaussIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrGaussIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax, stepMax);
   }
   return rst;
 }
@@ -1106,7 +1106,7 @@ arma::mat smqrLogisticInf(const arma::mat& X, const arma::vec& Y, const arma::ve
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
     arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrLogisticIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrLogisticIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax, stepMax);
   }
   return rst;
 }
@@ -1122,7 +1122,7 @@ arma::mat smqrUnifInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
     arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrUnifIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrUnifIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax, stepMax);
   }
   return rst;
 }
@@ -1138,7 +1138,7 @@ arma::mat smqrParaInf(const arma::mat& X, const arma::vec& Y, const arma::vec& b
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
     arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrParaIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrParaIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax, stepMax);
   }
   return rst;
 }
@@ -1154,7 +1154,7 @@ arma::mat smqrTrianInf(const arma::mat& X, const arma::vec& Y, const arma::vec& 
     arma::uvec idx = arma::find(arma::randi(n, arma::distr_param(0, 1)) == 1);
     arma::mat mbX = X.rows(idx);
     arma::mat mbY = Y.rows(idx);
-    rst.col(b) = smqrTrianIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax);
+    rst.col(b) = smqrTrianIni(mbX, mbY, betaHat, p, tau, h, tol, iteMax, stepMax);
   }
   return rst;
 }
