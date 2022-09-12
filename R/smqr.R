@@ -327,6 +327,8 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
+#' @param stepBounded (\strong{optional}) A logical flag. Default is TRUE.  If \code{stepBounded = TRUE}, then the step size of gradient descent is upper bounded by \code{stepMax}. If \code{stepBounded = FALSE}, then the step size is unbounded.
+#' @param stepMax (\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.
 #' @return An object containing the following items will be returned:
 #' \describe{
 #' \item{\code{coeff}}{A \eqn{(p + 1)} by \eqn{m} matrix of estimated quantile regression process coefficients, including the intercept. m is the length of \code{tauSeq}.}
@@ -356,7 +358,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
 #' beta.hat.unif = fit.unif$coeff
 #' @export 
 conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, 
-                           checkSing = FALSE, tol = 0.0001, iteMax = 5000) {
+                           checkSing = FALSE, tol = 0.0001, iteMax = 5000, stepBounded = TRUE, stepMax = 100.0) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
@@ -375,15 +377,35 @@ conquer.process = function(X, Y, tauSeq = seq(0.1, 0.9, by = 0.05), kernel = c("
   kernel = match.arg(kernel)
   rst = NULL
   if (kernel == "Gaussian") {
-    rst = smqrGaussProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    if (stepBounded) {
+      rst = smqrGaussProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+    } else {
+      rst = smqrGaussProcUbd(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    }
   } else if (kernel == "logistic") {
-    rst = smqrLogisticProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    if (stepBounded) {
+      rst = smqrLogisticProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+    } else {
+      rst = smqrLogisticProcUbd(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    }
   } else if (kernel == "uniform") {
-    rst = smqrUnifProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    if (stepBounded) {
+      rst = smqrUnifProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+    } else {
+      rst = smqrUnifProcUbd(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    }
   } else if (kernel == "parabolic") {
-    rst = smqrParaProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    if (stepBounded) {
+      rst = smqrParaProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+    } else {
+      rst = smqrParaProcUbd(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    }
   } else {
-    rst = smqrTrianProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    if (stepBounded) {
+      rst = smqrTrianProc(X, Y, tauSeq, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+    } else {
+      rst = smqrTrianProcUbd(X, Y, tauSeq, h, tol = tol, iteMax = iteMax)
+    }
   }
   return (list(coeff = rst$coeff, bandwidth = rst$bandwidth, tauSeq = tauSeq, kernel = kernel, n = nrow(X), p = ncol(X)))
 }
