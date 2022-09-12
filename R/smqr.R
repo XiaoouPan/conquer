@@ -24,6 +24,7 @@ getNormCI = function(est, sd, z) {
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
+#' @param stepBounded (\strong{optional}) A logical flag. Default is TRUE.  If \code{stepBounded = TRUE}, then the step size of gradient descent is upper bounded by \code{stepMax}. If \code{stepBounded = FALSE}, then the step size is unbounded.
 #' @param stepMax (\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.
 #' @param ci (\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
 #' If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
@@ -72,7 +73,7 @@ getNormCI = function(est, sd, z) {
 #' ci.norm = fit$normCI
 #' @export 
 conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
-                   iteMax = 5000, stepMax = 100.0, ci = c("none", "bootstrap", "asymptotic", "both"), alpha = 0.05, B = 1000) {
+                   iteMax = 5000, stepBounded = TRUE, stepMax = 100.0, ci = c("none", "bootstrap", "asymptotic", "both"), alpha = 0.05, B = 1000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
@@ -96,40 +97,90 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
   if (ci == "none") {
     rst = NULL
     if (kernel == "Gaussian") {
-      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      if (stepBounded) {
+        rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+      } else {
+        rst = smqrGaussUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      }
     } else if (kernel == "logistic") {
-      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      if (stepBounded) {
+        rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+      } else {
+        rst = smqrLogisticUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      }
     } else if (kernel == "uniform") {
-      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      if (stepBounded) {
+        rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+      } else {
+        rst = smqrUnifUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      }
     } else if (kernel == "parabolic") {
-      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      if (stepBounded) {
+        rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+      } else {
+        rst = smqrParaUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      }
     } else {
-      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      if (stepBounded) {
+        rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+      } else {
+        rst = smqrTrianUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+      }
     }
     return (list(coeff = as.numeric(rst$coeff), ite = rst$ite, residual = as.numeric(rst$residual), bandwidth = rst$bandwidth, tau = tau, 
                  kernel = kernel, n = nrow(X), p = ncol(X)))
   } else if (ci == "bootstrap") {
     rst = coeff = multiBeta = NULL
     if (kernel == "Gaussian") {
-      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrGaussUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrGaussInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "logistic") {
-      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrLogisticUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrLogisticInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "uniform") {
-      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrUnifUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrUnifInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "parabolic") {
-      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrParaUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrParaInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else {
-      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrTrianUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrTrianInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     }
     ciList = getPivCI(coeff, multiBeta, alpha)
     z = qnorm(1 - alpha / 2)
@@ -139,20 +190,45 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
   } else if (ci == "asymptotic") {
     rst = coeff = NULL
     if (kernel == "Gaussian") {
-      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
+      if (stepBounded) {
+        rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+      } else {
+        rst = smqrGaussUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+      }
     } else if (kernel == "logistic") {
-      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
+      if (stepBounded) {
+        rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+      } else {
+        rst = smqrLogisticUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+      }
     } else if (kernel == "uniform") {
-      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
+      if (stepBounded) {
+        rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+      } else {
+        rst = smqrUnifUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+      }
     } else if (kernel == "parabolic") {
-      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
+      if (stepBounded) {
+        rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+      } else {
+        rst = smqrParaUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+      }
     } else {
-      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
+      if (stepBounded) {
+        rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+      } else {
+        rst = smqrTrianUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+      }
     }
     res = as.numeric(rst$residual)
     h = rst$bandwidth
@@ -171,25 +247,55 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
   } else {
     rst = coeff = multiBeta = NULL
     if (kernel == "Gaussian") {
-      rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrGauss(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrGaussInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrGaussUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrGaussInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "logistic") {
-      rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrLogistic(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrLogisticInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrLogisticUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrLogisticInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "uniform") {
-      rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrUnif(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrUnifInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrUnifUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrUnifInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else if (kernel == "parabolic") {
-      rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrPara(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrParaInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrParaUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrParaInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     } else {
-      rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax)
-      coeff = as.numeric(rst$coeff)
-      multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      if (stepBounded) {
+        rst = smqrTrian(X, Y, tau, h, tol = tol, iteMax = iteMax, stepMax = stepMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrTrianInf(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax, stepMax)
+      } else {
+        rst = smqrTrianUbd(X, Y, tau, h, tol = tol, iteMax = iteMax)
+        coeff = as.numeric(rst$coeff)
+        multiBeta = smqrTrianInfUbd(X, Y, coeff, nrow(X), ncol(X), h, tau, B, tol, iteMax)
+      }
     }
     ciList = getPivCI(coeff, multiBeta, alpha)
     z = qnorm(1 - alpha / 2)

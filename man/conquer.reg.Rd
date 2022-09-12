@@ -35,7 +35,7 @@ conquer.reg(
 
 \item{kernel}{(\strong{optional}) A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{0.5 * (log(p) / n)^{0.25}, 0.05\}}. The default will be used if the input value is less than or equal to 0.}
 
 \item{penalty}{(\strong{optional}) A character string specifying the penalty. Default is "lasso" (Tibshirani, 1996). The other options are "elastic" for elastic-net (Zou and Hastie, 2005), "group" for group lasso (Yuan and Lin, 2006), "sparse-group" for sparse group lasso (Simon et al., 2013), "scad" (Fan and Li, 2001) and "mcp" (Zhang, 2010).}
 

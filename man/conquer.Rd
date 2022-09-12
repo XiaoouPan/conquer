@@ -13,6 +13,7 @@ conquer(
   checkSing = FALSE,
   tol = 1e-04,
   iteMax = 5000,
+  stepMax = 100,
   ci = c("none", "bootstrap", "asymptotic", "both"),
   alpha = 0.05,
   B = 1000
@@ -27,13 +28,15 @@ conquer(
 
 \item{kernel}{(\strong{optional})  A character string specifying the choice of kernel function. Default is "Gaussian". Choices are "Gaussian", "logistic", "uniform", "parabolic" and "triangular".}
 
-\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than or equal to 0.05.}
+\item{h}{(\strong{optional}) Bandwidth/smoothing parameter. Default is \eqn{\max\{((log(n) + p) / n)^{0.4}, 0.05\}}. The default will be used if the input value is less than or equal to 0.}
 
 \item{checkSing}{(\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer.}
 
 \item{tol}{(\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.}
 
 \item{iteMax}{(\strong{optional}) Maximum number of iterations. Default is 5000.}
+
+\item{stepMax}{(\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.}
 
 \item{ci}{(\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
 If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
