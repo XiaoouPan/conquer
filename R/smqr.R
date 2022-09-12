@@ -24,6 +24,7 @@ getNormCI = function(est, sd, z) {
 #' @param checkSing (\strong{optional}) A logical flag. Default is FALSE. If \code{checkSing = TRUE}, then it will check if the design matrix is singular before running conquer. 
 #' @param tol (\strong{optional}) Tolerance level of the gradient descent algorithm. The iteration will stop when the maximum magnitude of all the elements of the gradient is less than \code{tol}. Default is 1e-04.
 #' @param iteMax (\strong{optional}) Maximum number of iterations. Default is 5000.
+#' @param stepMax (\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.
 #' @param ci (\strong{optional}) A character string specifying methods to construct confidence intervals. Choices are "none" (default), "bootstrap", "asymptotic" and "both". If \code{ci = "none"}, then confidence intervals will not be constructed. 
 #' If \code{ci = "bootstrap"}, then three types of confidence intervals (percentile, pivotal and normal) will be constructed via multiplier bootstrap. 
 #' If \code{ci = "asymptotic"}, then confidence intervals will be constructed based on estimated asymptotic covariance matrix. 
@@ -71,7 +72,7 @@ getNormCI = function(est, sd, z) {
 #' ci.norm = fit$normCI
 #' @export 
 conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform", "parabolic", "triangular"), h = 0.0, checkSing = FALSE, tol = 0.0001, 
-                   iteMax = 5000, ci = c("none", "bootstrap", "asymptotic", "both"), alpha = 0.05, B = 1000) {
+                   iteMax = 5000, stepMax = 100.0, ci = c("none", "bootstrap", "asymptotic", "both"), alpha = 0.05, B = 1000) {
   if (nrow(X) != length(Y)) {
     stop("Error: the length of Y must be the same as the number of rows of X.")
   }
