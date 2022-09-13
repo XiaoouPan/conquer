@@ -59,6 +59,8 @@ install.packages("conquer")
 
 ## Common errors or warnings
 
+**Compilation errors by `r install.packages("conquer")`**:
+
 A collection of error / warning messages and their solutions:
 
 * Error: Compilation failed for package 'conquer' (with messages involving lgfortran, clang, etc.). **Solution**: This is a compilation error of Rcpp-based source packages. It happens when we recently submit a new version to CRAN, but it usually takes 3-5 days to build the binary package. Please use an older version or patiently wait for 3-5 days and then install the updated version.
