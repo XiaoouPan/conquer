@@ -37,7 +37,7 @@ conquer(
 
 \item{iteMax}{(\strong{optional}) Maximum number of iterations. Default is 5000.}
 
-\item{stepBounded}{(\strong{optional}) A logical flag. Default is TRUE.  If \code{stepBounded = TRUE}, then the step size of gradient descent is upper bounded by \code{stepMax}. If \code{stepBounded = FALSE}, then the step size is unbounded.}
+\item{stepBounded}{(\strong{optional}) A logical flag. Default is TRUE. If \code{stepBounded = TRUE}, then the step size of gradient descent is upper bounded by \code{stepMax}. If \code{stepBounded = FALSE}, then the step size is unbounded.}
 
 \item{stepMax}{(\strong{optional}) Maximum bound for the gradient descent step size. Default is 100.}
 

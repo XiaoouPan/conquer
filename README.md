@@ -15,9 +15,9 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 Add flexibility into the conquer function:
 
-1. The step size of Barzilai-Borweincan GD can be unbounded, or the upper bound can be user-specified.
+1. The step size of Barzilai-Borweincan gradient descent can be unbounded, or the upper bound can be user-specified.
 
-2. The smothing bandwidth can be specified to be any positive value. In old versions, it has to be bounded away from zero. 
+2. The smothing bandwidth can be specified as any positive value. In previous versions, it has to be bounded away from zero. 
 
 **2022-03-24 (Version 1.3.0)**:
 
