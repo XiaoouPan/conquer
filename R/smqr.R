@@ -509,30 +509,35 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussLasso(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussLassoSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticLasso(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticLassoSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifLasso(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifLassoSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaLasso(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaLassoSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianLasso(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianLassoSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax)
       }
@@ -544,30 +549,35 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussElastic(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussElasticSeq(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticElastic(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticElasticSeq(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifElastic(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifElasticSeq(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaElastic(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaElasticSeq(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianElastic(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianElasticSeq(X, Y, lambda, tau, para.elastic, h, phi0, gamma, epsilon, iteMax)
       }
@@ -586,30 +596,35 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
@@ -628,30 +643,35 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianSparseGroupLasso(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianSparseGroupLassoSeq(X, Y, lambda, tau, group, weights, G, h, phi0, gamma, epsilon, iteMax)
       }
@@ -663,30 +683,35 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussScad(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussScadSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticScad(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticScadSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifScad(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifScadSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaScad(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaScadSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianScad(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianScadSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.scad)
       }
@@ -698,36 +723,41 @@ conquer.reg = function(X, Y, lambda = 0.2, tau = 0.5, kernel = c("Gaussian", "lo
     if (kernel == "Gaussian") {
       if (length(lambda) == 1) {
         rst = conquerGaussMcp(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
+        rst = as.numeric(rst)
       } else {
         rst = conquerGaussMcpSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
       }
     } else if (kernel == "logistic") {
       if (length(lambda) == 1) {
         rst = conquerLogisticMcp(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
+        rst = as.numeric(rst)
       } else {
         rst = conquerLogisticMcpSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
       }
     } else if (kernel == "uniform") {
       if (length(lambda) == 1) {
         rst = conquerUnifMcp(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
+        rst = as.numeric(rst)
       } else {
         rst = conquerUnifMcpSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
       }
     } else if (kernel == "parabolic") {
       if (length(lambda) == 1) {
         rst = conquerParaMcp(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
+        rst = as.numeric(rst)
       } else {
         rst = conquerParaMcpSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
       }
     } else {
       if (length(lambda) == 1) {
         rst = conquerTrianMcp(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
+        rst = as.numeric(rst)
       } else {
         rst = conquerTrianMcpSeq(X, Y, lambda, tau, h, phi0, gamma, epsilon, iteMax, iteTight, para.mcp)
       }
     }
   } 
-  return (list(coeff = as.numeric(rst), bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
+  return (list(coeff = rst, bandwidth = h, tau = tau, kernel = kernel, penalty = penalty, lambda = lambda, n = n, p = p))
 }
 
 #' @title Cross-Validated Penalized Convolution-Type Smoothed Quantile Regression
