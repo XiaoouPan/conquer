@@ -532,9 +532,11 @@ arma::mat conquerTrianElasticSeq(const arma::mat& X, arma::vec Y, const arma::ve
   Y -= my;
   arma::mat betaSeq(p + 1, nlambda);
   arma::vec betaHat = trianElastic(Z, Y, lambdaSeq(0), tau, alpha, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaSeq.col(0) = betaHat;
   arma::vec betaWarm = betaHat;
   for (int i = 1; i < nlambda; i++) {
     betaHat = trianElasticWarm(Z, Y, lambdaSeq(i), betaWarm, tau, alpha, p, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaSeq.col(i) = betaHat;
     betaWarm = betaHat;
   }
   betaSeq.rows(1, p).each_col() %= sx1;
@@ -570,9 +572,11 @@ arma::mat conquerTrianGroupLassoSeq(const arma::mat& X, arma::vec Y, const arma:
   Y -= my;
   arma::mat betaSeq(p + 1, nlambda);
   arma::vec betaHat = trianGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaSeq.col(0) = betaHat;
   arma::vec betaWarm = betaHat;
   for (int i = 1; i < nlambda; i++) {
     betaHat = trianGroupLassoWarm(Z, Y, lambdaSeq(i), betaWarm, tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaSeq.col(i) = betaHat;
     betaWarm = betaHat;
   }
   betaSeq.rows(1, p).each_col() %= sx1;
@@ -610,9 +614,11 @@ arma::mat conquerTrianSparseGroupLassoSeq(const arma::mat& X, arma::vec Y, const
   Y -= my;
   arma::mat betaSeq(p + 1, nlambda);
   arma::vec betaHat = trianSparseGroupLasso(Z, Y, lambdaSeq(0), tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+  betaSeq.col(0) = betaHat;
   arma::vec betaWarm = betaHat;
   for (int i = 1; i < nlambda; i++) {
     betaHat = trianSparseGroupLassoWarm(Z, Y, lambdaSeq(i), betaWarm, tau, group, weight, p, G, n1, h, h1, h2, phi0, gamma, epsilon, iteMax);
+    betaSeq.col(i) = betaHat;
     betaWarm = betaHat;
   }
   betaSeq.rows(1, p).each_col() %= sx1;
