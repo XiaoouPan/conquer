@@ -198,7 +198,7 @@ GPL-3.0
 
 ## System requirements 
 
-C++11
+C++17
 
 ## Authors
 
