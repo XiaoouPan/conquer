@@ -13,14 +13,11 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 **2023-02-05 (Version 1.3.2)**:
 
-Fix bugs in the `conquer.reg` function:
-
-1. When the penalties were group lasso, sparse group lasso or elastic-net, and the input *&lambda;* was a sequence, the estimated coefficients were not reasonable. This bug was caused because the final output (coefficients) were not updated along the sequential input of *&lambda;*.
+1. Fix an issue in the `conquer.reg` function: when the penalties were group lasso, sparse group lasso or elastic-net, and the input *&lambda;* was a sequence, the estimated coefficients were not reasonable. This didn't affect cross-validation (`conquer.cv.reg`), or `conquer.reg` with other penalties or when input *&lambda;* was a scalar. 
 
 2. When the input *&lambda;* was a sequence, the output estimation was a vector instead of a matrix, which was not consistent with the description of the function.
 
-The above bugs didn't affect cross-validation (`conquer.cv.reg`), or `conquer.reg` with other penalties or when input *&lambda;* was a scalar. 
-Major functionalities of the `conquer` package were not impacted.
+3. Update the default version of C++ as required by CRAN.
 
 **2022-09-12 (Version 1.3.1)**:
 
