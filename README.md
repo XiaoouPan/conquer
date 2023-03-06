@@ -11,6 +11,10 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 ## Updates
 
+**2023-03-05 (Version 1.3.3)**:
+
+More efficient statistical inference based on asymptotic property. When calling `conquer` function with `ci = "asymptotic"`, an *n* by *n* diagonal matrix was involved for estimating asymptotic covariance matrix. This space allocation was expensive and unnecessary.
+
 **2023-02-05 (Version 1.3.2)**:
 
 1. Fix an issue in the `conquer.reg` function: when the penalties were group lasso, sparse group lasso or elastic-net, and the input *&lambda;* was a sequence, the estimated coefficients were not reasonable. This didn't affect cross-validation (`conquer.cv.reg`), or `conquer.reg` with other penalties or when input *&lambda;* was a scalar. 
