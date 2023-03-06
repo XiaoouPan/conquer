@@ -1001,3 +1001,7 @@ smqrTrianInfUbd <- function(X, Y, betaHat, n, p, h = 0.05, tau = 0.5, B = 1000L,
     .Call('_conquer_smqrTrianInfUbd', PACKAGE = 'conquer', X, Y, betaHat, n, p, h, tau, B, tol, iteMax)
 }
 
+asymptoticCI <- function(X, res, coeff, tau, n, h, z) {
+    .Call('_conquer_asymptoticCI', PACKAGE = 'conquer', X, res, coeff, tau, n, h, z)
+}
+

@@ -295,15 +295,7 @@ conquer = function(X, Y, tau = 0.5, kernel = c("Gaussian", "logistic", "uniform"
     res = as.numeric(rst$residual)
     h = rst$bandwidth
     n = nrow(X)
-    X1 = cbind(1, X)
-    Wh = diag(as.vector(pnorm(-res / h) - tau)^2)
-    Stau = t(X1) %*% Wh %*% X1 / n
-    Dh = t(X1) %*% diag(dnorm(res / h)) %*% X1 / (n * h)
-    Dhinv = solve(Dh)
-    tm = z * sqrt(diag(Dhinv %*% Stau %*% Dhinv) / n)
-    lower = coeff - tm
-    upper = coeff + tm
-    asyCI = as.matrix(cbind(lower, upper))
+    asyCI = asymptoticCI(X, res, coeff, tau, n, h, z)
     return (list(coeff = coeff, ite = rst$ite, residual = res, bandwidth = h, tau = tau, kernel = kernel, n = n, p = ncol(X), 
                  perCI = as.matrix(ciList$perCI), pivCI = as.matrix(ciList$pivCI), normCI = normCI, asyCI = asyCI))
   }
