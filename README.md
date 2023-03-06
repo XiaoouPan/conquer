@@ -15,7 +15,7 @@ In the low-dimensional setting, efficient gradient-based methods are employed fo
 
 When calling `conquer` function with `ci = "asymptotic"`, an *n* by *n* diagonal matrix was involved for estimating asymptotic covariance matrix. This space allocation was expensive and unnecessary. In practice, on data with large *n*, computing the asymptotic confidence interval was infeasible.
 
-This issue is mitigated via a more computationally efficient matrix multiplication. The space complexity is released from *O(n^2)* to *O(np)*.
+This issue is mitigated via a more computationally efficient matrix multiplication. The space complexity is released from *O(n<sup>2</sub>)* to *O(np)*.
 
 **2023-02-05 (Version 1.3.2)**:
 
