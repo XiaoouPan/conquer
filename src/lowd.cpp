@@ -2248,6 +2248,6 @@ arma::mat asymptoticCI(const arma::mat& X, const arma::vec& res, const arma::vec
   temp = Wh2 % Z;
   arma::mat Dh = temp.t() * Z;
   arma::mat Dhinv = Dh.i();
-  arma::vec tm = z * arma::sqrt(arma::diagvec(Dhinv * Stau * Dhinv))
+  arma::vec tm = z * arma::sqrt(arma::diagvec(Dhinv * Stau * Dhinv));
   return arma::join_rows(coeff - tm, coeff + tm);
 }
