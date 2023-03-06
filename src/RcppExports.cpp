@@ -5320,6 +5320,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// asymptoticCI
+arma::mat asymptoticCI(const arma::mat& X, const arma::vec& res, const arma::vec& coeff, const double tau, const int n, const double h, const double z);
+RcppExport SEXP _conquer_asymptoticCI(SEXP XSEXP, SEXP resSEXP, SEXP coeffSEXP, SEXP tauSEXP, SEXP nSEXP, SEXP hSEXP, SEXP zSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type res(resSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type coeff(coeffSEXP);
+    Rcpp::traits::input_parameter< const double >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const double >::type z(zSEXP);
+    rcpp_result_gen = Rcpp::wrap(asymptoticCI(X, res, coeff, tau, n, h, z));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_conquer_sgn", (DL_FUNC) &_conquer_sgn, 1},
@@ -5572,6 +5589,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_conquer_smqrUnifInfUbd", (DL_FUNC) &_conquer_smqrUnifInfUbd, 10},
     {"_conquer_smqrParaInfUbd", (DL_FUNC) &_conquer_smqrParaInfUbd, 10},
     {"_conquer_smqrTrianInfUbd", (DL_FUNC) &_conquer_smqrTrianInfUbd, 10},
+    {"_conquer_asymptoticCI", (DL_FUNC) &_conquer_asymptoticCI, 7},
     {NULL, NULL, 0}
 };
 
